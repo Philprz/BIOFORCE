@@ -72,16 +72,12 @@ app = FastAPI(
 # Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",           # Développement local
-        "https://bioforce-interface.onrender.com",  # Interface déployée
-        "http://bioforce-interface.onrender.com",   # Version HTTP de l'interface
-        "https://bioforce.onrender.com",    # L'API elle-même (pour les auto-appels)
-        "http://bioforce.onrender.com"      # Version HTTP de l'API
-    ],
+    allow_origins=["*"],  # Permet toutes les origines pour les tests
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Toutes les méthodes
+    allow_headers=["*"],  # Tous les en-têtes
+    expose_headers=["*"],  # Expose tous les en-têtes dans la réponse
+    max_age=86400,        # Cache les résultats preflight pour 24h
 )
 
 # Événement de démarrage pour initialiser la collection
@@ -163,8 +159,10 @@ async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     
     return context
 
-async def get_llm_response(messages: List[Dict[str, str]], context: str) -> str:
-    """Obtient une réponse du LLM"""
+async def get_llm_response(messages, context=""):
+    """
+    Obtient une réponse du modèle de langage OpenAI
+    """
     try:
         system_message = {
             "role": "system", 
@@ -175,8 +173,12 @@ async def get_llm_response(messages: List[Dict[str, str]], context: str) -> str:
                        proposez au candidat de contacter directement l'équipe Bioforce."""
         }
         
+        # Convertir les objets de message en dictionnaires pour l'API OpenAI
         api_messages = [system_message]
-        api_messages.extend([{"role": msg.role, "content": msg.content} for msg in messages])
+        
+        # S'assurer que les messages sont au bon format pour l'API OpenAI
+        for msg in messages:
+            api_messages.append({"role": msg.role, "content": msg.content})
         
         # Si contexte disponible, l'ajouter
         if context:
@@ -189,11 +191,11 @@ async def get_llm_response(messages: List[Dict[str, str]], context: str) -> str:
         response = await openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=api_messages,
-            max_tokens=500,
             temperature=0.7,
+            max_tokens=500
         )
         
-        return response.choices[0].message.content
+        return response.choices[0].message.content, []
     
     except Exception as e:
         logger.error(f"Erreur lors de l'appel au LLM: {str(e)}")
@@ -212,65 +214,47 @@ async def root():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """Endpoint principal du chatbot"""
+    """
+    Point d'entrée principal pour le chat
+    """
     try:
-        # Récupérer la dernière question de l'utilisateur
-        last_message = request.messages[-1].content
+        user_id = request.user_id
+        messages = request.messages
+        context_info = request.context
         
-        # Rechercher des informations pertinentes
-        search_results = []
-        try:
-            search_results = await search_knowledge_base(last_message)
-        except Exception as e:
-            logger.warning(f"Erreur lors de la recherche dans la base de connaissances: {str(e)}")
-            # Continuer sans résultats de recherche si erreur (ex: collection inexistante)
+        # Récupérer le dernier message utilisateur
+        last_message = None
+        for msg in reversed(messages):
+            if msg.role == "user":
+                last_message = msg.content
+                break
         
-        # Formater le contexte pour le LLM
+        if not last_message:
+            raise HTTPException(status_code=400, detail="Aucun message utilisateur trouvé")
+        
+        # Obtenir le contexte pertinent depuis Qdrant
         context = ""
-        if search_results:
-            context = await format_context_from_results(search_results)
+        try:
+            qdrant_results = await search_knowledge_base(last_message)
+            if qdrant_results:
+                context = "\n\n".join([f"Q: {item.question}\nR: {item.answer}" for item in qdrant_results])
+        except Exception as e:
+            logger.error(f"Erreur lors de la requête Qdrant: {e}")
+            # On continue sans contexte
         
-        # Message système pour guider le chatbot
-        system_message = {
-            "role": "system", 
-            "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation humanitaire qui propose des formations.
-                       Votre rôle est d'aider les candidats avec leur dossier de candidature et de répondre à leurs questions
-                       sur les formations, le processus de sélection, et les modalités d'inscription.
-                       Soyez concis, précis et avenant dans vos réponses. Si vous ne connaissez pas la réponse à une question,
-                       proposez au candidat de contacter directement l'équipe Bioforce."""
+        # Construire et envoyer la requête à OpenAI
+        response_content, references = await get_llm_response(messages, context)
+        
+        # Formater et renvoyer la réponse
+        return {
+            "message": {
+                "role": "assistant",
+                "content": response_content
+            },
+            "references": references
         }
-        
-        # Préparer les messages pour le LLM
-        messages = [system_message]
-        messages.extend([{"role": msg.role, "content": msg.content} for msg in request.messages])
-        
-        # Si contexte disponible, l'ajouter
-        if context:
-            messages.append({
-                "role": "system",
-                "content": f"Informations supplémentaires pouvant être utiles pour répondre à la question: {context}"
-            })
-        
-        # Obtenir la réponse du LLM
-        llm_response = await get_llm_response(messages, context)
-        
-        # Préparer la réponse
-        response = ChatResponse(
-            message=ChatMessage(role="assistant", content=llm_response),
-            context=request.context,
-            references=[{
-                "question": result.get("question", ""),
-                "answer": result.get("answer", ""),
-                "category": result.get("category", ""),
-                "url": result.get("url", ""),
-                "score": result.get("score", 0)
-            } for result in search_results[:3]] if search_results else []  # Limiter à 3 références
-        )
-        
-        return response
-    
     except Exception as e:
-        logger.error(f"Erreur lors du traitement de la requête: {str(e)}")
+        logger.error(f"Erreur dans /chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/search", response_model=SearchResponse)

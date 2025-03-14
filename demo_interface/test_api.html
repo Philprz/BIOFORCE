@@ -84,11 +84,38 @@
         <button onclick="testSimulation()">Tester la simulation</button>
         <div id="simulation-result" class="result"></div>
     </div>
+    
+    <div class="test-card">
+        <h2>Problème de sécurité possible</h2>
+        <p>Si tous les tests échouent, ouvrez la console du navigateur (F12) pour voir les erreurs détaillées.</p>
+        <p><strong>Note:</strong> Si vous accédez à cette page en HTTPS, votre navigateur peut bloquer les requêtes HTTP.</p>
+    </div>
 
     <script>
         // Configuration des URLs
         const API_LOCAL = 'http://localhost:8000';
         const API_PRODUCTION = 'https://bioforce.onrender.com'; // URL correcte de l'API
+        
+        // Fonction pour afficher les erreurs de manière plus détaillée
+        function handleFetchError(error, resultElement) {
+            resultElement.className = 'result error';
+            
+            if (error.message === 'Failed to fetch') {
+                resultElement.innerHTML = `
+                    <p>Erreur: ${error.message}</p>
+                    <p>Causes possibles:</p>
+                    <ul>
+                        <li>Le serveur est inaccessible</li>
+                        <li>Problème de CORS - vérifiez la configuration du serveur</li>
+                        <li>Problème de Mixed Content (HTTP/HTTPS) - vérifiez les protocoles</li>
+                        <li>Un pare-feu bloque la connexion</li>
+                    </ul>
+                    <p>Vérifiez la console du navigateur (F12) pour plus de détails.</p>
+                `;
+            } else {
+                resultElement.innerHTML = `<p>Erreur: ${error.message}</p>`;
+            }
+        }
 
         async function testApiRoot() {
             const resultElement = document.getElementById('root-result');
@@ -96,15 +123,27 @@
             resultElement.innerHTML = 'Test en cours...';
             
             try {
-                const response = await fetch(`${API_LOCAL}/`);
+                // Afficher l'URL complète pour le débogage
+                const url = `${API_LOCAL}/`;
+                console.log('Tentative de connexion à:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors', // Mode CORS explicite
+                    credentials: 'omit', // Ne pas envoyer de cookies
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
                 const data = await response.json();
                 
                 resultElement.className = 'result success';
                 resultElement.innerHTML = `<p>Succès ! L'API est accessible.</p>
                     <pre>${JSON.stringify(data, null, 2)}</pre>`;
             } catch (error) {
-                resultElement.className = 'result error';
-                resultElement.innerHTML = `<p>Erreur: ${error.message}</p>`;
+                console.error('Erreur testApiRoot:', error);
+                handleFetchError(error, resultElement);
             }
         }
 
@@ -113,7 +152,102 @@
         }
         
         async function testDeployedApi() {
-            await testApi(API_PRODUCTION, 'deployed-result');
+            const resultElement = document.getElementById('deployed-result');
+            resultElement.className = 'result';
+            resultElement.innerHTML = 'Test en cours...';
+            
+            try {
+                console.log('Test de l\'API déployée...');
+                
+                // Vérifier d'abord si l'API est accessible en mode GET
+                console.log('Vérification de l\'accessibilité de l\'API sur', API_PRODUCTION);
+                
+                try {
+                    const pingResponse = await fetch(`${API_PRODUCTION}/`, {
+                        method: 'GET',
+                        mode: 'cors',
+                        credentials: 'omit',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (pingResponse.ok) {
+                        console.log('L\'API est accessible:', await pingResponse.json());
+                    } else {
+                        console.warn('L\'API est accessible mais retourne une erreur:', pingResponse.status);
+                    }
+                } catch (pingError) {
+                    console.error('L\'API n\'est pas accessible:', pingError);
+                }
+                
+                // Test complet avec une requête POST
+                const testMessage = {
+                    user_id: 'test-user-123',
+                    messages: [
+                        {
+                            role: 'user',
+                            content: 'Bonjour, pouvez-vous me donner des informations sur Bioforce?'
+                        }
+                    ],
+                    context: {
+                        page: '/test_api.html',
+                        candidature_id: '00000000'
+                    }
+                };
+                
+                console.log(`Envoi de requête à ${API_PRODUCTION}/chat...`);
+                
+                const response = await fetch(`${API_PRODUCTION}/chat`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    credentials: 'omit',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(testMessage)
+                });
+                
+                console.log('Réponse reçue:', response.status, response.statusText);
+                
+                const responseText = await response.text();
+                console.log('Contenu de la réponse:', responseText);
+                
+                let data;
+                
+                try {
+                    data = JSON.parse(responseText);
+                    resultElement.className = 'result success';
+                    resultElement.innerHTML = `<p>Succès ! Code: ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } catch (jsonError) {
+                    resultElement.className = 'result error';
+                    resultElement.innerHTML = `<p>Réponse reçue mais format incorrect. Code: ${response.status}</p>
+                        <pre>${responseText}</pre>`;
+                }
+            } catch (error) {
+                console.error('Erreur testDeployedApi:', error);
+                
+                let errorMsg = `
+                    <p>Erreur: ${error.message}</p>
+                    <p>Causes possibles:</p>
+                    <ul>
+                        <li>L'API sur Render n'est pas accessible</li>
+                        <li>Problème de CORS - vérifiez que l'API est bien configurée pour accepter les requêtes depuis votre domaine</li>
+                        <li>Vérifiez dans la console du navigateur (F12) pour plus de détails</li>
+                    </ul>
+                    <p>Solutions possibles:</p>
+                    <ul>
+                        <li>Déployez la version corrigée de l'API sur Render</li>
+                        <li>Vérifiez que l'URL "${API_PRODUCTION}" est correcte</li>
+                        <li>Essayez d'accéder directement à <a href="${API_PRODUCTION}" target="_blank">${API_PRODUCTION}</a> pour vérifier si l'API répond</li>
+                    </ul>
+                `;
+                
+                resultElement.className = 'result error';
+                resultElement.innerHTML = errorMsg;
+            }
         }
         
         async function testApi(apiUrl, resultId) {
@@ -136,15 +270,24 @@
             };
             
             try {
+                console.log(`Envoi de requête à ${apiUrl}/chat...`);
+                
                 const response = await fetch(`${apiUrl}/chat`, {
                     method: 'POST',
+                    mode: 'cors', // Mode CORS explicite
+                    credentials: 'omit', // Ne pas envoyer de cookies
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(testMessage)
                 });
                 
+                console.log('Réponse reçue:', response.status, response.statusText);
+                
                 const responseText = await response.text();
+                console.log('Contenu de la réponse:', responseText);
+                
                 let data;
                 
                 try {
@@ -158,8 +301,8 @@
                         <pre>${responseText}</pre>`;
                 }
             } catch (error) {
-                resultElement.className = 'result error';
-                resultElement.innerHTML = `<p>Erreur: ${error.message}</p>`;
+                console.error('Erreur testApi:', error);
+                handleFetchError(error, resultElement);
             }
         }
         
