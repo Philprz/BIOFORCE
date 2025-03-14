@@ -48,6 +48,11 @@
             border: 1px solid #f5c6cb;
             color: #721c24;
         }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
         pre {
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -86,6 +91,13 @@
     </div>
     
     <div class="test-card">
+        <h2>5. Test avec Proxy CORS</h2>
+        <p>Utilise un proxy CORS pour contourner les restrictions</p>
+        <button onclick="testWithCorsProxy()">Test via Proxy CORS</button>
+        <div id="proxy-result" class="result"></div>
+    </div>
+    
+    <div class="test-card">
         <h2>Problème de sécurité possible</h2>
         <p>Si tous les tests échouent, ouvrez la console du navigateur (F12) pour voir les erreurs détaillées.</p>
         <p><strong>Note:</strong> Si vous accédez à cette page en HTTPS, votre navigateur peut bloquer les requêtes HTTP.</p>
@@ -95,6 +107,7 @@
         // Configuration des URLs
         const API_LOCAL = 'http://localhost:8000';
         const API_PRODUCTION = 'https://bioforce.onrender.com'; // URL correcte de l'API
+        const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
         
         // Fonction pour afficher les erreurs de manière plus détaillée
         function handleFetchError(error, resultElement) {
@@ -321,6 +334,94 @@
             
             resultElement.innerHTML = `<p>Mode simulation activé</p>
                 <pre>${randomResponse}</pre>`;
+        }
+        
+        async function testWithCorsProxy() {
+            const resultElement = document.getElementById('proxy-result');
+            resultElement.className = 'result';
+            resultElement.innerHTML = 'Test en cours via proxy CORS...';
+            
+            try {
+                console.log('Test via proxy CORS...');
+                
+                // URL avec proxy CORS
+                const proxiedUrl = `${CORS_PROXY}${API_PRODUCTION}`;
+                console.log('URL avec proxy:', proxiedUrl);
+                
+                // Test d'accessibilité via le proxy
+                try {
+                    const pingResponse = await fetch(`${proxiedUrl}/`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    if (pingResponse.ok) {
+                        const pingData = await pingResponse.json();
+                        console.log('API accessible via proxy:', pingData);
+                        
+                        // Si l'API est accessible, essayons une requête chat
+                        const testMessage = {
+                            user_id: 'test-user-123',
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: 'Bonjour, pouvez-vous me donner des informations sur Bioforce?'
+                                }
+                            ],
+                            context: {
+                                page: '/test_api.html',
+                                candidature_id: '00000000'
+                            }
+                        };
+                        
+                        const response = await fetch(`${proxiedUrl}/chat`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Origin': 'http://localhost'
+                            },
+                            body: JSON.stringify(testMessage)
+                        });
+                        
+                        const responseText = await response.text();
+                        console.log('Réponse via proxy:', responseText);
+                        
+                        try {
+                            const data = JSON.parse(responseText);
+                            resultElement.className = 'result success';
+                            resultElement.innerHTML = `
+                                <p>Succès via proxy CORS ! Code: ${response.status}</p>
+                                <pre>${JSON.stringify(data, null, 2)}</pre>
+                                <p><strong>Note:</strong> Votre API semble fonctionner correctement, mais les en-têtes CORS ne sont pas configurés. Vous devez déployer les modifications de configuration CORS sur Render.</p>
+                            `;
+                        } catch (jsonError) {
+                            resultElement.className = 'result warning';
+                            resultElement.innerHTML = `
+                                <p>Réponse reçue mais format incorrect. Code: ${response.status}</p>
+                                <pre>${responseText}</pre>
+                            `;
+                        }
+                    } else {
+                        resultElement.className = 'result error';
+                        resultElement.innerHTML = `
+                            <p>L'API est accessible via le proxy mais renvoie une erreur: ${pingResponse.status}</p>
+                            <p>Contenu: ${await pingResponse.text()}</p>
+                        `;
+                    }
+                } catch (error) {
+                    resultElement.className = 'result error';
+                    resultElement.innerHTML = `
+                        <p>Erreur avec le proxy CORS: ${error.message}</p>
+                        <p>Le proxy CORS-Anywhere nécessite parfois une autorisation. Essayez d'accéder à <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">https://cors-anywhere.herokuapp.com/corsdemo</a> et de demander un accès temporaire.</p>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Erreur générale proxy test:', error);
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `<p>Erreur: ${error.message}</p>`;
+            }
         }
     </script>
 </body>
