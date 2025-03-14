@@ -1,6 +1,9 @@
 // Configuration de l'API
-const API_URL = 'https://bioforce.onrender.com'; // URL de l'API déployée sur Render
-const USE_SIMULATION_FALLBACK = false; // Désactiver la simulation puisque l'API fonctionne maintenant
+// Possibilité de choisir entre l'API locale et l'API en production
+const API_LOCAL = 'http://localhost:8000'; 
+const API_PRODUCTION = 'https://bioforce-api.onrender.com';
+const API_URL = API_LOCAL; // Changer vers API_PRODUCTION une fois le déploiement confirmé
+const USE_SIMULATION_FALLBACK = true; // Mode simulation activé comme plan B
 
 // Éléments DOM
 const chatMessages = document.getElementById('chat-messages');
@@ -37,6 +40,8 @@ function addMessageToChat(content, sender) {
 // Fonction pour envoyer un message à l'API
 async function sendMessageToAPI(userMessage) {
     try {
+        console.log('Tentative de connexion à l\'API:', API_URL);
+        
         // Ajouter indication de chargement
         const loadingDiv = document.createElement('div');
         loadingDiv.classList.add('message', 'bot', 'loading');
@@ -49,65 +54,72 @@ async function sendMessageToAPI(userMessage) {
             content: msg.content
         }));
         
-        console.log('Envoi à l\'API:', {
+        const requestData = {
             user_id: userId,
             messages: formattedMessages,
             context: {
                 page: window.location.pathname,
                 candidature_id: '00080932'
             }
-        });
+        };
         
-        const response = await fetch(`${API_URL}/chat`, {
+        console.log('Données envoyées à l\'API:', JSON.stringify(requestData));
+        
+        const fetchOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                user_id: userId,
-                messages: formattedMessages,
-                context: {
-                    page: window.location.pathname,
-                    candidature_id: '00080932'
-                }
-            })
-        });
+            body: JSON.stringify(requestData)
+        };
         
-        // Supprimer l'indication de chargement
-        chatMessages.removeChild(loadingDiv);
+        console.log('Options de fetch:', JSON.stringify(fetchOptions));
         
-        if (!response.ok) {
-            console.error('Erreur API:', response.status, response.statusText);
-            const errorText = await response.text();
-            console.error('Détails:', errorText);
-            throw new Error(`Erreur serveur: ${response.status} ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('Réponse API:', data);
-        
-        // Afficher la réponse du chatbot
-        addMessageToChat(data.message.content, 'bot');
-        
-        // Afficher les références si disponibles
-        if (data.references && data.references.length > 0) {
-            const referencesDiv = document.createElement('div');
-            referencesDiv.classList.add('message', 'bot', 'references');
+        try {
+            console.log('Envoi de la requête fetch...');
+            const response = await fetch(`${API_URL}/chat`, fetchOptions);
+            console.log('Réponse reçue, statut:', response.status);
             
-            let referencesContent = '<p><small><em>Sources:</em><br>';
-            data.references.forEach((ref, index) => {
-                referencesContent += `${index + 1}. ${ref.question}<br>`;
-            });
-            referencesContent += '</small></p>';
+            // Supprimer l'indication de chargement
+            chatMessages.removeChild(loadingDiv);
             
-            referencesDiv.innerHTML = referencesContent;
-            chatMessages.appendChild(referencesDiv);
+            if (!response.ok) {
+                console.error('Erreur API:', response.status, response.statusText);
+                const errorText = await response.text();
+                console.error('Détails de l\'erreur:', errorText);
+                throw new Error(`Erreur serveur: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Réponse API (données JSON):', data);
+            
+            // Afficher la réponse du chatbot
+            addMessageToChat(data.message.content, 'bot');
+            
+            // Afficher les références si disponibles
+            if (data.references && data.references.length > 0) {
+                const referencesDiv = document.createElement('div');
+                referencesDiv.classList.add('message', 'bot', 'references');
+                
+                let referencesContent = '<p><small><em>Sources:</em><br>';
+                data.references.forEach((ref, index) => {
+                    referencesContent += `${index + 1}. ${ref.question}<br>`;
+                });
+                referencesContent += '</small></p>';
+                
+                referencesDiv.innerHTML = referencesContent;
+                chatMessages.appendChild(referencesDiv);
+            }
+        } catch (fetchError) {
+            console.error('Erreur fetch:', fetchError);
+            throw fetchError;
         }
         
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur générale:', error);
         
         if (USE_SIMULATION_FALLBACK) {
+            console.log('Utilisation du mode simulation comme fallback');
             // Utiliser la simulation si l'API échoue
             simulateAPIResponse(userMessage);
         } else {
