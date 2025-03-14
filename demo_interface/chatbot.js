@@ -7,11 +7,121 @@ const API_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
 const USE_SIMULATION_FALLBACK = true; // Mode simulation toujours activé comme plan B
 
 // Éléments DOM
+const chatWidget = document.getElementById('chatbot-widget');
+const chatHeader = chatWidget.querySelector('.chat-header');
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-message');
 const minimizeButton = document.getElementById('minimize-chat');
-const chatbotWidget = document.getElementById('chatbot-widget');
+
+// Variables globales
+let isDragging = false;
+let dragOffsetX, dragOffsetY;
+
+// Récupérer la position du chatbot stockée dans localStorage (si elle existe)
+const savedPosition = JSON.parse(localStorage.getItem('chatbotPosition'));
+if (savedPosition) {
+    // Appliquer la position sauvegardée
+    chatWidget.style.right = 'auto';
+    chatWidget.style.left = savedPosition.left + 'px';
+    chatWidget.style.top = savedPosition.top + 'px';
+    chatWidget.style.bottom = 'auto';
+}
+
+// Événements pour la manipulation du chatbot
+chatHeader.addEventListener('mousedown', startDrag);
+document.addEventListener('mousemove', dragChatbot);
+document.addEventListener('mouseup', stopDrag);
+
+// Pour la compatibilité mobile
+chatHeader.addEventListener('touchstart', handleTouchStart, {passive: false});
+document.addEventListener('touchmove', handleTouchMove, {passive: false});
+document.addEventListener('touchend', handleTouchEnd);
+
+// Fonction pour commencer le déplacement
+function startDrag(e) {
+    isDragging = true;
+    chatWidget.classList.add('dragging');
+    
+    // Calculer le décalage entre le clic et la position du chatbot
+    const rect = chatWidget.getBoundingClientRect();
+    
+    if (e.type === 'mousedown') {
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+    } else if (e.type === 'touchstart') {
+        dragOffsetX = e.touches[0].clientX - rect.left;
+        dragOffsetY = e.touches[0].clientY - rect.top;
+    }
+    
+    // Empêcher le texte d'être sélectionné pendant le déplacement
+    e.preventDefault();
+}
+
+// Fonction pour déplacer le chatbot
+function dragChatbot(e) {
+    if (!isDragging) return;
+    
+    let clientX, clientY;
+    
+    if (e.type === 'mousemove') {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    } else if (e.type === 'touchmove') {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+        e.preventDefault(); // Empêcher le défilement de la page
+    }
+    
+    // Nouvelle position
+    let left = clientX - dragOffsetX;
+    let top = clientY - dragOffsetY;
+    
+    // Limites pour ne pas sortir de la fenêtre
+    const maxX = window.innerWidth - chatWidget.offsetWidth;
+    const maxY = window.innerHeight - chatWidget.offsetHeight;
+    
+    left = Math.max(0, Math.min(maxX, left));
+    top = Math.max(0, Math.min(maxY, top));
+    
+    // Appliquer la nouvelle position
+    chatWidget.style.left = left + 'px';
+    chatWidget.style.top = top + 'px';
+    chatWidget.style.right = 'auto';
+    chatWidget.style.bottom = 'auto';
+}
+
+// Fonction pour arrêter le déplacement
+function stopDrag() {
+    if (isDragging) {
+        isDragging = false;
+        chatWidget.classList.remove('dragging');
+        
+        // Sauvegarder la position dans localStorage
+        const position = {
+            left: parseInt(chatWidget.style.left),
+            top: parseInt(chatWidget.style.top)
+        };
+        localStorage.setItem('chatbotPosition', JSON.stringify(position));
+    }
+}
+
+// Gestionnaires d'événements tactiles
+function handleTouchStart(e) {
+    // Ne pas déclencher le déplacement si on touche le bouton de minimisation
+    if (e.target === minimizeButton || e.target.closest('#minimize-chat')) {
+        return;
+    }
+    startDrag(e);
+}
+
+function handleTouchMove(e) {
+    dragChatbot(e);
+}
+
+function handleTouchEnd() {
+    stopDrag();
+}
 
 // État du chat
 let chatHistory = [];

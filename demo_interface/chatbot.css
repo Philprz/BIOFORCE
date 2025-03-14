@@ -3,23 +3,38 @@
 .chat-container {
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 20px auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
-    height: 500px;
+    height: 450px;
     background-color: #f9f9f9;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    resize: both;
+    min-width: 300px;
+    min-height: 350px;
+    transition: box-shadow 0.3s ease;
+}
+
+.chat-container.dragging {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    opacity: 0.9;
 }
 
 .chat-header {
-    background-color: #ff6347; /* Couleur Bioforce */
+    background-color: #FF5733; /* Couleur officielle Bioforce */
     color: white;
     padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
+    cursor: move; /* Indique que l'élément est déplaçable */
+    user-select: none; /* Empêche la sélection de texte lors du déplacement */
 }
 
 .chat-header .toggle-btn {
@@ -53,7 +68,7 @@
 
 .message.user {
     align-self: flex-end;
-    background-color: #ff6347;
+    background-color: #FF5733; /* Couleur officielle Bioforce */
     color: white;
     border-bottom-right-radius: 5px;
 }
@@ -75,7 +90,7 @@
 }
 
 .message.bot strong {
-    color: #ff4500;
+    color: #FF5733; /* Couleur officielle Bioforce */
 }
 
 .chat-input {
@@ -94,7 +109,7 @@
 }
 
 .chat-input button {
-    background-color: #ff6347;
+    background-color: #FF5733; /* Couleur officielle Bioforce */
     color: white;
     border: none;
     border-radius: 20px;
@@ -104,7 +119,7 @@
 }
 
 .chat-input button:hover {
-    background-color: #ff4500;
+    background-color: #e84c28; /* Version légèrement plus foncée pour le hover */
 }
 
 .message.references {
@@ -125,7 +140,7 @@
 }
 
 .message.bot a {
-    color: #ff4500;
+    color: #FF5733; /* Couleur officielle Bioforce */
     text-decoration: none;
 }
 
