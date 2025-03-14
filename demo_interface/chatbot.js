@@ -17,24 +17,54 @@ const chatbotWidget = document.getElementById('chatbot-widget');
 let chatHistory = [];
 let userId = 'demo-user-' + Math.floor(Math.random() * 1000);
 
-// Fonction pour ajouter un message à l'interface
-function addMessageToChat(content, sender) {
+// Fonction pour ajouter un message au chat
+function addMessageToChat(message, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender);
     
-    const messagePara = document.createElement('p');
-    messagePara.textContent = content;
+    // Amélioration de la mise en forme pour une meilleure lisibilité
+    let formattedMessage = message;
     
-    messageDiv.appendChild(messagePara);
+    // Gérer les listes (puces avec astérisques)
+    if (message.includes('**')) {
+        // Remplacer les marqueurs markdown par du HTML
+        formattedMessage = formattedMessage
+            // Titres en gras
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            // Remplacer les puces avec étoiles par des listes HTML
+            .replace(/\n\*\*([^*]+)\*\*/g, '<br><br><strong>$1</strong>');
+            
+        // Si le message contient des listes, on transforme en HTML propre
+        if (formattedMessage.includes('<br><strong>')) {
+            const parts = formattedMessage.split('<br><br>');
+            const intro = parts.shift(); // Première partie du message
+            
+            if (parts.length > 0) {
+                formattedMessage = `
+                    <p>${intro}</p>
+                    <ul>
+                        ${parts.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                `;
+            }
+        }
+    }
+    
+    // Formatage des sauts de ligne
+    formattedMessage = formattedMessage
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    
+    messageDiv.innerHTML = `<p>${formattedMessage}</p>`;
     chatMessages.appendChild(messageDiv);
     
     // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
-    // Ajouter au chatHistory
+    // Update chat history
     chatHistory.push({
         role: sender === 'user' ? 'user' : 'assistant',
-        content: content
+        content: message
     });
 }
 

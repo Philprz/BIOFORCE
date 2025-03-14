@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bioforce - Espace Candidat</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="chatbot.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -104,21 +105,19 @@
     </footer>
 
     <!-- Chatbot Widget -->
-    <div class="chatbot-widget" id="chatbot-widget">
-        <div class="chatbot-header">
+    <div class="chat-container" id="chatbot-widget">
+        <div class="chat-header">
             <h3>BioforceBot</h3>
-            <button id="minimize-chat">−</button>
+            <button id="minimize-chat" class="toggle-btn">−</button>
         </div>
-        <div class="chatbot-body">
-            <div class="chat-messages" id="chat-messages">
-                <div class="message bot">
-                    <p>Bonjour ! Je suis BioforceBot, comment puis-je vous aider avec votre candidature aujourd'hui ?</p>
-                </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot">
+                <p>Bonjour ! Je suis BioforceBot, comment puis-je vous aider avec votre candidature aujourd'hui ?</p>
             </div>
-            <div class="chat-input">
-                <input type="text" id="user-input" placeholder="Tapez votre message...">
-                <button id="send-message">Envoyer</button>
-            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tapez votre message...">
+            <button id="send-message">Envoyer</button>
         </div>
     </div>
 
