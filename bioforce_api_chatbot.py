@@ -73,12 +73,14 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:8080",      # Développement local
-        "https://*.onrender.com",     # Autres services Render
-        "https://*.bioforce.org"      # Domaine Bioforce (pour l'avenir)
+        "http://localhost:8080",           # Développement local
+        "https://bioforce-interface.onrender.com",  # Interface déployée
+        "http://bioforce-interface.onrender.com",   # Version HTTP de l'interface
+        "https://bioforce.onrender.com",    # L'API elle-même (pour les auto-appels)
+        "http://bioforce.onrender.com"      # Version HTTP de l'API
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -166,22 +168,24 @@ async def get_llm_response(messages: List[Dict[str, str]], context: str) -> str:
     try:
         system_message = {
             "role": "system", 
-            "content": f"""Tu es BioforceBot, l'assistant virtuel officiel de Bioforce, une organisation qui forme des professionnels de l'humanitaire.
-            
-Tu dois répondre aux questions des candidats de manière précise et sympathique. Aide-les à naviguer dans leur processus de candidature et réponds à leurs questions sur les formations.
-
-Utilise les informations suivantes pour répondre:
-
-{context}
-
-Si tu ne connais pas la réponse, suggère de contacter directement l'équipe Bioforce et ne tente pas d'inventer.
-Réponds toujours en français, de manière concise mais complète.
-Si la question porte sur le paiement des frais de 60€/20000 CFA, encourage le candidat à finaliser son paiement en expliquant que c'est une étape nécessaire pour accéder à la sélection.
-"""
+            "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation humanitaire qui propose des formations.
+                       Votre rôle est d'aider les candidats avec leur dossier de candidature et de répondre à leurs questions
+                       sur les formations, le processus de sélection, et les modalités d'inscription.
+                       Soyez concis, précis et avenant dans vos réponses. Si vous ne connaissez pas la réponse à une question,
+                       proposez au candidat de contacter directement l'équipe Bioforce."""
         }
         
-        api_messages = [system_message] + messages
+        api_messages = [system_message]
+        api_messages.extend([{"role": msg.role, "content": msg.content} for msg in messages])
         
+        # Si contexte disponible, l'ajouter
+        if context:
+            api_messages.append({
+                "role": "system",
+                "content": f"Informations supplémentaires pouvant être utiles pour répondre à la question: {context}"
+            })
+        
+        # Obtenir la réponse du LLM
         response = await openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=api_messages,

@@ -1,9 +1,9 @@
 // Configuration de l'API
 // Possibilité de choisir entre l'API locale et l'API en production
 const API_LOCAL = 'http://localhost:8000'; 
-const API_PRODUCTION = 'https://bioforce-api.onrender.com';
-const API_URL = API_LOCAL; // Changer vers API_PRODUCTION une fois le déploiement confirmé
-const USE_SIMULATION_FALLBACK = true; // Mode simulation activé comme plan B
+const API_PRODUCTION = 'https://bioforce.onrender.com';  // URL exacte de votre API sur Render
+const API_URL = API_PRODUCTION; // On utilise l'API en production pour le déploiement
+const USE_SIMULATION_FALLBACK = true; // Garde le mode simulation comme plan B
 
 // Éléments DOM
 const chatMessages = document.getElementById('chat-messages');
