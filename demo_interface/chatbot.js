@@ -1,5 +1,5 @@
 // Configuration de l'API
-const API_URL = 'http://localhost:8000'; // URL locale pour les tests
+const API_URL = 'https://bioforce.onrender.com'; // URL de l'API déployée sur Render
 const USE_SIMULATION_FALLBACK = false; // Désactiver la simulation puisque l'API fonctionne maintenant
 
 // Éléments DOM

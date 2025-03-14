@@ -72,7 +72,11 @@ app = FastAPI(
 # Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En production, restreindre aux domaines autorisés
+    allow_origins=[
+        "http://localhost:8080",      # Développement local
+        "https://*.onrender.com",     # Autres services Render
+        "https://*.bioforce.org"      # Domaine Bioforce (pour l'avenir)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -192,6 +196,16 @@ Si la question porte sur le paiement des frais de 60€/20000 CFA, encourage le 
         raise
 
 # Routes API
+@app.get("/")
+async def root():
+    """Route racine de l'API"""
+    return {
+        "message": "Bienvenue sur l'API Bioforce Chatbot", 
+        "status": "online", 
+        "documentation": "/docs",
+        "version": "1.0.0"
+    }
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """Endpoint principal du chatbot"""
