@@ -33,7 +33,7 @@ async def main():
     if args.faq_only:
         print("Démarrage du scraper de FAQ...")
         faq_scraper = FAQScraper()
-        await faq_scraper.scrape_faq()
+        await faq_scraper.run()
         print("Scraping de la FAQ terminé.")
     
     if args.full:

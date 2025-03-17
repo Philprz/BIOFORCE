@@ -1,0 +1,179 @@
+/* 
+   Feuille de style pour l'interface administrateur Bioforce
+   Conçue pour s'adapter à l'identité visuelle de Bioforce 
+*/
+
+:root {
+    --bioforce-orange: #ef7d00;
+    --bioforce-dark: #333333;
+    --bioforce-light: #f5f5f5;
+    --bioforce-blue: #0072b1;
+    --bioforce-gray: #6c757d;
+}
+
+body {
+    background-color: var(--bioforce-light);
+    font-family: 'Open Sans', Arial, sans-serif;
+}
+
+.navbar {
+    background-color: var(--bioforce-orange);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    color: white;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: white;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background-color: var(--bioforce-orange);
+    color: white;
+    font-weight: bold;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.btn-primary {
+    background-color: var(--bioforce-orange);
+    border-color: var(--bioforce-orange);
+}
+
+.btn-primary:hover {
+    background-color: #d06c00;
+    border-color: #d06c00;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-good {
+    background-color: #28a745;
+}
+
+.status-warning {
+    background-color: #ffc107;
+}
+
+.status-error {
+    background-color: #dc3545;
+}
+
+.github-section {
+    background-color: #24292e;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.log-window {
+    background-color: #222;
+    color: #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: monospace;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.sidebar {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.action-card {
+    transition: all 0.3s;
+}
+
+.action-card:hover {
+    background-color: rgba(239, 125, 0, 0.1);
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-nav li {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.3s;
+}
+
+.sidebar-nav li:hover, .sidebar-nav li.active {
+    background-color: rgba(239, 125, 0, 0.1);
+}
+
+.sidebar-nav a {
+    color: var(--bioforce-dark);
+    text-decoration: none;
+}
+
+footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: var(--bioforce-dark);
+    color: white;
+}
+
+/* Animation pour les indicateurs de chargement */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}
+
+/* Style pour les badges */
+.badge-bioforce {
+    background-color: var(--bioforce-orange);
+    color: white;
+}
+
+/* Adaptation pour mobile */
+@media (max-width: 768px) {
+    .sidebar {
+        margin-bottom: 20px;
+    }
+    
+    .card:hover {
+        transform: none;
+    }
+    
+    .log-window {
+        height: 150px;
+    }
+}

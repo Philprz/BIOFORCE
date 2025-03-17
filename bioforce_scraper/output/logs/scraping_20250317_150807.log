@@ -1,0 +1,13 @@
+2025-03-17 15:08:11,668 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
+2025-03-17 15:08:12,774 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 15:08:12,775 - bioforce_scraper.faq_scraper - INFO - Démarrage du scraping de la FAQ: https://www.bioforce.org/faq/
+2025-03-17 15:08:12,777 - bioforce_scraper.faq_scraper - INFO - Initialisation du scraper de FAQ
+2025-03-17 15:08:14,443 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-17 15:08:23,216 - bioforce_scraper.faq_scraper - INFO - Page de FAQ chargée
+2025-03-17 15:08:25,225 - bioforce_scraper.faq_scraper - INFO - Extraction des éléments de FAQ
+2025-03-17 15:08:55,249 - bioforce_scraper.faq_scraper - ERROR - Erreur lors de l'extraction des éléments de FAQ: Page.wait_for_selector: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(".accordion-item") to be visible
+
+2025-03-17 15:08:55,251 - bioforce_scraper.faq_scraper - WARNING - Aucun élément de FAQ trouvé
+2025-03-17 15:08:55,385 - bioforce_scraper.faq_scraper - INFO - Navigateur fermé

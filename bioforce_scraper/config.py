@@ -71,6 +71,12 @@ COMPLETION_MODEL = "gpt-3.5-turbo"
 # Configuration API FastAPI
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8000"))
+API_ROOT_PATH = os.getenv("API_ROOT_PATH", "")
+
+# GitHub configuration
+VERSION = "1.0.0"
+GITHUB_REPO = os.getenv("GITHUB_REPO", "https://github.com/Philprz/BIOFORCE")
+
 API_WORKERS = int(os.getenv("API_WORKERS", "4"))
 ENABLE_CORS = True
 ALLOWED_ORIGINS = ["*"]  # À restreindre en production

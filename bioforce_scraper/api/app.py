@@ -18,13 +18,14 @@ import pathlib
 # Ajouter le répertoire parent au path pour pouvoir importer les modules
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
 
-from bioforce_scraper.config import LOG_FILE, API_HOST, API_PORT, SCHEDULER_ENABLED, REMINDER_ENABLED
+from bioforce_scraper.config import LOG_FILE, API_HOST, API_PORT, SCHEDULER_ENABLED, REMINDER_ENABLED, API_ROOT_PATH
 from bioforce_scraper.faq_scraper import FAQScraper
 from bioforce_scraper.scheduler import SchedulerService
 from bioforce_scraper.utils.logger import setup_logger
 from bioforce_scraper.utils.reminder_service import ReminderService
 from bioforce_scraper.utils.qdrant_connector import QdrantConnector
 from bioforce_scraper.utils.embeddings import generate_embeddings
+from bioforce_scraper.api.admin import router as admin_router
 
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
@@ -44,6 +45,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Inclure le router admin
+app.include_router(admin_router)
+
+# Servir les fichiers statiques
+app.mount("/static", StaticFiles(directory="bioforce_scraper/api/static"), name="static")
+os.makedirs("bioforce_scraper/api/static", exist_ok=True)
 
 # Services
 scheduler_service = SchedulerService()
@@ -336,7 +344,7 @@ async def shutdown_event():
 def start():
     """Démarre l'application avec uvicorn"""
     uvicorn.run(
-        "app:app",
+        "bioforce_scraper.api.app:app",
         host=API_HOST,
         port=API_PORT,
         reload=True,
