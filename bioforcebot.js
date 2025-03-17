@@ -92,7 +92,7 @@ class BioforceBot {
                 right: 20px;
                 width: 350px;
                 height: 500px;
-                background: white;
+                background: #ffffff;
                 border-radius: 10px;
                 box-shadow: 0 5px 20px rgba(0,0,0,0.15);
                 display: flex;
@@ -100,20 +100,25 @@ class BioforceBot {
                 overflow: hidden;
                 z-index: 1000;
                 display: none;
+                border: 1px solid #e0e0e0;
             }
             
             .bioforcebot-header {
                 display: flex;
                 align-items: center;
-                padding: 10px 15px;
-                background: #0099cc;
+                padding: 12px 15px;
+                background: #ef7d00; /* Orange Bioforce */
                 color: white;
+                border-bottom: 1px solid #d06c00;
             }
             
             .bioforcebot-logo {
                 width: 30px;
                 height: 30px;
                 margin-right: 10px;
+                background: white;
+                border-radius: 50%;
+                padding: 2px;
             }
             
             .bioforcebot-logo img {
@@ -125,6 +130,7 @@ class BioforceBot {
             .bioforcebot-title {
                 flex-grow: 1;
                 font-weight: bold;
+                font-family: 'Open Sans', Arial, sans-serif;
             }
             
             .bioforcebot-toggle-btn, .bioforcebot-send-btn {
@@ -143,6 +149,11 @@ class BioforceBot {
                 flex-grow: 1;
                 overflow-y: auto;
                 padding: 15px;
+                background-color: #f7f7f7; /* Fond légèrement grisé */
+                background-image: url('https://bioforce.org/wp-content/themes/bioforce/assets/img/pattern-dots.png');
+                background-repeat: repeat;
+                background-size: 200px;
+                background-blend-mode: overlay;
             }
             
             .bioforcebot-messages {
@@ -153,21 +164,27 @@ class BioforceBot {
             .bioforcebot-message {
                 margin-bottom: 10px;
                 max-width: 80%;
-                padding: 10px 15px;
+                padding: 12px 15px;
                 border-radius: 18px;
                 line-height: 1.4;
+                font-family: 'Open Sans', Arial, sans-serif;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             }
             
             .bioforcebot-message.user {
                 align-self: flex-end;
-                background: #e6f7ff;
+                background: #eff8ff;
                 border-bottom-right-radius: 4px;
+                color: #2c3e50;
+                border: 1px solid #d0e8ff;
             }
             
             .bioforcebot-message.assistant {
                 align-self: flex-start;
-                background: #f2f2f2;
+                background: #ffffff;
                 border-bottom-left-radius: 4px;
+                color: #333333;
+                border-left: 3px solid #ef7d00; /* Bordure orange Bioforce */
             }
             
             .bioforcebot-references {
@@ -184,6 +201,7 @@ class BioforceBot {
                 margin-bottom: 5px;
                 font-size: 12px;
                 color: #666;
+                font-family: 'Open Sans', Arial, sans-serif;
             }
             
             .bioforcebot-reference {
@@ -191,23 +209,31 @@ class BioforceBot {
                 padding-bottom: 8px;
                 border-bottom: 1px solid #eee;
                 font-size: 12px;
+                font-family: 'Open Sans', Arial, sans-serif;
             }
             
             .bioforcebot-reference-question {
                 font-weight: bold;
                 margin-bottom: 3px;
+                color: #ef7d00; /* Orange Bioforce */
             }
             
             .bioforcebot-reference-link {
                 color: #0099cc;
                 text-decoration: none;
                 display: block;
-                margin-top: 3px;
+                margin-top: 5px;
+                font-size: 11px;
+            }
+            
+            .bioforcebot-reference-link:hover {
+                text-decoration: underline;
             }
             
             .bioforcebot-footer {
                 padding: 10px 15px;
                 border-top: 1px solid #eee;
+                background: white;
             }
             
             .bioforcebot-input {
@@ -218,26 +244,45 @@ class BioforceBot {
             .bioforcebot-input-text {
                 flex-grow: 1;
                 border: 1px solid #ddd;
-                border-radius: 18px;
+                border-radius: 20px;
                 padding: 10px 15px;
+                font-family: 'Open Sans', Arial, sans-serif;
                 resize: none;
                 height: 40px;
-                line-height: 20px;
-                font-family: inherit;
+                outline: none;
+                transition: border-color 0.2s;
             }
             
             .bioforcebot-input-text:focus {
-                outline: none;
-                border-color: #0099cc;
+                border-color: #ef7d00; /* Orange Bioforce */
             }
             
             .bioforcebot-send-btn {
-                color: #0099cc;
-                margin-left: 5px;
+                color: #ef7d00; /* Orange Bioforce */
+                margin-left: 10px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #fff;
+                border: 1px solid #ef7d00;
+                transition: background 0.2s;
+            }
+            
+            .bioforcebot-send-btn:hover {
+                background: #ef7d00;
+            }
+            
+            .bioforcebot-send-btn:hover svg {
+                fill: white;
             }
             
             .bioforcebot-send-btn svg {
-                fill: #0099cc;
+                fill: #ef7d00;
+                width: 20px;
+                height: 20px;
             }
             
             .bioforcebot-bubble {
@@ -247,41 +292,53 @@ class BioforceBot {
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                background: #0099cc;
-                color: white;
+                background: #ef7d00; /* Orange Bioforce */
+                border: none;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+                cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                cursor: pointer;
-                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                border: none;
-                z-index: 1000;
+                z-index: 999;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            
+            .bioforcebot-bubble:hover {
+                transform: scale(1.05);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             }
             
             .bioforcebot-bubble svg {
                 fill: white;
+                width: 30px;
+                height: 30px;
             }
             
             .bioforcebot-typing {
                 display: flex;
                 align-items: center;
                 margin-top: 5px;
-                font-style: italic;
-                color: #999;
+                margin-bottom: 10px;
+                font-size: 12px;
+                color: #888;
             }
             
-            .bioforcebot-typing-dots {
+            .bioforcebot-typing-indicator {
                 display: flex;
                 margin-left: 5px;
             }
             
             .bioforcebot-typing-dot {
-                width: 6px;
-                height: 6px;
+                background-color: #888;
                 border-radius: 50%;
-                background: #999;
-                margin-right: 3px;
-                animation: bioforcebot-typing 1s infinite;
+                width: 5px;
+                height: 5px;
+                margin: 0 2px;
+                animation: typing-dot 1.4s infinite ease-in-out;
+            }
+            
+            .bioforcebot-typing-dot:nth-child(1) {
+                animation-delay: 0s;
             }
             
             .bioforcebot-typing-dot:nth-child(2) {
@@ -292,15 +349,30 @@ class BioforceBot {
                 animation-delay: 0.4s;
             }
             
-            @keyframes bioforcebot-typing {
-                0%, 100% {
-                    opacity: 0.3;
+            @keyframes typing-dot {
+                0%, 60%, 100% {
+                    transform: translateY(0);
                 }
-                50% {
-                    opacity: 1;
+                30% {
+                    transform: translateY(-5px);
+                }
+            }
+            
+            /* Média Queries pour la responsive */
+            @media (max-width: 480px) {
+                .bioforcebot-wrapper {
+                    width: calc(100% - 40px);
+                    height: calc(100% - 80px);
+                    bottom: 70px;
+                }
+                
+                .bioforcebot-bubble {
+                    bottom: 10px;
+                    right: 10px;
                 }
             }
         `;
+        
         document.head.appendChild(style);
     }
 
@@ -385,7 +457,7 @@ class BioforceBot {
         typingEl.className = 'bioforcebot-typing assistant';
         typingEl.innerHTML = `
             BioforceBot est en train d'écrire
-            <div class="bioforcebot-typing-dots">
+            <div class="bioforcebot-typing-indicator">
                 <div class="bioforcebot-typing-dot"></div>
                 <div class="bioforcebot-typing-dot"></div>
                 <div class="bioforcebot-typing-dot"></div>
