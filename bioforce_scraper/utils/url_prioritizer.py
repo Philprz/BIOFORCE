@@ -5,12 +5,12 @@ import logging
 import re
 from typing import List
 
-from config import LOG_FILE
-from utils.logger import setup_logger
+from bioforce_scraper.config import LOG_FILE
+from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
 
-def prioritize_urls(url: str, priority_patterns: List[str]) -> int:
+def prioritize_url(url: str, priority_patterns: List[str]) -> int:
     """
     Attribue une priorité à une URL en fonction de patterns prédéfinis
     
