@@ -1,0 +1,28 @@
+2025-03-17 16:17:29,175 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 16:17:29,413 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 16:17:30,444 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 16:17:30,717 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 16:17:31,847 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 16:17:31,855 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-17 16:17:31,994 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-17 16:17:32,001 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-17 16:17:32,379 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-17 16:17:32,381 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-17 16:17:32,381 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-17 16:17:32,382 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-17 16:17:32,384 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-17 16:17:32,384 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-17 16:17:32,535 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-17 16:17:32,536 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-17 16:17:32,536 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-17 16:17:32,537 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-17 16:17:32,538 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-17 16:17:32,538 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-17 16:18:01,031 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-17 16:18:01,031 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-17 16:18:01,031 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-17 16:18:01,031 - bioforce_scraper.api.app - INFO - Planificateur arrêté
+2025-03-17 16:20:19,051 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-17 16:20:19,051 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-17 16:20:19,052 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-17 16:20:19,052 - bioforce_scraper.api.app - INFO - Planificateur arrêté

@@ -20,8 +20,10 @@ from bioforce_scraper.config import (BASE_URL, DATA_DIR, EXCLUDE_PATTERNS, LOG_F
                    MAX_PAGES, PDF_DIR, PRIORITY_PATTERNS, 
                    REQUEST_DELAY, START_URLS, USER_AGENT)
 from bioforce_scraper.utils.content_tracker import ContentTracker
+from bioforce_scraper.utils.embeddings import generate_embeddings
 from bioforce_scraper.utils.language_detector import detect_language
 from bioforce_scraper.utils.logger import setup_logger
+from bioforce_scraper.utils.qdrant_connector import QdrantConnector
 from bioforce_scraper.utils.robots_parser import RobotsParser
 from bioforce_scraper.utils.url_prioritizer import prioritize_url
 
@@ -46,6 +48,7 @@ class BioforceScraperMain:
         self.context = None
         self.content_tracker = ContentTracker() if incremental else None
         self.incremental = incremental
+        self.qdrant = QdrantConnector(is_full_site=True)  # Utilise la collection pour le site complet
 
     async def initialize(self):
         """Initialise le scraper en démarrant Playwright et en chargeant robots.txt"""
@@ -190,8 +193,67 @@ class BioforceScraperMain:
             logger.info(f"Nouveaux contenus: {self.new_content_count}, Mises à jour: {self.updated_content_count}, Inchangés: {self.unchanged_content_count}")
             logger.info(f"Total URLs visitées: {len(self.visited_urls)}")
             
+            # Indexer les données dans Qdrant
+            await self.index_data_in_qdrant()
+            
         finally:
             await self.close()
+
+    async def index_data_in_qdrant(self):
+        """Indexe les données extraites dans Qdrant"""
+        logger.info("Indexation des données dans Qdrant (collection site complet)")
+        
+        # Nombre de documents à traiter
+        total_docs = len(self.extracted_data) + len(self.updated_data)
+        indexed_count = 0
+        error_count = 0
+        
+        # Indexer le nouveau contenu et le contenu mis à jour
+        for document in self.extracted_data + self.updated_data:
+            try:
+                # Skip si le document n'a pas de contenu
+                if not document.get("content") or not document.get("title"):
+                    continue
+                
+                # Générer un ID unique pour le document basé sur l'URL
+                doc_id = hashlib.md5(document["url"].encode()).hexdigest()
+                
+                # Générer les embeddings pour le document
+                content_to_embed = f"TITLE: {document['title']}\n\nCONTENT: {document['content']}"
+                
+                # Générer l'embedding
+                embedding = await generate_embeddings(content_to_embed)
+                
+                if embedding:
+                    # Métadonnées pour le document
+                    payload = {
+                        "title": document["title"],
+                        "content": document["content"],
+                        "source_url": document["url"],
+                        "type": document.get("type", "page"),
+                        "category": document.get("category", "général"),
+                        "language": document.get("language", "fr"),
+                        "extraction_date": datetime.now().isoformat(),
+                    }
+                    
+                    # Ajouter le document à Qdrant
+                    result = self.qdrant.upsert_document(doc_id, embedding, payload)
+                    
+                    if result:
+                        indexed_count += 1
+                        logger.info(f"Document indexé avec succès: {document['url']}")
+                    else:
+                        error_count += 1
+                        logger.error(f"Échec de l'indexation pour: {document['url']}")
+                else:
+                    error_count += 1
+                    logger.error(f"Échec de génération d'embedding pour: {document['url']}")
+            
+            except Exception as e:
+                error_count += 1
+                logger.error(f"Erreur lors de l'indexation du document {document.get('url')}: {e}")
+        
+        logger.info(f"Indexation terminée: {indexed_count}/{total_docs} documents indexés, {error_count} erreurs")
 
     def update_content_status(self, url, data):
         """

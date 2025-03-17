@@ -10,7 +10,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.exceptions import UnexpectedResponse
 
-from bioforce_scraper.config import (QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, 
+from bioforce_scraper.config import (QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, 
                    VECTOR_SIZE, LOG_FILE)
 from bioforce_scraper.utils.logger import setup_logger
 
@@ -23,7 +23,7 @@ class QdrantConnector:
     """
     
     def __init__(self, url: Optional[str] = None, api_key: Optional[str] = None, 
-                collection_name: Optional[str] = None):
+                collection_name: Optional[str] = None, is_full_site: bool = False):
         """
         Initialise la connexion à Qdrant
         
@@ -31,10 +31,16 @@ class QdrantConnector:
             url: URL du serveur Qdrant (utilisera QDRANT_URL de config.py si None)
             api_key: Clé API pour Qdrant (utilisera QDRANT_API_KEY de config.py si None)
             collection_name: Nom de la collection (utilisera QDRANT_COLLECTION de config.py si None)
+            is_full_site: Si True, utilise la collection pour le site complet (QDRANT_COLLECTION_ALL)
         """
         self.url = url or QDRANT_URL
         self.api_key = api_key or QDRANT_API_KEY
-        self.collection_name = collection_name or QDRANT_COLLECTION
+        
+        # Détermine quelle collection utiliser
+        if collection_name:
+            self.collection_name = collection_name
+        else:
+            self.collection_name = QDRANT_COLLECTION_ALL if is_full_site else QDRANT_COLLECTION
         
         # Tenter de se connecter à Qdrant
         try:

@@ -10,6 +10,7 @@ import subprocess
 import webbrowser
 import time
 from pathlib import Path
+import requests
 
 # Ajouter le répertoire courant au path pour les imports
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
@@ -38,103 +39,124 @@ def open_browser(host, port):
     print(f"\nOuverture du navigateur à l'adresse: {url}")
     webbrowser.open(url)
 
-def parse_arguments():
-    """Parse les arguments en ligne de commande"""
-    parser = argparse.ArgumentParser(description='Bioforce Scraper - Outil de lancement')
-    parser.add_argument('--faq', action='store_true', help='Lancer uniquement le scraper de FAQ')
-    parser.add_argument('--full', action='store_true', help='Lancer le scraper de site complet')
-    parser.add_argument('--api', action='store_true', help='Lancer l\'API FastAPI avec l\'interface admin')
-    parser.add_argument('--all', action='store_true', help='Lancer toutes les fonctionnalités')
-    parser.add_argument('--host', type=str, default=API_HOST, help=f'Hôte pour l\'API (défaut: {API_HOST})')
-    parser.add_argument('--port', type=int, default=API_PORT, help=f'Port pour l\'API (défaut: {API_PORT})')
-    parser.add_argument('--no-browser', action='store_true', help='Ne pas ouvrir automatiquement le navigateur')
+def start_api(open_browser):
+    """Démarrer l'API"""
+    python_exec = sys.executable
+    cmd = [python_exec, "-m", "bioforce_scraper.api.app"]
+    
+    # Lancer l'API dans un processus séparé
+    api_process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        universal_newlines=True
+    )
+    
+    # Attendre que le serveur soit prêt (en vérifiant la sortie)
+    server_ready = False
+    for line in api_process.stdout:
+        print(line, end='')
+        if "Application startup complete" in line:
+            server_ready = True
+            break
+    
+    # Si le serveur est prêt et qu'on a demandé d'ouvrir le navigateur
+    if server_ready and open_browser:
+        # Attendre un peu pour s'assurer que le serveur est complètement prêt
+        time.sleep(1)
+        # Ouvrir le navigateur
+        display_host = "localhost" if API_HOST == "0.0.0.0" else API_HOST
+        open_browser(display_host, API_PORT)
+    
+    return api_process
+
+def parse_args():
+    """Parse les arguments de ligne de commande"""
+    parser = argparse.ArgumentParser(description="Lance l'API et les scrapers Bioforce")
+    parser.add_argument("--faq", action="store_true", help="Lance aussi le scraper de FAQ")
+    parser.add_argument("--full", action="store_true", help="Lance aussi le scraper de site complet")
+    parser.add_argument("--all", action="store_true", help="Lance tous les composants (API, FAQ, site complet)")
+    parser.add_argument("--no-browser", action="store_true", help="Ne pas ouvrir le navigateur automatiquement")
+    parser.add_argument("--force-update", action="store_true", help="Force la mise à jour des scrapers")
     return parser.parse_args()
 
 def main():
     """Fonction principale"""
-    args = parse_arguments()
+    args = parse_args()
     
-    # Si aucune option n'est spécifiée, activer --api par défaut
-    if not (args.faq or args.full or args.api or args.all):
-        args.api = True
+    print("\n========================")
+    print(" Bioforce Scraper v1.0")
+    print("========================\n")
     
-    # Si --all est spécifié, activer toutes les options
+    # Si --all est spécifié, activer tous les composants
     if args.all:
         args.faq = True
         args.full = True
-        args.api = True
     
-    # Variable d'environnement pour l'hôte et le port
-    os.environ['API_HOST'] = args.host
-    os.environ['API_PORT'] = str(args.port)
+    # Démarrer l'API (toujours)
+    api_process = start_api(not args.no_browser)
     
-    # Message d'accueil
-    print("=" * 80)
-    print("BIOFORCE SCRAPER - OUTIL DE LANCEMENT")
-    print("=" * 80)
-    print(f"Configuration:")
-    print(f"- API Host: {args.host}")
-    print(f"- API Port: {args.port}")
-    print(f"- Mode: {'Scraper FAQ' if args.faq else ''} {'Scraper complet' if args.full else ''} {'API' if args.api else ''}")
-    print("=" * 80)
-    
-    # Exécuter les scrapers si demandé
-    if args.faq:
-        print("\n[1/3] Lancement du scraper de FAQ...")
-        python_exec = sys.executable
-        cmd = [python_exec, "-m", "bioforce_scraper.run_scraper", "--faq-only"]
-        run_command(cmd)
-    
-    if args.full:
-        print("\n[2/3] Lancement du scraper de site complet...")
-        python_exec = sys.executable
-        cmd = [python_exec, "-m", "bioforce_scraper.run_scraper", "--full"]
-        run_command(cmd)
-    
-    # Lancer l'API si demandé
-    if args.api:
-        print("\n[3/3] Lancement de l'API FastAPI avec l'interface d'administration...")
-        python_exec = sys.executable
-        cmd = [python_exec, "-m", "bioforce_scraper.api.app"]
+    try:
+        # Attendre 3 secondes que l'API démarre avant de continuer
+        print("Démarrage de l'API en cours...")
+        time.sleep(3)
         
-        # Lancer l'API dans un processus séparé
-        api_process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True
-        )
+        # Lancer les scrapers si demandé
+        if args.faq:
+            print("\nDémarrage du scraper FAQ...")
+            response = requests.post(
+                f"http://{API_HOST}:{API_PORT}/scrape/faq",
+                json={"force_update": args.force_update}
+            )
+            if response.status_code == 200:
+                print(f"Scraper FAQ démarré: {response.json().get('message')}")
+            else:
+                print(f"Erreur lors du démarrage du scraper FAQ: {response.text}")
         
-        # Attendre que le serveur soit prêt (en vérifiant la sortie)
-        server_ready = False
-        for line in api_process.stdout:
-            print(line, end='')
-            if "Application startup complete" in line:
-                server_ready = True
-                break
+        if args.full:
+            print("\nDémarrage du scraper de site complet...")
+            response = requests.post(
+                f"http://{API_HOST}:{API_PORT}/scrape/full",
+                json={"force_update": args.force_update}
+            )
+            if response.status_code == 200:
+                print(f"Scraper de site complet démarré: {response.json().get('message')}")
+            else:
+                print(f"Erreur lors du démarrage du scraper de site complet: {response.text}")
         
-        # Si le serveur est prêt et qu'on n'a pas demandé de ne pas ouvrir le navigateur
-        if server_ready and not args.no_browser:
-            # Attendre un peu pour s'assurer que le serveur est complètement prêt
-            time.sleep(1)
-            # Ouvrir le navigateur
-            display_host = "localhost" if args.host == "0.0.0.0" else args.host
-            open_browser(display_host, args.port)
+        # Afficher les informations sur les collections
+        time.sleep(3)  # Attendre que les scrapers démarrent
         
-        # Continuer à afficher la sortie du serveur
-        for line in api_process.stdout:
-            print(line, end='')
-    
-    print("\nTous les processus demandés ont été lancés.")
-    
-    # Si l'API a été lancée, garder le script en cours d'exécution
-    if args.api and 'api_process' in locals():
+        print("\nInformations sur les collections:")
         try:
-            api_process.wait()
-        except KeyboardInterrupt:
-            print("\nInterruption détectée. Arrêt des processus...")
-            api_process.terminate()
-            print("Serveur arrêté.")
+            response = requests.get(f"http://{API_HOST}:{API_PORT}/qdrant-stats")
+            if response.status_code == 200:
+                stats = response.json()
+                faq_stats = stats.get("faq_collection", {})
+                full_stats = stats.get("full_site_collection", {})
+                
+                print(f"- Collection FAQ (BIOFORCE): {faq_stats.get('points_count', 0)} points")
+                print(f"- Collection Site Complet (BIOFORCE_ALL): {full_stats.get('points_count', 0)} points")
+            else:
+                print("Impossible de récupérer les statistiques des collections")
+        except Exception as e:
+            print(f"Erreur lors de la récupération des statistiques: {e}")
+        
+        print("\nL'API est en cours d'exécution. Appuyez sur Ctrl+C pour quitter.")
+        
+        # Attendre que l'API se termine
+        api_process.wait()
+    
+    except KeyboardInterrupt:
+        print("\nArrêt demandé par l'utilisateur...")
+    finally:
+        # S'assurer que tous les processus sont arrêtés
+        if api_process:
+            try:
+                api_process.terminate()
+                print("API arrêtée.")
+            except:
+                pass
 
 if __name__ == "__main__":
     main()

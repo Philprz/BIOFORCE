@@ -58,7 +58,8 @@ CURRENT_DATE = datetime.now().strftime(DATE_FORMAT)
 SUPPORTED_LANGUAGES = ["fr", "en"]
 
 # Configuration Qdrant
-QDRANT_COLLECTION = "BIOFORCE"
+QDRANT_COLLECTION = "BIOFORCE"  # Collection pour la FAQ
+QDRANT_COLLECTION_ALL = "BIOFORCE_ALL"  # Collection pour le site complet
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
 VECTOR_SIZE = 1536  # Taille des vecteurs OpenAI

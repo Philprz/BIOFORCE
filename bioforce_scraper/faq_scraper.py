@@ -42,7 +42,7 @@ class FAQScraper:
         self.browser = None
         self.context = None
         self.page = None
-        self.qdrant = QdrantConnector()
+        self.qdrant = QdrantConnector(is_full_site=False)  # Collection FAQ
     
     async def initialize(self):
         """

@@ -56,7 +56,8 @@ os.makedirs("bioforce_scraper/api/static", exist_ok=True)
 # Services
 scheduler_service = SchedulerService()
 reminder_service = ReminderService(app=app)
-qdrant = QdrantConnector()
+qdrant_faq = QdrantConnector(is_full_site=False)  # Collection FAQ
+qdrant_full = QdrantConnector(is_full_site=True)  # Collection site complet
 
 # Modèles Pydantic
 class QueryRequest(BaseModel):
@@ -65,6 +66,7 @@ class QueryRequest(BaseModel):
     language: Optional[str] = None
     max_results: Optional[int] = 5
     filters: Optional[Dict[str, Any]] = None
+    search_type: Optional[str] = "auto"  # "faq", "site", ou "auto"
 
 class ScrapeRequest(BaseModel):
     force_update: bool = False
@@ -104,20 +106,65 @@ async def query(request: QueryRequest):
         # Préparer les filtres
         filters = request.filters or {}
         
-        # Effectuer la recherche dans Qdrant
-        search_results = qdrant.search(
-            query_vector=query_embedding,
-            limit=request.max_results,
-            filter_conditions=filters
-        )
+        # Déterminer quelle collection interroger
+        search_type = request.search_type.lower() if request.search_type else "auto"
+        
+        # Mots-clés associés aux questions de candidature/admission
+        faq_keywords = [
+            "admission", "candidature", "formation", "logistique", "prérequis", 
+            "diplôme", "financement", "bourse", "frais", "étudiant", "élève",
+            "inscription", "cours", "date", "programme", "certificat", "stage"
+        ]
+        
+        if search_type == "auto":
+            # Détecter automatiquement si la question concerne la candidature (FAQ)
+            query_lower = request.query.lower()
+            is_faq_related = any(keyword in query_lower for keyword in faq_keywords)
+            
+            # Si la question semble liée à la FAQ, utiliser cette collection en priorité
+            if is_faq_related:
+                search_type = "faq"
+            else:
+                search_type = "site"
+        
+        # Effectuer la recherche dans la collection appropriée
+        if search_type == "faq":
+            search_results = qdrant_faq.search(
+                query_vector=query_embedding,
+                limit=request.max_results,
+                filter_conditions=filters
+            )
+            collection_used = "FAQ (BIOFORCE)"
+        else:  # "site"
+            search_results = qdrant_full.search(
+                query_vector=query_embedding,
+                limit=request.max_results,
+                filter_conditions=filters
+            )
+            collection_used = "Site complet (BIOFORCE_ALL)"
+            
+            # Si on ne trouve pas de résultats pertinents dans le site complet, 
+            # essayer aussi la FAQ comme sauvegarde
+            if not search_results or search_results[0]["score"] < 0.7:
+                backup_results = qdrant_faq.search(
+                    query_vector=query_embedding,
+                    limit=request.max_results,
+                    filter_conditions=filters
+                )
+                
+                # Ajouter des résultats de la FAQ s'ils sont pertinents
+                if backup_results and backup_results[0]["score"] > 0.7:
+                    search_results = search_results + backup_results
+                    collection_used = "Site complet + FAQ (BIOFORCE_ALL + BIOFORCE)"
         
         # Logger la requête pour analyse ultérieure
-        logger.info(f"Requête: '{request.query}' - Résultats: {len(search_results)}")
+        logger.info(f"Requête: '{request.query}' - Collection: {collection_used} - Résultats: {len(search_results)}")
         
         return {
             "status": "success",
             "query": request.query,
             "results": search_results,
+            "collection": collection_used,
             "timestamp": datetime.now().isoformat()
         }
     
@@ -281,14 +328,18 @@ async def run_scheduler_job(job_id: str):
             content={"status": "error", "message": str(e)}
         )
 
-@app.get("/qdrant/stats")
+@app.get("/qdrant-stats")
 async def get_qdrant_stats():
     """Endpoint pour récupérer les statistiques de Qdrant"""
     try:
-        stats = qdrant.get_stats()
+        # Obtenir les statistiques des deux collections
+        faq_stats = qdrant_faq.get_stats()
+        full_stats = qdrant_full.get_stats()
+        
         return {
             "status": "success",
-            "data": stats,
+            "faq_collection": faq_stats,
+            "full_site_collection": full_stats,
             "timestamp": datetime.now().isoformat()
         }
     
@@ -324,7 +375,8 @@ async def startup_event():
     logger.info("Démarrage de l'API Bioforce")
     
     # S'assurer que la collection Qdrant existe
-    qdrant.ensure_collection()
+    qdrant_faq.ensure_collection()
+    qdrant_full.ensure_collection()
     
     # Démarrer le planificateur si activé
     if SCHEDULER_ENABLED:
