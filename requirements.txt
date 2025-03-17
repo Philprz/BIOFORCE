@@ -7,3 +7,11 @@ qdrant-client>=1.1.1
 httpx==0.24.1
 python-multipart==0.0.6
 gunicorn==21.2.0
+playwright==1.42.0
+apscheduler==3.10.4
+schedule==1.2.1
+aiohttp==3.9.3
+aiosmtplib==3.0.1
+numpy>=1.22.0
+langdetect==1.0.9
+beautifulsoup4==4.12.2
