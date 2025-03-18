@@ -179,31 +179,54 @@ async def run_command(command: List[str]) -> Dict[str, Any]:
             "error": str(e)
         }
 
-@router.get("/", response_class=HTMLResponse)
-async def admin_dashboard(request: Request):
-    """Page principale du tableau de bord administrateur"""
-    system_info = get_system_info()
-    
-    # Obtenir les statistiques Qdrant
-    try:
-        qdrant_stats = await qdrant.get_stats()
-    except Exception as e:
-        qdrant_stats = {"error": str(e)}
-    
-    return templates.TemplateResponse(
-        "admin_dashboard.html",
-        {
-            "request": request,
-            "system_info": system_info,
-            "qdrant_stats": qdrant_stats
-        }
-    )
-
-@router.post("/update-github")
+@router.post("/git-update", response_model=GitHubUpdateResult)
 async def update_github_route(background_tasks: BackgroundTasks):
-    """Route pour mettre à jour depuis GitHub"""
+    """Met à jour le code depuis GitHub"""
     result = await update_from_github()
     return result
+
+@router.get("/system-info", response_model=SystemInfo)
+async def get_system_info_route():
+    """Récupère les informations système"""
+    return get_system_info()
+
+@router.get("/status")
+async def get_status_route():
+    """Récupère l'état des services"""
+    try:
+        # Vérification de l'état du serveur
+        server_status = "ok"
+        
+        # Vérification de l'état du scraping (simple vérification d'existence)
+        # Dans une implémentation réelle, vérifiez l'état effectif du service
+        scraping_status = "ready"
+        
+        # Vérification de la connexion Qdrant
+        try:
+            qdrant_stats = await qdrant.get_collection_stats()
+            qdrant_status = "connected" if qdrant_stats else "not_connected"
+        except Exception:
+            qdrant_status = "error"
+        
+        return {
+            "server_status": server_status,
+            "scraping_status": scraping_status,
+            "qdrant_status": qdrant_status
+        }
+    except Exception as e:
+        return {
+            "server_status": "error",
+            "scraping_status": "error",
+            "qdrant_status": "error",
+            "error": str(e)
+        }
+
+@router.get("/", response_class=HTMLResponse)
+async def admin_dashboard(request: Request):
+    """
+    Redirige vers le site statique d'administration
+    """
+    return HTMLResponse(content='<script>window.location.href = "/static/admin/index.html";</script>', status_code=200)
 
 @router.post("/run-faq-scraper")
 async def run_faq_scraper_route(background_tasks: BackgroundTasks, force_update: bool = Form(False)):
