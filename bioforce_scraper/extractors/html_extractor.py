@@ -4,6 +4,7 @@ Module pour l'extraction de contenu à partir des pages HTML
 import logging
 import re
 from typing import Dict, List, Any
+import asyncio
 
 from bs4 import BeautifulSoup
 from config import LOG_FILE
@@ -42,6 +43,17 @@ async def extract_page_content(page) -> Dict[str, Any]:
     try:
         # Récupérer l'URL, le titre et le contenu HTML complet
         url = page.url
+        retries = 3
+        for attempt in range(retries):
+            try:
+                await page.goto(url, wait_until="domcontentloaded")
+                break
+            except Exception as e:
+                logger.error(f"Erreur lors de la navigation vers {url} (tentative {attempt+1}/{retries}): {e}")
+                if attempt < retries - 1:
+                    await asyncio.sleep(2)
+                else:
+                    raise
         title = await page.title()
         html_content = await page.content()
         

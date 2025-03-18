@@ -2,12 +2,18 @@
 Module principal pour le scraper Bioforce
 """
 import asyncio
+from bioforce_scraper.extractors.html_extractor import extract_page_content # Importation de la fonction extract_page_content
+from tqdm import tqdm # Import de tqdm pour éviter le NameError
+from bioforce_scraper.utils.classifier import classify_content  
 import hashlib
 import json
 import logging
 import os
 import re
 import time
+import traceback
+import uuid
+import aiohttp
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple, Set
 from urllib.parse import urljoin, urlparse
@@ -26,29 +32,38 @@ from bioforce_scraper.utils.logger import setup_logger
 from bioforce_scraper.utils.qdrant_connector import QdrantConnector
 from bioforce_scraper.utils.robots_parser import RobotsParser
 from bioforce_scraper.utils.url_prioritizer import prioritize_url
+from bioforce_scraper.utils.sitemap_parser import SitemapParser
+from bioforce_scraper.utils.content_classifier import ContentClassifier
 
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
 
+# Catégories de contenu pour la classification
+CONTENT_CATEGORIES = ["page", "pdf", "faq", "général", "formation", "article", "actualité"]
+
 class BioforceScraperMain:
     def __init__(self, incremental=True):
         self.visited_urls = set()
-        self.queue = []
-        self.extracted_data = []
-        self.updated_data = []
-        self.unchanged_data = []
+        self.queue = []  # File des URLs à visiter
+        self.scraped_data = []  # Données scrapées
+        self.failed_urls = []  # URLs en échec
+        self.extracted_contents = []  # Contenus extraits
+        self.incremental = incremental
+        self.robots_parser = None
+        self.browser = None
+        self.context = None
+        self.content_tracker = ContentTracker()
+        self.content_classifier = ContentClassifier()  # Initialisation du classifieur de contenu
+        self.doc_batch = []  # Batch de documents à indexer dans Qdrant
+        self.qdrant_connector = QdrantConnector()
         self.pdf_count = 0
         self.html_count = 0
         self.skipped_count = 0
         self.new_content_count = 0
         self.updated_content_count = 0
         self.unchanged_content_count = 0
-        self.robots_parser = None
-        self.browser = None
-        self.context = None
-        self.content_tracker = ContentTracker() if incremental else None
-        self.incremental = incremental
-        self.qdrant = QdrantConnector(is_full_site=True)  # Utilise la collection pour le site complet
+        self.batch_count = 0  # Compteur pour l'envoi par lot
+        self.batch_size = 20  # Taille du lot pour l'envoi à Qdrant
 
     async def initialize(self):
         """Initialise le scraper en démarrant Playwright et en chargeant robots.txt"""
@@ -73,13 +88,27 @@ class BioforceScraperMain:
         else:
             known_urls = set()
         
-        # Ajout des URLs de départ à la file d'attente
-        for url in START_URLS:
-            # En mode incrémental, on vérifie quand même les URLs de départ
-            # même si elles sont déjà connues (pour détecter les mises à jour)
-            self.queue.append({"url": url, "priority": 10, "depth": 0})
+        # Utiliser le parser de sitemap pour obtenir les URLs prioritaires
+        logger.info("Récupération des URLs depuis le sitemap XML...")
+        sitemap_parser = SitemapParser()
+        sitemap_urls = await sitemap_parser.run()
         
-        logger.info(f"File d'attente initialisée avec {len(self.queue)} URLs de départ")
+        if sitemap_urls:
+            # Ajouter les URLs du sitemap à la file d'attente
+            for url_info in sitemap_urls:
+                # Si l'URL est déjà connue mais qu'on est en mode incrémental,
+                # on la vérifie quand même pour détecter les mises à jour
+                self.queue.append(url_info)
+            
+            logger.info(f"File d'attente initialisée avec {len(sitemap_urls)} URLs depuis le sitemap")
+        else:
+            # Fallback sur les URLs de départ prédéfinies si le sitemap n'est pas disponible
+            logger.warning("Pas d'URLs trouvées dans le sitemap, utilisation des URLs de départ par défaut")
+            for url in START_URLS:
+                self.queue.append({"url": url, "priority": 10, "depth": 0})
+            
+            logger.info(f"File d'attente initialisée avec {len(self.queue)} URLs de départ")
+        
         logger.info(f"Mode incrémental: {self.incremental}")
 
     async def close(self):
@@ -97,397 +126,395 @@ class BioforceScraperMain:
 
     async def run(self):
         """Exécute le processus de scraping"""
+        logger.info("Démarrage du scraper Bioforce")
+        
         await self.initialize()
         
         try:
-            progress_bar = tqdm(total=MAX_PAGES, desc="Pages scrapées")
+            logger.info(f"Début du scraping, limite: {MAX_PAGES} pages")
             
+            # Compteur pour le nombre de pages traitées
+            processed_count = 0
+            batch_count = 0
+            
+            # Traiter la file d'attente jusqu'à ce qu'elle soit vide ou qu'on atteigne la limite
             while self.queue and len(self.visited_urls) < MAX_PAGES:
-                # Trie la file d'attente par priorité (la plus élevée d'abord)
-                self.queue.sort(key=lambda x: x["priority"], reverse=True)
+                # Trier la file d'attente par priorité
+                self.queue.sort(key=lambda x: x.get("priority", 0), reverse=True)
                 
                 # Extraire l'URL avec la priorité la plus élevée
-                current = self.queue.pop(0)
-                url = current["url"]
-                depth = current["depth"]
+                url_info = self.queue.pop(0)
+                url = url_info.get("url")
+                depth = url_info.get("depth", 0)
                 
-                # Vérifier si l'URL a déjà été visitée dans cette session
+                # Vérifier si l'URL a déjà été visitée
                 if url in self.visited_urls:
                     continue
                 
                 # Vérifier si l'URL est autorisée par robots.txt
-                if not self.robots_parser.can_fetch(url):
+                if not self.robots_parser.is_allowed(url):
                     logger.info(f"URL non autorisée par robots.txt: {url}")
                     continue
                 
+                # Marquer l'URL comme visitée
                 self.visited_urls.add(url)
+                processed_count += 1
                 
-                # En mode incrémental, vérifier si le contenu est déjà connu
-                # Mais continuer quand même pour vérifier les mises à jour
-                is_known = False
-                if self.incremental and self.content_tracker:
-                    known_urls = self.content_tracker.get_all_tracked_urls()
-                    is_known = url in known_urls
+                # Traiter l'URL
+                logger.info(f"Traitement de l'URL ({processed_count}/{MAX_PAGES}): {url}")
                 
-                # Respecter le délai entre les requêtes
-                await asyncio.sleep(REQUEST_DELAY)
-                
-                try:
-                    # Traiter l'URL en fonction de son type
-                    if url.lower().endswith('.pdf'):
-                        data = await self.process_pdf(url)
-                        if data:
-                            self.pdf_count += 1
-                            status = self.update_content_status(url, data)
-                    else:
-                        data, new_urls = await self.process_html(url, depth)
-                        if data:
-                            self.html_count += 1
-                            status = self.update_content_status(url, data)
-                            
-                            # Ajouter les nouvelles URLs à la file d'attente
-                            for new_url in new_urls:
-                                if new_url not in self.visited_urls and self.is_valid_url(new_url):
-                                    # Vérifier si c'est un PDF (pour augmenter sa priorité)
-                                    is_pdf = new_url.lower().endswith('.pdf')
-                                    priority = prioritize_url(new_url, PRIORITY_PATTERNS)
-                                    
-                                    # Augmenter la priorité des PDFs
-                                    if is_pdf:
-                                        priority += 5
-                                        
-                                    self.queue.append({
-                                        "url": new_url, 
-                                        "priority": priority, 
-                                        "depth": depth + 1
-                                    })
+                if url.endswith(".pdf"):
+                    # Traiter un PDF
+                    data = await self.process_pdf(url)
+                    if data:
+                        self.pdf_count += 1
+                        # Sauvegarder le document PDF (incluant le filtrage par pertinence)
+                        data_to_index = self.save_data(data)
+                        if data_to_index:
+                            self.doc_batch.append(data_to_index)
+                            batch_count += 1
+                else:
+                    # Traiter une page HTML
+                    data, new_urls = await self.process_html(url, depth)
                     
-                    # Si aucune donnée n'a été extraite
-                    if not data:
-                        self.skipped_count += 1
+                    if data:
+                        self.html_count += 1
+                        # Sauvegarder le document HTML (incluant le filtrage par pertinence)
+                        data_to_index = self.save_data(data)
+                        if data_to_index:
+                            self.doc_batch.append(data_to_index)
+                            batch_count += 1
                         
-                except Exception as e:
-                    logger.error(f"Erreur lors du traitement de {url}: {str(e)}")
-                    self.skipped_count += 1
+                        # Ajouter les nouvelles URLs à la file d'attente
+                        for new_url_info in new_urls:
+                            if new_url_info.get("url") not in self.visited_urls:
+                                self.queue.append(new_url_info)
                 
-                progress_bar.update(1)
-                progress_bar.set_postfix({
-                    'HTML': self.html_count, 
-                    'PDF': self.pdf_count, 
-                    'Queue': len(self.queue),
-                    'Nouveaux': self.new_content_count,
-                    'Mis à jour': self.updated_content_count
-                })
+                # Indexer les documents par lots dans Qdrant (toutes les 20 pages)
+                if batch_count >= self.batch_size:
+                    logger.info(f"Indexation d'un lot de {batch_count} documents dans Qdrant...")
+                    await self.batch_index_to_qdrant()
+                    batch_count = 0
+                
+                # Attendre entre chaque requête
+                await asyncio.sleep(REQUEST_DELAY)
             
-            progress_bar.close()
+            # Indexer les documents restants dans Qdrant
+            if self.doc_batch:
+                logger.info(f"Indexation du lot final de {len(self.doc_batch)} documents dans Qdrant...")
+                await self.batch_index_to_qdrant()
             
-            # Sauvegarder les données extraites
-            self.save_data()
+            logger.info(f"Scraping terminé. Pages traitées: {processed_count}")
+            logger.info(f"Statistiques: {self.html_count} pages HTML, {self.pdf_count} PDFs, {self.skipped_count} ignorés")
             
-            # Afficher des statistiques sur les contenus traités
-            if self.incremental and self.content_tracker:
-                stats = self.content_tracker.get_content_stats()
-                logger.info(f"Statistiques totales de la base de contenu: {json.dumps(stats, indent=2)}")
-            
-            logger.info(f"Scraping terminé: {self.html_count} pages HTML, {self.pdf_count} PDF, {self.skipped_count} ignorés")
-            logger.info(f"Nouveaux contenus: {self.new_content_count}, Mises à jour: {self.updated_content_count}, Inchangés: {self.unchanged_content_count}")
-            logger.info(f"Total URLs visitées: {len(self.visited_urls)}")
-            
-            # Indexer les données dans Qdrant
-            await self.index_data_in_qdrant()
+        except Exception as e:
+            logger.error(f"Erreur lors du scraping: {e}")
             
         finally:
+            # Fermer le navigateur
             await self.close()
 
-    async def index_data_in_qdrant(self):
-        """Indexe les données extraites dans Qdrant"""
-        logger.info("Indexation des données dans Qdrant (collection site complet)")
+    async def batch_index_to_qdrant(self):
+        """
+        Indexe un lot de documents dans Qdrant
+        """
+        if not self.doc_batch:
+            logger.info("Aucun document à indexer")
+            return
         
-        # Nombre de documents à traiter
-        total_docs = len(self.extracted_data) + len(self.updated_data)
         indexed_count = 0
         error_count = 0
         
-        # Indexer le nouveau contenu et le contenu mis à jour
-        for document in self.extracted_data + self.updated_data:
+        for document in self.doc_batch:
             try:
-                # Skip si le document n'a pas de contenu
-                if not document.get("content") or not document.get("title"):
-                    continue
+                # Générer un ID unique pour le document s'il n'en a pas déjà un
+                doc_id = document.get("doc_id", str(uuid.uuid4()))
                 
-                # Générer un ID unique pour le document basé sur l'URL
-                doc_id = hashlib.md5(document["url"].encode()).hexdigest()
+                # Générer les embeddings pour le contenu
+                content_to_embed = f"{document['title']} {document['content']}"
+                if document.get('pdf_content'):
+                    content_to_embed += f" {document['pdf_content']}"
                 
-                # Générer les embeddings pour le document
-                content_to_embed = f"TITLE: {document['title']}\n\nCONTENT: {document['content']}"
+                embedding = generate_embeddings(content_to_embed)
                 
-                # Générer l'embedding
-                embedding = await generate_embeddings(content_to_embed)
-                
-                if embedding:
-                    # Métadonnées pour le document
-                    payload = {
-                        "title": document["title"],
-                        "content": document["content"],
-                        "source_url": document["url"],
-                        "type": document.get("type", "page"),
-                        "category": document.get("category", "général"),
-                        "language": document.get("language", "fr"),
-                        "extraction_date": datetime.now().isoformat(),
+                # Créer le payload pour Qdrant
+                payload = {
+                    "url": document["url"],
+                    "title": document["title"],
+                    "content": document["content"],
+                    "category": document["category"],
+                    "timestamp": document.get("timestamp", ""),
+                    "language": document.get("language", ""),
+                    "relevance_score": document.get("relevance_score", 0.5),
+                    "pdf_path": document.get("pdf_path", ""),
+                    "metadata": {
+                        "extraction_date": datetime.now().isoformat()
                     }
-                    
-                    # Ajouter le document à Qdrant
-                    result = self.qdrant.upsert_document(doc_id, embedding, payload)
-                    
-                    if result:
-                        indexed_count += 1
-                        logger.info(f"Document indexé avec succès: {document['url']}")
-                    else:
-                        error_count += 1
-                        logger.error(f"Échec de l'indexation pour: {document['url']}")
+                }
+                
+                # Ajouter le document à Qdrant
+                result = self.qdrant_connector.upsert_document(doc_id, embedding, payload)
+                
+                if result:
+                    indexed_count += 1
                 else:
                     error_count += 1
-                    logger.error(f"Échec de génération d'embedding pour: {document['url']}")
-            
+                    logger.error(f"Erreur lors de l'indexation dans Qdrant: {document['url']}")
+                
             except Exception as e:
                 error_count += 1
-                logger.error(f"Erreur lors de l'indexation du document {document.get('url')}: {e}")
+                logger.error(f"Erreur lors de l'indexation dans Qdrant: {str(e)}")
         
-        logger.info(f"Indexation terminée: {indexed_count}/{total_docs} documents indexés, {error_count} erreurs")
+        logger.info(f"Indexation terminée: {indexed_count} documents indexés, {error_count} erreurs")
+        
+        # Vider le batch après l'indexation
+        self.doc_batch = []
 
-    def update_content_status(self, url, data):
-        """
-        Met à jour le statut du contenu et le tracker
-        
-        Args:
-            url: URL du contenu
-            data: Données extraites
-            
-        Returns:
-            Statut du contenu ('new', 'updated', 'unchanged')
-        """
-        if not self.incremental or not self.content_tracker:
-            self.extracted_data.append(data)
-            self.new_content_count += 1
-            return 'new'
-        
-        # Vérifier le statut du contenu
-        status, is_changed, previous = self.content_tracker.check_content_status(url, data)
-        
-        # Mettre à jour les compteurs et listes de données
-        if status == 'new':
-            self.new_content_count += 1
-            self.extracted_data.append(data)
-        elif status == 'updated':
-            self.updated_content_count += 1
-            # Ajouter des métadonnées sur la mise à jour
-            data['previous_version'] = previous.get('version', 0)
-            data['update_timestamp'] = datetime.now().isoformat()
-            self.updated_data.append(data)
-            self.extracted_data.append(data)
-        else:  # unchanged
-            self.unchanged_content_count += 1
-            self.unchanged_data.append(data)
-        
-        # Mettre à jour la base de données de suivi
-        self.content_tracker.update_content_record(url, data, status)
-        
-        return status
+    def save_data(self, url_data):
+        """Sauvegarde les données extraites"""
+        url = url_data.get("url", "")
+        content = url_data.get("content", "")
+        title = url_data.get("title", "")
+        timestamp = url_data.get("timestamp", "")
+        links = url_data.get("links", [])
+        pdf_links = url_data.get("pdf_links", [])
+        other_links = url_data.get("other_links", [])
+        pdf_content = url_data.get("pdf_content", "")
+        pdf_path = url_data.get("pdf_path", "")
+        language = detect_language(content)
 
-    def is_valid_url(self, url):
-        """Vérifie si une URL est valide pour le scraping"""
-        # Vérifier si l'URL appartient au domaine bioforce.org
-        parsed_url = urlparse(url)
-        if parsed_url.netloc and "bioforce.org" not in parsed_url.netloc:
-            return False
+        # Vérifier si le contenu est pertinent pour l'indexation
+        if not self.content_classifier.should_index_content(url_data):
+            logger.info(f"Contenu non pertinent, ignoré pour l'indexation: {url}")
+            return None
+
+        # Si nous arrivons ici, le contenu est pertinent
+        category = url_data.get("category", "général")
+        relevance_score = url_data.get("relevance_score", 0.5)
+        logger.info(f"Contenu pertinent ({category}, score: {relevance_score:.2f}): {url}")
         
-        # Vérifier les patterns d'exclusion
-        for pattern in EXCLUDE_PATTERNS:
-            if pattern in url:
-                return False
-        
-        return True
+        # Créer un document structuré pour l'indexation
+        document = {
+            "url": url,
+            "title": title,
+            "content": content,
+            "category": category,
+            "timestamp": timestamp,
+            "language": language,
+            "relevance_score": relevance_score,
+            "pdf_content": pdf_content,
+            "pdf_path": pdf_path
+        }
+
+        # Générer un ID basé sur l'URL et le timestamp (pour détecter les mises à jour)
+        import hashlib
+        # Utiliser un hash de l'URL comme identifiant de base, plus stable pour les mises à jour
+        doc_id = hashlib.md5(url.encode()).hexdigest()
+       
+        # Si le contenu a un timestamp, l'ajouter à l'ID pour suivre les mises à jour
+        if timestamp:
+            doc_id = f"{doc_id}_{timestamp.replace(':', '-').replace(' ', '_')}"
+
+        # Archiver les données extraites
+        os.makedirs(DATA_DIR, exist_ok=True)
+        file_path = os.path.join(DATA_DIR, f"{doc_id}.json")
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(document, f, ensure_ascii=False, indent=2)
+        logger.info(f"Données sauvegardées dans {file_path}")
+
+        return document
 
     async def process_html(self, url, depth):
-        """Traite une page HTML"""
+        """
+        Traite une page HTML et extrait son contenu et ses liens
+        
+        Args:
+            url: URL de la page à traiter
+            depth: Profondeur de l'URL dans l'arborescence
+            
+        Returns:
+            Tuple (données extraites, nouvelles URLs)
+        """
         logger.info(f"Traitement de la page HTML: {url}")
         
         page = await self.context.new_page()
         try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            # Utiliser la méthode avec retry dans html_extractor.py
+            await extract_page_content(page, url)
             
-            # Extraire le contenu de la page
-            content = await extract_page_content(page)
+            # Extraire le titre
+            title = await page.title()
             
-            # Extraire les liens de la page
+            # Extraire le contenu principal
+            content = await page.evaluate("""() => {
+                // Essayer de trouver le contenu principal
+                const mainContent = document.querySelector('main, #content, #main, .content, .main, article');
+                
+                if (mainContent) {
+                    return mainContent.innerText;
+                }
+                
+                // Fallback: utiliser le body si aucun contenu principal n'est trouvé
+                return document.body.innerText;
+            }""")
+            
+            # Extraire les métadonnées
+            metadata = await page.evaluate("""() => {
+                const meta = {};
+                
+                // Récupérer les balises meta
+                const metaTags = document.querySelectorAll('meta');
+                metaTags.forEach(tag => {
+                    const name = tag.getAttribute('name') || tag.getAttribute('property');
+                    const content = tag.getAttribute('content');
+                    
+                    if (name && content) {
+                        meta[name] = content;
+                    }
+                });
+                
+                return meta;
+            }""")
+            
+            # Extraire les titres h1, h2, h3
+            headings = await page.evaluate("""() => {
+                const headingElements = document.querySelectorAll('h1, h2, h3');
+                return Array.from(headingElements).map(h => ({
+                    level: parseInt(h.tagName.substring(1)),
+                    text: h.innerText.trim()
+                }));
+            }""")
+            
+            # Extraire les liens
             links = await page.evaluate("""() => {
-                const anchors = Array.from(document.querySelectorAll('a'));
+                const anchors = Array.from(document.querySelectorAll('a[href]'));
                 return anchors.map(a => a.href);
             }""")
             
-            # Rechercher spécifiquement les liens PDF
-            pdf_links = await page.evaluate("""() => {
-                const anchors = Array.from(document.querySelectorAll('a[href$=".pdf"]'));
-                return anchors.map(a => a.href);
-            }""")
-            
-            # Ajouter les liens PDF en tête de liste avec une priorité élevée
-            pdf_urls = []
-            for pdf_link in pdf_links:
-                if pdf_link and pdf_link.lower().endswith('.pdf'):
-                    full_url = urljoin(url, pdf_link)
-                    pdf_urls.append(full_url)
-            
-            # Filtrer et normaliser les liens normaux
-            regular_urls = []
+            # Filtrer les liens par domaine (bioforce.org) et patterns d'exclusion
+            filtered_links = []
             for link in links:
                 if link and not link.startswith('javascript:') and not link.startswith('#'):
                     # Convertir en URL absolue
                     full_url = urljoin(url, link)
-                    if full_url not in pdf_urls:  # Éviter les doublons
-                        regular_urls.append(full_url)
+                    parsed_url = urlparse(full_url)
+                    
+                    # Vérifier si le lien appartient au domaine bioforce.org
+                    if parsed_url.netloc and "bioforce.org" in parsed_url.netloc:
+                        # Vérifier les patterns d'exclusion
+                        exclude = False
+                        for pattern in EXCLUDE_PATTERNS:
+                            if pattern in full_url:
+                                exclude = True
+                                break
+                        
+                        if not exclude:
+                            filtered_links.append(full_url)
             
-            # Combiner les deux listes, avec les PDFs en premier
-            new_urls = pdf_urls + regular_urls
+            # Prioriser les URLs
+            new_urls = []
+            for link in filtered_links:
+                priority = prioritize_url(link, PRIORITY_PATTERNS)
+                new_urls.append({
+                    "url": link,
+                    "priority": priority,
+                    "depth": depth + 1
+                })
             
-            # Vérifier si le contenu a été extrait avec succès
-            if not content or not content.get('content'):
-                logger.warning(f"Aucun contenu extrait de {url}")
-                return None, new_urls
-            
-            # Détecter la langue
-            language = detect_language(content.get('content', ''))
-            
-            # Classifier le contenu
-            category = classify_content(url, content.get('title', ''), content.get('content', ''))
-            
-            # Structurer les données
+            # Créer le document extrait
             data = {
-                'source_url': url,
-                'title': content.get('title', ''),
-                'content': content.get('content', ''),
-                'headings': content.get('headings', []),
-                'metadata': content.get('metadata', {}),
-                'type': 'html',
-                'language': language,
-                'category': category,
-                'date_extraction': datetime.now().isoformat()
+                "url": url,
+                "title": title,
+                "content": content,
+                "metadata": metadata,
+                "headings": headings,
+                "links": filtered_links,
+                "timestamp": datetime.now().isoformat()
             }
             
             return data, new_urls
             
         except Exception as e:
             logger.error(f"Erreur lors du traitement de la page HTML {url}: {str(e)}")
+            self.failed_urls.append(url)
             return None, []
             
         finally:
             await page.close()
 
     async def process_pdf(self, url):
-        """Traite un fichier PDF"""
+        """
+        Traite un fichier PDF et extrait son contenu
+        
+        Args:
+            url: URL du PDF à traiter
+            
+        Returns:
+            Données extraites ou None en cas d'erreur
+        """
         logger.info(f"Traitement du PDF: {url}")
         
         try:
-            # Extraire le contenu du PDF
-            pdf_data = await extract_pdf_content(url)
+            # Télécharger le PDF
+            os.makedirs(PDF_DIR, exist_ok=True)
+            pdf_filename = os.path.basename(url)
+            pdf_path = os.path.join(PDF_DIR, pdf_filename)
             
-            if not pdf_data or not pdf_data.get('content'):
-                logger.warning(f"Aucun contenu extrait du PDF {url}")
-                return None
+            # Utiliser une session HTTP pour télécharger le fichier
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        content = await response.read()
+                        with open(pdf_path, 'wb') as f:
+                            f.write(content)
+                    else:
+                        logger.error(f"Impossible de télécharger le PDF {url}: {response.status}")
+                        return None
             
-            # Détecter la langue
-            language = detect_language(pdf_data.get('content', ''))
+            # Extraire le texte du PDF
+            pdf_content = ""
+            try:
+                # Utiliser PyPDF2 ou PyMuPDF pour extraire le texte
+                # Implémentation simplifiée pour cet exemple
+                import pypdf
+                with open(pdf_path, 'rb') as f:
+                    reader = pypdf.PdfReader(f)
+                    for page in reader.pages:
+                        pdf_content += page.extract_text() + "\n"
+            except Exception as e:
+                logger.error(f"Erreur lors de l'extraction du texte du PDF {url}: {str(e)}")
             
-            # Classifier le contenu
-            category = classify_content(url, pdf_data.get('title', ''), pdf_data.get('content', ''))
+            # Extraire le titre (du nom de fichier s'il n'est pas dans le PDF)
+            title = os.path.splitext(pdf_filename)[0].replace('_', ' ').replace('-', ' ').title()
             
-            # Structurer les données
+            # Créer le document extrait
             data = {
-                'source_url': url,
-                'title': pdf_data.get('title', ''),
-                'content': pdf_data.get('content', ''),
-                'metadata': pdf_data.get('metadata', {}),
-                'type': 'pdf',
-                'language': language,
-                'category': category,
-                'date_extraction': datetime.now().isoformat()
+                "url": url,
+                "title": title,
+                "content": pdf_content,
+                "pdf_path": pdf_path,
+                "timestamp": datetime.now().isoformat()
             }
             
             return data
             
         except Exception as e:
             logger.error(f"Erreur lors du traitement du PDF {url}: {str(e)}")
+            self.failed_urls.append(url)
             return None
-
-    def save_data(self):
-        """Sauvegarde les données extraites"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        # Sauvegarder les nouvelles données et mises à jour
-        if self.extracted_data:
-            filename = os.path.join(DATA_DIR, f"bioforce_data_{timestamp}.json")
-            
-            # Organisation des données par catégorie
-            categorized_data = {category: [] for category in CONTENT_CATEGORIES}
-            categorized_data['other'] = []
-            
-            for item in self.extracted_data:
-                category = item.get('category', 'other')
-                if category in CONTENT_CATEGORIES:
-                    categorized_data[category].append(item)
-                else:
-                    categorized_data['other'].append(item)
-            
-            # Statistiques
-            stats = {
-                'total_items': len(self.extracted_data),
-                'new_items': self.new_content_count,
-                'updated_items': self.updated_content_count,
-                'unchanged_items': self.unchanged_content_count,
-                'html_pages': self.html_count,
-                'pdfs': self.pdf_count,
-                'skipped': self.skipped_count,
-                'by_category': {category: len(items) for category, items in categorized_data.items()},
-                'date_extraction': datetime.now().isoformat()
-            }
-            
-            # Sauvegarder les données et les statistiques
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump({
-                    'stats': stats,
-                    'data': self.extracted_data
-                }, f, ensure_ascii=False, indent=2)
-            
-            logger.info(f"Données sauvegardées dans {filename}")
-        
-        # Sauvegarder les URLs visitées
-        urls_file = os.path.join(DATA_DIR, f"bioforce_urls_{timestamp}.txt")
-        with open(urls_file, 'w', encoding='utf-8') as f:
-            for url in sorted(self.visited_urls):
-                f.write(f"{url}\n")
-        
-        logger.info(f"URLs visitées sauvegardées dans {urls_file}")
-        
-        # Générer un rapport des changements si en mode incrémental
-        if self.incremental and self.content_tracker and (self.new_content_count > 0 or self.updated_content_count > 0):
-            report = self.content_tracker.generate_change_report()
-            report_file = os.path.join(DATA_DIR, f"bioforce_changes_{timestamp}.json")
-            with open(report_file, 'w', encoding='utf-8') as f:
-                json.dump(report, f, ensure_ascii=False, indent=2)
-            logger.info(f"Rapport des changements sauvegardé dans {report_file}")
 
 async def main():
     """Fonction principale"""
     start_time = time.time()
-    logger.info("Démarrage du scraper Bioforce")
     
-    # Par défaut, utiliser le mode incrémental
-    incremental = True
-    scraper = BioforceScraperMain(incremental=incremental)
+    # Utiliser le scraper avec l'intégration du sitemap XML
+    scraper = BioforceScraperMain(incremental=True)
     await scraper.run()
     
-    elapsed_time = time.time() - start_time
-    logger.info(f"Scraping terminé en {elapsed_time:.2f} secondes")
+    end_time = time.time()
+    duration = end_time - start_time
+    
+    logger.info(f"Temps d'exécution total: {duration:.2f} secondes")
 
 if __name__ == "__main__":
     asyncio.run(main())

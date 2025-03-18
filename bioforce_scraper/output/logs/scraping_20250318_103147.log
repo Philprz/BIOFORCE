@@ -1,0 +1,12 @@
+2025-03-18 10:31:49,748 - __main__ - INFO - Démarrage du scraper Bioforce
+2025-03-18 10:31:49,749 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
+2025-03-18 10:31:50,311 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-18 10:31:50,312 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-18 10:31:50,365 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-18 10:31:50,873 - __main__ - INFO - Chargement de 409 URLs déjà connues
+2025-03-18 10:31:50,873 - __main__ - INFO - File d'attente initialisée avec 5 URLs de départ
+2025-03-18 10:31:50,874 - __main__ - INFO - Mode incrémental: True
+2025-03-18 10:31:52,390 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/
+2025-03-18 10:31:55,357 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/financements/
+2025-03-18 10:31:57,578 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/financements/#FMEUROPE
+2025-03-18 10:31:59,659 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/financements/#FMAFRIQUE

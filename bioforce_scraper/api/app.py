@@ -201,7 +201,7 @@ async def scrape_full_site(request: ScrapeRequest, background_tasks: BackgroundT
     try:
         # Importer BioforceScraperMain uniquement lorsque c'est nécessaire
         # pour éviter des problèmes d'imports circulaires
-        from main import BioforceScraperMain
+        from bioforce_scraper.main import BioforceScraperMain
         
         # Scraper en tâche de fond pour ne pas bloquer la requête
         background_tasks.add_task(run_full_scraper, request.force_update)
@@ -362,7 +362,7 @@ async def run_faq_scraper(force_update: bool = False):
 async def run_full_scraper(force_update: bool = False):
     """Exécute le scraping complet du site en arrière-plan"""
     try:
-        from main import BioforceScraperMain
+        from bioforce_scraper.main import BioforceScraperMain
         
         scraper = BioforceScraperMain(incremental=not force_update)
         await scraper.run()
