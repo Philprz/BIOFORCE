@@ -17,8 +17,14 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 from PyPDF2 import PdfReader
 
-from config import LOG_FILE, PDF_DIR, PDF_MAX_SIZE
-from utils.logger import setup_logger
+# Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
+from bioforce_scraper.config import LOG_FILE, PDF_DIR, PDF_MAX_SIZE
+from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
 
@@ -235,23 +241,37 @@ def get_pdf_title(url: str, metadata: Dict[str, Any]) -> str:
     return title
 
 def clean_pdf_text(text: str) -> str:
-    """Nettoie le texte extrait d'un PDF"""
+    """
+    Nettoie le texte extrait d'un PDF
+    
+    Args:
+        text: Le texte à nettoyer
+        
+    Returns:
+        Le texte nettoyé
+    """
     if not text:
         return ""
-    
-    # Supprimer les sauts de page
-    text = re.sub(r'\f', '\n\n', text)
-    
+        
     # Supprimer les espaces multiples
     text = re.sub(r'\s+', ' ', text)
     
-    # Supprimer les lignes vides multiples
-    text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
+    # Supprimer les caractères de contrôle
+    text = re.sub(r'[\x00-\x1F\x7F]', '', text)
     
-    # Supprimer les artefacts courants dans les PDFs
-    text = re.sub(r'(?i)page \d+ of \d+', '', text)
-    
-    # Nettoyer les caractères non imprimables
-    text = ''.join(char for char in text if ord(char) >= 32 or char in '\n\r\t')
+    # Supprimer les lignes vides
+    text = re.sub(r'\n\s*\n', '\n', text)
     
     return text.strip()
+
+async def extract_text_from_pdf(url: str) -> Dict[str, Any]:
+    """
+    Alias pour extract_pdf_content pour assurer la compatibilité avec les imports existants
+    
+    Args:
+        url: L'URL du fichier PDF
+        
+    Returns:
+        Un dictionnaire contenant le contenu et les métadonnées extraits
+    """
+    return await extract_pdf_content(url)

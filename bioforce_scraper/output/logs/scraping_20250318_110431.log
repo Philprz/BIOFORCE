@@ -1,0 +1,18 @@
+2025-03-18 11:04:34,950 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-18 11:04:35,565 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-18 11:04:36,193 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-18 11:04:36,898 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-18 11:04:37,560 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-18 11:04:37,568 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-18 11:04:37,636 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 11:04:37,706 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 11:04:37,707 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-18 11:04:37,707 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-18 11:04:37,709 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-18 11:04:37,711 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-18 11:04:37,712 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-18 11:04:42,535 - bioforce_scraper.api.app - ERROR - Erreur lors du démarrage du scraping complet: cannot import name 'extract_text_from_pdf' from 'bioforce_scraper.extractors.pdf_extractor' (C:\BIOFORCE\BUILD\bioforce_scraper\extractors\pdf_extractor.py)
+2025-03-18 11:04:55,435 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-18 11:04:55,435 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-18 11:04:55,435 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-18 11:04:55,435 - bioforce_scraper.api.app - INFO - Planificateur arrêté

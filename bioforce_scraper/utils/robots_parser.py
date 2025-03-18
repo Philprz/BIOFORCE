@@ -27,7 +27,15 @@ class RobotsParser:
         self.robots_url = urllib.parse.urljoin(base_url, '/robots.txt')
         self.disallowed: Set[str] = set()
         self.allow_all = True
-    
+    def is_allowed(self, url: str) -> bool:
+        """Vérifie si l'URL est autorisée selon les règles définies dans robots.txt."""
+        from urllib.parse import urlparse
+        parsed_url = urlparse(url)
+        # Vérifie si     l'URL correspond à une règle d'exclusion
+        for rule in self.disallowed:
+            if rule in parsed_url.path:
+                return False
+        return True
     async def load(self) -> bool:
         """
         Charge et parse le fichier robots.txt

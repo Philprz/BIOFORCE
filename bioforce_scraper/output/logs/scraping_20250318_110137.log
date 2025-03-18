@@ -1,0 +1,18 @@
+2025-03-18 11:01:40,981 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-18 11:01:41,562 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-18 11:01:42,126 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-18 11:01:42,762 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-18 11:01:43,347 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-18 11:01:43,349 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-18 11:01:44,014 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' créée avec succès
+2025-03-18 11:01:44,690 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' créée avec succès
+2025-03-18 11:01:44,690 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-18 11:01:44,696 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-18 11:01:44,696 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-18 11:01:44,696 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-18 11:01:44,696 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-18 11:01:48,842 - bioforce_scraper.api.app - ERROR - Erreur lors du démarrage du scraping complet: No module named 'bioforce_scraper.utils.url_filter'
+2025-03-18 11:02:09,748 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-18 11:02:09,749 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-18 11:02:09,750 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-18 11:02:09,750 - bioforce_scraper.api.app - INFO - Planificateur arrêté

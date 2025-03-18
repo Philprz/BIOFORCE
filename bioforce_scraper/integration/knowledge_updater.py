@@ -11,8 +11,12 @@ from typing import Dict, List, Any, Optional, Tuple
 from integration.qdrant_connector import QdrantConnector
 from main import BioforceScraperMain
 from utils.content_tracker import ContentTracker
-from config import DATA_DIR, LOG_FILE
-from utils.logger import setup_logger
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+from bioforce_scraper.config import DATA_DIR, LOG_FILE
+from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
 

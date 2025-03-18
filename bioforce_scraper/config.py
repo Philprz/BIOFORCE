@@ -49,10 +49,26 @@ PROCESSED_URLS_FILE = os.path.join(OUTPUT_DIR, "processed_urls.json")  # Fichier
 USE_QDRANT = True  # Utilisation de Qdrant pour stocker les embeddings
 DEBUG = False  # Mode debug
 
+# Paramètres supplémentaires pour le mécanisme de retry et gestion des erreurs
+MAX_RETRIES = 3       # Nombre maximum de tentatives pour chaque URL
+RETRY_DELAY = 2.0     # Délai entre les tentatives en secondes
+MAX_TIMEOUT = 45      # Timeout maximum pour les opérations
+
+# Extensions de fichiers à exclure
+EXCLUDE_EXTENSIONS = [
+    '.jpg', '.jpeg', '.png', '.gif', '.svg', '.mp4', '.webm', '.mp3', 
+    '.wav', '.webp', '.ico', '.css', '.js', '.zip', '.gz', '.tar'
+]
+
+# Configuration pour l'API externe 
+API_HOST = "localhost"
+API_PORT = 8000
+
 # Catégories de contenu
 CONTENT_CATEGORIES = [
-    "formation", "admission", "financement", "logistique", 
-    "faq", "processus", "informations_pratiques", "général"
+    "formation", "admission", "financement", "logement", 
+    "vie_etudiante", "international", "presentation", "faq",
+    "contact", "autre"
 ]
 
 # Format de date pour l'extraction
@@ -63,13 +79,12 @@ CURRENT_DATE = datetime.now().strftime(DATE_FORMAT)
 SUPPORTED_LANGUAGES = ["fr", "en"]
 
 # Configuration Qdrant
-QDRANT_COLLECTION = "BIOFORCE"  # Collection pour la FAQ
-QDRANT_COLLECTION_ALL = "BIOFORCE_ALL"  # Collection pour le site complet
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_HOST = os.getenv("QDRANT_URL", "http://localhost:6333")  # Alias pour QDRANT_URL pour compatibilité
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
 VECTOR_SIZE = 1536  # Taille des vecteurs OpenAI
 COLLECTION_NAME_ALL = "BIOFORCE_ALL"  # Alias pour QDRANT_COLLECTION_ALL pour compatibilité
+COLLECTION_NAME = "bioforce_knowledge"
 
 # Configuration OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -77,8 +92,6 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 COMPLETION_MODEL = "gpt-3.5-turbo"
 
 # Configuration API FastAPI
-API_HOST = os.getenv("API_HOST", "127.0.0.1")
-API_PORT = int(os.getenv("API_PORT", "8000"))
 API_ROOT_PATH = os.getenv("API_ROOT_PATH", "")
 
 # GitHub configuration

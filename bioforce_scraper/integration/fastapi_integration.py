@@ -2,17 +2,23 @@
 Module d'intégration avec FastAPI pour le scraper Bioforce
 """
 import asyncio
-import json
+import logging
 import os
+import json
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, Any, List, Optional
 
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
+from bioforce_scraper.config import DATA_DIR
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
 from pydantic import BaseModel
 
 from integration.knowledge_updater import KnowledgeUpdater
 from utils.content_tracker import ContentTracker
-from config import DATA_DIR
 
 router = APIRouter(
     prefix="/scraper",

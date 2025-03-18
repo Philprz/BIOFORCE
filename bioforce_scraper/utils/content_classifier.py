@@ -177,7 +177,10 @@ class ContentClassifier:
         
         # Par défaut, utiliser "général"
         return "général"
-    
+    def get_all_tracked_urls(self): 
+        # Méthode ajoutée pour récupérer toutes les URLs suivies 
+        # Retourne une liste vide par défaut (adapter la logique selon vos besoins) 
+        return []
     def should_index_content(self, content: Dict[str, Any]) -> bool:
         """
         Détermine si un contenu doit être indexé dans la base de connaissances

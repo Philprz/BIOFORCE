@@ -2,47 +2,40 @@
 Module principal pour le scraper Bioforce
 """
 import asyncio
+import base64
 import hashlib
 import json
 import logging
 import os
+import random
 import re
 import time
-import traceback
 import uuid
-import aiohttp
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple, Set
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from urllib.parse import urljoin, urlparse
 
-# Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
-import sys
-import pathlib
-# Ajouter le répertoire parent au path pour pouvoir importer les modules
-sys.path.append(str(pathlib.Path(__file__).parent.parent))
+import aiohttp
+from bs4 import BeautifulSoup
+from playwright.async_api import async_playwright
 
-from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
-from qdrant_client.http import models
-
+# Import de bioforce_scraper
 from bioforce_scraper.config import (
-    VECTOR_SIZE, BASE_URL, START_URLS, EXCLUDE_PATTERNS,
-    USER_AGENT, TIMEOUT, MAX_PAGES, MAX_LINKS_PER_PAGE,
-    LOG_FILE, QDRANT_HOST, QDRANT_API_KEY, COLLECTION_NAME_ALL,
-    PROCESSED_URLS_FILE, USE_QDRANT, DEBUG
+    API_HOST, BASE_URL, COLLECTION_NAME, EXCLUDE_EXTENSIONS, EXCLUDE_PATTERNS,
+    LOG_FILE, MAX_PAGES, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR,
+    PDF_DIR, PRIORITY_PATTERNS, REQUEST_DELAY, RETRY_DELAY, USER_AGENT,
+    DATA_DIR, QDRANT_URL, QDRANT_API_KEY, START_URLS
 )
-from bioforce_scraper.utils.robots_parser import RobotsParser
-from bioforce_scraper.utils.url_filter import is_valid_url
-from bioforce_scraper.utils.qdrant_connector import QdrantConnector
-from bioforce_scraper.utils.embeddings import generate_embeddings
-from bioforce_scraper.utils.content_classifier import ContentClassifier
-from bioforce_scraper.utils.sitemap_parser import SitemapParser
-from bioforce_scraper.extractors.html_extractor import extract_content
+from bioforce_scraper.extractors.html_extractor import extract_html_content
 from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
-from bioforce_scraper.utils.classifier import classify_content  
-from bioforce_scraper.utils.language_detector import detect_language
+from bioforce_scraper.utils.content_classifier import ContentClassifier
 from bioforce_scraper.utils.logger import setup_logger
-from bioforce_scraper.utils.content_tracker import ContentTracker
-
+from bioforce_scraper.utils.robots_parser import RobotsParser
+from bioforce_scraper.utils.sitemap_parser import SitemapParser
+from bioforce_scraper.utils.url_filter import filter_url
+from bioforce_scraper.utils.url_prioritizer import prioritize_url
+from bioforce_scraper.integration.qdrant_connector import QdrantConnector
+from bioforce_scraper.utils.embeddings import generate_embeddings
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
 
@@ -60,7 +53,6 @@ class BioforceScraperMain:
         self.robots_parser = None
         self.browser = None
         self.context = None
-        self.content_tracker = ContentTracker()
         self.content_classifier = ContentClassifier()  # Initialisation du classifieur de contenu
         self.doc_batch = []  # Batch de documents à indexer dans Qdrant
         self.qdrant_connector = QdrantConnector()
@@ -79,6 +71,11 @@ class BioforceScraperMain:
         
         # Initialisation du parser robots.txt
         self.robots_parser = RobotsParser(BASE_URL)
+        # Vérifier que la méthode is_allowed est bien présente
+        if not hasattr(self.robots_parser, 'is_allowed'):
+            # Si la méthode n'est pas disponible, définir une méthode par défaut
+            logger.warning("La méthode is_allowed n'est pas définie dans RobotsParser, utilisation d'une méthode par défaut")
+            self.robots_parser.is_allowed = lambda url: True
         await self.robots_parser.load()
         
         # Initialisation de Playwright
@@ -90,8 +87,8 @@ class BioforceScraperMain:
         )
         
         # En mode incrémental, charger les URLs déjà connues
-        if self.incremental and self.content_tracker:
-            known_urls = set(self.content_tracker.get_all_tracked_urls())
+        if self.incremental and self.content_classifier:
+            known_urls = set(self.content_classifier.get_all_tracked_urls())
             logger.info(f"Chargement de {len(known_urls)} URLs déjà connues")
         else:
             known_urls = set()
@@ -230,8 +227,11 @@ class BioforceScraperMain:
             logger.info("Aucun document à indexer")
             return
         
-        indexed_count = 0
+        logger.info(f"Indexation d'un lot de {len(self.doc_batch)} documents dans Qdrant...")
+        
+        success_count = 0
         error_count = 0
+        indexed_count = 0
         
         for document in self.doc_batch:
             try:
@@ -243,7 +243,7 @@ class BioforceScraperMain:
                 if document.get('pdf_content'):
                     content_to_embed += f" {document['pdf_content']}"
                 
-                embedding = generate_embeddings(content_to_embed)
+                embedding = await generate_embeddings(content_to_embed)
                 
                 # Créer le payload pour Qdrant
                 payload = {
@@ -289,7 +289,7 @@ class BioforceScraperMain:
         other_links = url_data.get("other_links", [])
         pdf_content = url_data.get("pdf_content", "")
         pdf_path = url_data.get("pdf_path", "")
-        language = detect_language(content)
+        language = 'fr'  # Langue par défaut (français)
 
         # Vérifier si le contenu est pertinent pour l'indexation
         if not self.content_classifier.should_index_content(url_data):
@@ -348,23 +348,13 @@ class BioforceScraperMain:
         page = await self.context.new_page()
         try:
             # Utiliser la méthode avec retry dans html_extractor.py
-            await extract_content(page, url)
+            html_data = await extract_html_content(page, url)
             
             # Extraire le titre
             title = await page.title()
             
             # Extraire le contenu principal
-            content = await page.evaluate("""() => {
-                // Essayer de trouver le contenu principal
-                const mainContent = document.querySelector('main, #content, #main, .content, .main, article');
-                
-                if (mainContent) {
-                    return mainContent.innerText;
-                }
-                
-                // Fallback: utiliser le body si aucun contenu principal n'est trouvé
-                return document.body.innerText;
-            }""")
+            content = html_data.get('text', '')
             
             # Extraire les métadonnées
             metadata = await page.evaluate("""() => {

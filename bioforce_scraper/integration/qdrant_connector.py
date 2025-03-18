@@ -3,16 +3,22 @@ Module d'intégration avec Qdrant pour stocker les données scrapées dans la ba
 """
 import logging
 import os
-import time
-from typing import Dict, List, Optional, Any
+import json
+from typing import Dict, Any, List, Optional
+from datetime import datetime
 
 import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
-from qdrant_client.http.exceptions import UnexpectedResponse
 
-from config import LOG_FILE
-from utils.logger import setup_logger
+# Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
+from bioforce_scraper.config import LOG_FILE
+from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
 

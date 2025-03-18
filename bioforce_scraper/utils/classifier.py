@@ -5,8 +5,13 @@ import logging
 import re
 from typing import Dict, List, Set, Tuple
 
-from config import CONTENT_CATEGORIES, LOG_FILE
-from utils.logger import setup_logger
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
+from bioforce_scraper.config import CONTENT_CATEGORIES, LOG_FILE
+from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
 

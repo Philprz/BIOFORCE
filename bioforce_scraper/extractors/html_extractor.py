@@ -3,8 +3,9 @@ Module pour l'extraction de contenu à partir des pages HTML
 """
 import logging
 import re
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import asyncio
+import time
 
 # Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
 import sys
@@ -13,7 +14,8 @@ import pathlib
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
 
 from bs4 import BeautifulSoup
-from bioforce_scraper.config import LOG_FILE
+from playwright.async_api import Page, TimeoutError
+from bioforce_scraper.config import LOG_FILE, MAX_RETRIES, RETRY_DELAY, MAX_TIMEOUT
 from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
@@ -36,212 +38,199 @@ CONTENT_SELECTORS = [
     '.build-section'
 ]
 
-async def extract_content(page, url) -> Dict[str, Any]:
+async def extract_html_content(page: Page, url: str) -> Dict[str, Any]:
     """
-    Extrait le contenu d'une page HTML utilisant Playwright
+    Extrait le contenu d'une page HTML utilisant Playwright avec système de retry
     
     Args:
         page: L'objet page Playwright
         url: L'URL de la page à extraire
         
     Returns:
-        Un dictionnaire contenant le contenu extrait
+        Un dictionnaire contenant le contenu et les métadonnées extraits
     """
-    try:
-        # Récupérer l'URL, le titre et le contenu HTML complet
-        retries = 3
-        for attempt in range(retries):
-            try:
-                await page.goto(url, wait_until="domcontentloaded")
-                break
-            except Exception as e:
-                logger.error(f"Erreur lors de la navigation vers {url} (tentative {attempt+1}/{retries}): {e}")
-                if attempt < retries - 1:
-                    await asyncio.sleep(2)
-                else:
-                    raise
-        title = await page.title()
-        html_content = await page.content()
+    for attempt in range(MAX_RETRIES):
+        try:
+            # Naviguer vers l'URL avec timeout
+            await page.goto(url, timeout=MAX_TIMEOUT * 1000, wait_until='networkidle')
+            
+            # Attendre que le contenu soit chargé
+            await page.wait_for_load_state('domcontentloaded')
+            
+            # Récupérer le contenu HTML complet
+            html_content = await page.content()
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # Extraire le titre
+            title = await page.title()
+            
+            # Extraire le contenu principal
+            main_content = await extract_main_content(page, soup)
+            
+            # Extraire les métadonnées
+            metadata = extract_metadata(soup)
+            
+            # Extraire les liens
+            links = await extract_links(page, url)
+            
+            # Assembler le résultat
+            result = {
+                'title': title,
+                'text': main_content,
+                'metadata': metadata,
+                'links': links,
+                'html': html_content,
+                'url': url
+            }
+            
+            return result
+            
+        except TimeoutError:
+            logger.warning(f"Timeout lors du chargement de {url}, tentative {attempt+1}/{MAX_RETRIES}")
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(RETRY_DELAY)
+            else:
+                logger.error(f"Échec après {MAX_RETRIES} tentatives pour {url}")
+                raise
+                
+        except Exception as e:
+            logger.error(f"Erreur lors de l'extraction de contenu pour {url}: {str(e)}")
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(RETRY_DELAY)
+            else:
+                logger.error(f"Échec après {MAX_RETRIES} tentatives pour {url}")
+                raise
+
+async def extract_main_content(page: Page, soup: BeautifulSoup) -> str:
+    """
+    Extrait le contenu principal de la page
+    
+    Args:
+        page: L'objet page Playwright
+        soup: L'objet BeautifulSoup
         
-        # Utiliser BeautifulSoup pour analyser le HTML
-        soup = BeautifulSoup(html_content, 'html.parser')
+    Returns:
+        Le texte principal
+    """
+    # Essayer d'extraire le contenu via JavaScript
+    content = await page.evaluate("""() => {
+        // Essayer de trouver le contenu principal
+        const contentSelectors = [
+            'article', 'main', '.content', '.entry-content', '.post-content',
+            '.page-content', '#content', '.entry', '.post', '.page',
+            '.site-content', '.bioforce-content', '.formation-details'
+        ];
         
-        # Extraire les métadonnées
-        metadata = extract_metadata(soup)
+        for (const selector of contentSelectors) {
+            const element = document.querySelector(selector);
+            if (element) {
+                return element.innerText;
+            }
+        }
         
+        // Fallback: utiliser le body si aucun contenu principal n'est trouvé
+        return document.body.innerText;
+    }""")
+    
+    # Si le contenu est vide ou trop court, essayer avec BeautifulSoup
+    if not content or len(content) < 100:
         # Supprimer les éléments non pertinents
         for selector in EXCLUDE_SELECTORS:
             for element in soup.select(selector):
                 element.decompose()
-        
-        # Trouver les principaux conteneurs de contenu
-        content_element = None
+                
+        # Chercher les sections de contenu principales
+        main_content = ""
         for selector in CONTENT_SELECTORS:
             elements = soup.select(selector)
             if elements:
-                # Prendre le plus grand conteneur de contenu
-                content_element = max(elements, key=lambda e: len(str(e)))
-                break
-        
-        # Si aucun conteneur spécifique n'est trouvé, utiliser le corps
-        if not content_element:
-            content_element = soup.body
-        
-        # Extraire les en-têtes
-        headings = extract_headings(content_element if content_element else soup)
-        
-        # Extraire le texte principal
-        main_text = extract_main_text(content_element if content_element else soup)
-        
-        # Extraire les listes
-        list_items = extract_lists(content_element if content_element else soup)
-        
-        # Extraire les informations de contact
-        contact_info = extract_contact_info(soup)
-        
-        # Combiner tous les textes
-        combined_text = main_text
-        if list_items:
-            combined_text += "\n\n" + list_items
-        
-        # Nettoyer le texte
-        clean_text = clean_text_content(combined_text)
-        
-        return {
-            'title': title,
-            'content': clean_text,
-            'headings': headings,
-            'metadata': {
-                **metadata,
-                'contact_info': contact_info,
-                'url': url
-            }
-        }
+                for element in elements:
+                    main_content += element.get_text(separator=" ", strip=True) + "\n\n"
+                
+        # Si aucun contenu principal n'a été trouvé, utiliser tout le body
+        if not main_content:
+            main_content = soup.body.get_text(separator=" ", strip=True)
+            
+        content = main_content
     
-    except Exception as e:
-        logger.error(f"Erreur lors de l'extraction du contenu: {str(e)}")
-        return {'title': '', 'content': '', 'headings': [], 'metadata': {}}
+    # Nettoyer le texte
+    return clean_text(content)
 
-def extract_metadata(soup) -> Dict[str, str]:
-    """Extrait les métadonnées depuis les balises meta"""
-    metadata = {}
+def clean_text(text: str) -> str:
+    """
+    Nettoie le texte extrait
     
-    # Extraire les balises meta standard
-    for meta in soup.find_all('meta'):
-        name = meta.get('name') or meta.get('property')
-        content = meta.get('content')
-        if name and content:
-            metadata[name] = content
-    
-    # Extraire la date de publication/mise à jour
-    published = soup.select_one('time.published, .published-date, [class*="date"], [class*="time"]')
-    if published:
-        metadata['published_date'] = published.get_text().strip()
-    
-    # Extraire l'auteur
-    author = soup.select_one('[rel="author"], .author, .byline')
-    if author:
-        metadata['author'] = author.get_text().strip()
-    
-    return metadata
-
-def extract_headings(element) -> List[Dict[str, str]]:
-    """Extrait les en-têtes (h1-h4) et leur texte"""
-    headings = []
-    
-    for tag in ['h1', 'h2', 'h3', 'h4']:
-        for heading in element.find_all(tag):
-            heading_text = heading.get_text().strip()
-            if heading_text:
-                headings.append({
-                    'level': tag,
-                    'text': heading_text
-                })
-    
-    return headings
-
-def extract_main_text(element) -> str:
-    """Extrait le texte principal du contenu"""
-    paragraphs = []
-    
-    # Sélectionner tous les paragraphes et divs avec du texte
-    for p in element.find_all(['p', 'div']):
-        # Ignorer les éléments vides ou qui contiennent uniquement des éléments non pertinents
-        if p.name == 'div' and (p.find(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']) or 
-                               not p.get_text(strip=True)):
-            continue
+    Args:
+        text: Le texte à nettoyer
         
-        text = p.get_text().strip()
-        if text:
-            paragraphs.append(text)
-    
-    # Traiter les en-têtes pour les inclure dans le texte
-    for h in element.find_all(['h1', 'h2', 'h3', 'h4']):
-        text = h.get_text().strip()
-        if text:
-            paragraphs.append(f"{h.name.upper()}: {text}")
-    
-    return "\n\n".join(paragraphs)
-
-def extract_lists(element) -> str:
-    """Extrait les éléments de liste (ul/ol)"""
-    list_texts = []
-    
-    for list_elem in element.find_all(['ul', 'ol']):
-        list_type = "• " if list_elem.name == 'ul' else "1. "
-        items = []
+    Returns:
+        Le texte nettoyé
+    """
+    if not text:
+        return ""
         
-        for i, item in enumerate(list_elem.find_all('li')):
-            text = item.get_text().strip()
-            if text:
-                if list_elem.name == 'ol':
-                    items.append(f"{i+1}. {text}")
-                else:
-                    items.append(f"• {text}")
-        
-        if items:
-            list_texts.append("\n".join(items))
-    
-    return "\n\n".join(list_texts)
-
-def extract_contact_info(soup) -> Dict[str, str]:
-    """Extrait les informations de contact"""
-    contact_info = {}
-    
-    # Rechercher les e-mails
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    emails = re.findall(email_pattern, str(soup))
-    if emails:
-        contact_info['emails'] = list(set(emails))
-    
-    # Rechercher les numéros de téléphone
-    phone_pattern = r'(?:\+\d{1,3}\s?)?(?:\(\d{1,4}\)\s?)?(?:\d{1,4}[\s.-]?){2,}'
-    phones = re.findall(phone_pattern, str(soup))
-    if phones:
-        # Nettoyer les résultats
-        cleaned_phones = [re.sub(r'\s+', ' ', phone).strip() for phone in phones]
-        contact_info['phones'] = list(set(cleaned_phones))
-    
-    # Rechercher les adresses
-    address_elems = soup.select('.address, [class*="adresse"], [itemprop="address"]')
-    if address_elems:
-        addresses = [elem.get_text().strip() for elem in address_elems]
-        contact_info['addresses'] = list(set(addresses))
-    
-    return contact_info
-
-def clean_text_content(text: str) -> str:
-    """Nettoie le texte extrait"""
     # Supprimer les espaces multiples
     text = re.sub(r'\s+', ' ', text)
     
     # Supprimer les lignes vides
-    text = re.sub(r'\n\s*\n', '\n\n', text)
+    text = re.sub(r'\n\s*\n', '\n', text)
     
-    # Supprimer les espaces en début et fin de texte
-    text = text.strip()
+    # Supprimer les caractères spéciaux et les séquences non imprimables
+    text = re.sub(r'[\x00-\x1F\x7F]', '', text)
     
-    # Ajouter des sauts de ligne après les points (pour améliorer la lisibilité)
-    text = re.sub(r'\.(?=\s[A-Z])', '.\n', text)
+    return text.strip()
+
+def extract_metadata(soup: BeautifulSoup) -> Dict[str, str]:
+    """
+    Extrait les métadonnées depuis les balises meta
     
-    return text
+    Args:
+        soup: L'objet BeautifulSoup
+        
+    Returns:
+        Un dictionnaire des métadonnées
+    """
+    metadata = {}
+    
+    # Extraire les balises meta
+    meta_tags = soup.find_all('meta')
+    for tag in meta_tags:
+        if tag.get('name') and tag.get('content'):
+            metadata[tag['name']] = tag['content']
+        elif tag.get('property') and tag.get('content'):
+            metadata[tag['property']] = tag['content']
+            
+    # Extraire d'autres informations utiles
+    if soup.find('time'):
+        time_tag = soup.find('time')
+        if time_tag.get('datetime'):
+            metadata['published_date'] = time_tag['datetime']
+            
+    return metadata
+
+async def extract_links(page: Page, base_url: str) -> List[str]:
+    """
+    Extrait tous les liens de la page
+    
+    Args:
+        page: L'objet page Playwright
+        base_url: L'URL de base pour résoudre les liens relatifs
+        
+    Returns:
+        Liste des URLs extraites
+    """
+    # Extraire tous les liens via JavaScript
+    links = await page.evaluate("""(baseUrl) => {
+        const links = Array.from(document.querySelectorAll('a[href]'))
+            .map(a => {
+                try {
+                    return new URL(a.href, baseUrl).href;
+                } catch (e) {
+                    return null;
+                }
+            })
+            .filter(href => href !== null);
+        return [...new Set(links)]; // Éliminer les doublons
+    }""", base_url)
+    
+    return links
