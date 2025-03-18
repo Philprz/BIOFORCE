@@ -39,7 +39,7 @@ def open_browser(host, port):
     print(f"\nOuverture du navigateur à l'adresse: {url}")
     webbrowser.open(url)
 
-def start_api(open_browser):
+def start_api(should_open_browser):
     """Démarrer l'API"""
     python_exec = sys.executable
     cmd = [python_exec, "-m", "bioforce_scraper.api.app"]
@@ -61,7 +61,7 @@ def start_api(open_browser):
             break
     
     # Si le serveur est prêt et qu'on a demandé d'ouvrir le navigateur
-    if server_ready and open_browser:
+    if server_ready and should_open_browser:
         # Attendre un peu pour s'assurer que le serveur est complètement prêt
         time.sleep(1)
         # Ouvrir le navigateur

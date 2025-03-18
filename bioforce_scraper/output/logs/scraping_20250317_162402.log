@@ -11,3 +11,12 @@
 2025-03-17 16:24:12,744 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
 2025-03-17 16:24:12,746 - bioforce_scraper.scheduler - INFO - Planificateur démarré
 2025-03-17 16:24:12,746 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-17 16:29:12,763 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-17 16:29:12,776 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-17 16:29:12,777 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-17 16:34:12,758 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-17 16:34:12,758 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-17 16:34:12,758 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-17 16:39:12,749 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-17 16:39:12,749 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-17 16:39:12,749 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined

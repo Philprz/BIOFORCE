@@ -70,7 +70,7 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 COMPLETION_MODEL = "gpt-3.5-turbo"
 
 # Configuration API FastAPI
-API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_HOST = os.getenv("API_HOST", "127.0.0.1")
 API_PORT = int(os.getenv("API_PORT", "8000"))
 API_ROOT_PATH = os.getenv("API_ROOT_PATH", "")
 
