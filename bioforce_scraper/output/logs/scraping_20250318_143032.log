@@ -1,0 +1,529 @@
+2025-03-18 14:30:40,638 - bioforce_scraper.integration.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io
+2025-03-18 14:30:40,639 - __main__ - INFO - Démarrage du scraper Bioforce
+2025-03-18 14:30:40,639 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-18 14:30:40,710 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-18 14:30:42,452 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-18 14:30:42,454 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-18 14:30:42,469 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-18 14:30:43,208 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-18 14:30:43,245 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-18 14:30:44,013 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-18 14:30:44,064 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:44,336 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-18 14:30:44,342 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:44,650 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-18 14:30:44,650 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:45,263 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:30:45,292 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:47,043 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-18 14:30:47,152 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:47,637 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-18 14:30:47,655 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:47,916 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-18 14:30:47,919 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:48,227 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-18 14:30:48,232 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:48,528 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-18 14:30:48,535 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-18 14:30:48,537 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-18 14:30:48,537 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-18 14:30:48,538 - __main__ - INFO - Mode incrémental: True
+2025-03-18 14:30:48,538 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-18 14:30:49,880 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-18 14:30:49,967 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:30:49,998 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/test
+2025-03-18 14:30:50,074 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/test
+2025-03-18 14:30:50,175 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/test (1 chunks)
+2025-03-18 14:30:50,202 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 14:30:50,225 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/question/test
+2025-03-18 14:30:50,274 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/question/test
+2025-03-18 14:30:50,375 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/question/test (1 chunks)
+2025-03-18 14:30:50,375 - __main__ - INFO - Test de connexion à Qdrant et d'upsert de documents réussi
+2025-03-18 14:30:50,376 - __main__ - INFO - Début du scraping, limite: 500 pages
+2025-03-18 14:30:50,376 - __main__ - INFO - Traitement de l'URL standard (1/500): https://www.bioforce.org/learn/
+2025-03-18 14:30:50,376 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/
+2025-03-18 14:30:50,383 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\54967440f0086c2cb5320eb36304ecf3_2025-03-18T12-23-03.147028.json
+2025-03-18 14:30:50,469 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/
+2025-03-18 14:30:56,259 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/
+2025-03-18 14:30:56,259 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\54967440f0086c2cb5320eb36304ecf3_2025-03-18T14-30-56.259438.json
+2025-03-18 14:30:57,771 - __main__ - INFO - Traitement de l'URL standard (2/500): https://www.bioforce.org/faq/
+2025-03-18 14:30:57,771 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/faq/
+2025-03-18 14:30:57,775 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\9ac981e345060483828d62942e46d9d2_2025-03-18T12-23-07.304743.json
+2025-03-18 14:30:57,913 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/faq/
+2025-03-18 14:31:00,677 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:00,678 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:00,678 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:00,678 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:00,679 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:00,692 - __main__ - INFO - Contenu pertinent (faq, score: 1.00): https://www.bioforce.org/faq/
+2025-03-18 14:31:00,696 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\9ac981e345060483828d62942e46d9d2_2025-03-18T14-31-00.695041.json
+2025-03-18 14:31:02,209 - __main__ - INFO - Traitement de l'URL FAQ (3/500): https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:02,211 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:02,226 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\ddecb51ee1c778eef85c5560dd0f44fa_2025-03-18T12-23-10.644166.json
+2025-03-18 14:31:02,349 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:04,122 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:04,122 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:04,122 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:04,123 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:04,123 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:04,141 - __main__ - INFO - Contenu pertinent (candidature, score: 1.00): https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:04,143 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\ddecb51ee1c778eef85c5560dd0f44fa_2025-03-18T14-31-04.142173.json
+2025-03-18 14:31:05,651 - __main__ - INFO - Traitement de l'URL FAQ (4/500): https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:05,651 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:05,670 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\a7a520016547de7804483b36301ee6a3_2025-03-18T12-23-13.914741.json
+2025-03-18 14:31:05,750 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:07,495 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:07,496 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:07,496 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:07,497 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:07,497 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:31:07,511 - __main__ - INFO - Contenu pertinent (candidature, score: 1.00): https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:31:07,513 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\a7a520016547de7804483b36301ee6a3_2025-03-18T14-31-07.511281.json
+2025-03-18 14:31:09,016 - __main__ - INFO - Traitement de l'URL standard (5/500): https://www.bioforce.org/en/learn/
+2025-03-18 14:31:09,017 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/
+2025-03-18 14:31:11,063 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/
+2025-03-18 14:31:12,567 - __main__ - INFO - Traitement de l'URL standard (6/500): https://www.bioforce.org/learn/actualites/
+2025-03-18 14:31:12,568 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/actualites/
+2025-03-18 14:31:12,568 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\78593707525a4686bca8b0413382adac_2025-03-18T12-23-19.847548.json
+2025-03-18 14:31:12,692 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/actualites/
+2025-03-18 14:31:14,203 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/actualites/
+2025-03-18 14:31:14,209 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\78593707525a4686bca8b0413382adac_2025-03-18T14-31-14.203555.json
+2025-03-18 14:31:15,715 - __main__ - INFO - Traitement de l'URL standard (7/500): https://www.bioforce.org/learn/alumni/
+2025-03-18 14:31:15,715 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/alumni/
+2025-03-18 14:31:15,715 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\23169b3b83f72f46f4263c31bee8d403_2025-03-18T12-23-22.892631.json
+2025-03-18 14:31:15,824 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/alumni/
+2025-03-18 14:31:17,322 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/alumni/
+2025-03-18 14:31:17,324 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\23169b3b83f72f46f4263c31bee8d403_2025-03-18T14-31-17.322737.json
+2025-03-18 14:31:18,828 - __main__ - INFO - Traitement de l'URL standard (8/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:31:18,829 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:31:18,835 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\a90b0397d179ffba0b0a6cfcd586d706_2025-03-18T12-23-25.970340.json
+2025-03-18 14:31:18,927 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:31:20,488 - __main__ - INFO - Contenu pertinent (formation, score: 0.95): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:31:20,490 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\a90b0397d179ffba0b0a6cfcd586d706_2025-03-18T14-31-20.489456.json
+2025-03-18 14:31:22,005 - __main__ - INFO - Traitement de l'URL standard (9/500): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:31:22,005 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:31:22,009 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\063f542e38c660a1e383b1f903e8a88b_2025-03-18T12-23-29.216577.json
+2025-03-18 14:31:22,107 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:31:24,690 - __main__ - INFO - Contenu pertinent (formation, score: 0.35): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:31:24,692 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\063f542e38c660a1e383b1f903e8a88b_2025-03-18T14-31-24.690990.json
+2025-03-18 14:31:26,203 - __main__ - INFO - Traitement de l'URL standard (10/500): https://www.bioforce.org/learn/les-formations-par-geographie/
+2025-03-18 14:31:26,203 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-formations-par-geographie/
+2025-03-18 14:31:27,628 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/learn/les-formations-par-geographie/
+2025-03-18 14:31:29,129 - __main__ - INFO - Traitement de l'URL standard (11/500): https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:31:29,130 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:31:29,131 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\540d89ff42f0e0a88322987195821107_2025-03-18T12-23-35.130927.json
+2025-03-18 14:31:29,252 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:31:30,737 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:31:30,742 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\540d89ff42f0e0a88322987195821107_2025-03-18T14-31-30.742237.json
+2025-03-18 14:31:32,247 - __main__ - INFO - Traitement de l'URL standard (12/500): https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:31:32,247 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:31:32,261 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\92db9bddc26102fc89a7f6dc9edee0f1_2025-03-18T12-23-39.148761.json
+2025-03-18 14:31:32,377 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:31:33,909 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:31:33,909 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\92db9bddc26102fc89a7f6dc9edee0f1_2025-03-18T14-31-33.909559.json
+2025-03-18 14:31:35,418 - __main__ - INFO - Traitement de l'URL standard (13/500): https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:31:35,418 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:31:35,435 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\4ee5bfc1ab39e8fb37380da41db4c8bd_2025-03-18T12-23-42.047560.json
+2025-03-18 14:31:35,531 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:31:36,864 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:31:36,883 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\4ee5bfc1ab39e8fb37380da41db4c8bd_2025-03-18T14-31-36.864949.json
+2025-03-18 14:31:38,386 - __main__ - INFO - Traitement de l'URL standard (14/500): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:31:38,386 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:31:38,404 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f889aa188fea532d403fe58a7593571a_2025-03-18T12-23-48.399816.json
+2025-03-18 14:31:38,515 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:31:40,143 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:31:40,143 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f889aa188fea532d403fe58a7593571a_2025-03-18T14-31-40.143307.json
+2025-03-18 14:31:41,655 - __main__ - INFO - Traitement de l'URL standard (15/500): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:41,655 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:41,673 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\ced11c53742dba2ac945105c3a79e151_2025-03-18T12-23-53.467950.json
+2025-03-18 14:31:41,987 - __main__ - INFO - Pas d'info de modification, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:45,570 - __main__ - INFO - Contenu pertinent (formation, score: 0.35): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:45,570 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\ced11c53742dba2ac945105c3a79e151_2025-03-18T14-31-45.570267.json
+2025-03-18 14:31:47,071 - __main__ - INFO - Traitement de l'URL standard (16/500): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:47,072 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:47,085 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\9ca78a31cf3d9bc02c683e6f6fb2e8ab_2025-03-18T12-23-57.998297.json
+2025-03-18 14:31:47,386 - __main__ - INFO - Pas d'info de modification, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:50,478 - __main__ - INFO - Contenu pertinent (formation, score: 0.35): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:50,478 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\9ca78a31cf3d9bc02c683e6f6fb2e8ab_2025-03-18T14-31-50.478317.json
+2025-03-18 14:31:51,984 - __main__ - INFO - Traitement de l'URL standard (17/500): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:51,985 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:52,003 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\6687fa183e82ef41388b49333bbb3a13_2025-03-18T12-24-06.396290.json
+2025-03-18 14:31:52,259 - __main__ - INFO - Pas d'info de modification, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:59,038 - __main__ - INFO - Contenu pertinent (formation, score: 0.35): https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:31:59,038 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\6687fa183e82ef41388b49333bbb3a13_2025-03-18T14-31-59.038052.json
+2025-03-18 14:32:00,546 - __main__ - INFO - Traitement de l'URL standard (18/500): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:00,546 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:00,546 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\97ab659d27737bd332a57e7f86558676_2025-03-18T12-24-09.492460.json
+2025-03-18 14:32:00,673 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:02,247 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:02,247 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\97ab659d27737bd332a57e7f86558676_2025-03-18T14-32-02.247980.json
+2025-03-18 14:32:03,748 - __main__ - INFO - Traitement de l'URL standard (19/500): https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:03,748 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:03,752 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\ab3841601573fe6aba41221f1a430fd5_2025-03-18T12-24-12.527874.json
+2025-03-18 14:32:03,854 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:05,471 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:05,477 - __main__ - INFO - Contenu pertinent (formation, score: 0.45): https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:05,479 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\ab3841601573fe6aba41221f1a430fd5_2025-03-18T14-32-05.477872.json
+2025-03-18 14:32:06,993 - __main__ - INFO - Traitement de l'URL standard (20/500): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:06,994 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:06,999 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\811dd5caca53622e942ebf78fa430569_2025-03-18T12-24-15.565838.json
+2025-03-18 14:32:07,119 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:08,676 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:08,677 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\811dd5caca53622e942ebf78fa430569_2025-03-18T14-32-08.676815.json
+2025-03-18 14:32:10,187 - __main__ - INFO - Traitement de l'URL standard (21/500): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:10,187 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:10,192 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\2d78901214371057ec02dcab668613bf_2025-03-18T12-24-18.711249.json
+2025-03-18 14:32:10,306 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:11,963 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:11,963 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\2d78901214371057ec02dcab668613bf_2025-03-18T14-32-11.963833.json
+2025-03-18 14:32:13,476 - __main__ - INFO - Traitement de l'URL standard (22/500): https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:13,477 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:13,492 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\48dc7059bab0dc5181e027a095c18a01_2025-03-18T12-24-21.794021.json
+2025-03-18 14:32:13,625 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:15,253 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:15,259 - __main__ - INFO - Contenu pertinent (formation, score: 0.45): https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:15,272 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\48dc7059bab0dc5181e027a095c18a01_2025-03-18T14-32-15.260525.json
+2025-03-18 14:32:15,272 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-18 14:32:15,272 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-18 14:32:15,887 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/
+2025-03-18 14:32:15,982 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:16,004 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/
+2025-03-18 14:32:16,068 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/
+2025-03-18 14:32:16,173 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/ (1 chunks)
+2025-03-18 14:32:17,260 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/faq/
+2025-03-18 14:32:17,277 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:17,337 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/faq/
+2025-03-18 14:32:17,436 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/faq/
+2025-03-18 14:32:17,537 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/faq/ (6 chunks)
+2025-03-18 14:32:18,292 - __main__ - INFO - Indexation document FAQ dans la collection BIOFORCE: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:18,326 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 14:32:18,390 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:18,450 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:18,551 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/ (6 chunks)
+2025-03-18 14:32:19,435 - __main__ - INFO - Indexation document FAQ dans la collection BIOFORCE: https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:32:19,461 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 14:32:19,525 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:32:19,577 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/question/comment-creer-son-espace-candidat/
+2025-03-18 14:32:19,681 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/question/comment-creer-son-espace-candidat/ (4 chunks)
+2025-03-18 14:32:20,443 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/actualites/
+2025-03-18 14:32:20,467 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:20,535 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/actualites/
+2025-03-18 14:32:20,591 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/actualites/
+2025-03-18 14:32:20,692 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/actualites/ (4 chunks)
+2025-03-18 14:32:21,292 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/alumni/
+2025-03-18 14:32:21,321 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:21,389 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 10 chunks existants pour https://www.bioforce.org/learn/alumni/
+2025-03-18 14:32:21,473 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/alumni/
+2025-03-18 14:32:21,574 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/alumni/ (10 chunks)
+2025-03-18 14:32:21,851 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:32:21,872 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:21,935 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 2 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:32:22,013 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/
+2025-03-18 14:32:22,114 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/ (2 chunks)
+2025-03-18 14:32:22,709 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:32:22,735 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:22,755 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:32:22,802 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/
+2025-03-18 14:32:22,908 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/ (1 chunks)
+2025-03-18 14:32:23,482 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:32:23,511 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:23,578 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:32:23,635 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/
+2025-03-18 14:32:23,736 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-europe/ (4 chunks)
+2025-03-18 14:32:24,072 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:32:24,095 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:24,157 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:32:24,222 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/
+2025-03-18 14:32:24,323 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-formations-par-geographie/les-formations-humanitaires-en-afrique/ (4 chunks)
+2025-03-18 14:32:25,114 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:32:25,136 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:25,198 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:32:25,261 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/
+2025-03-18 14:32:25,363 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-formations-par-geographie/toutes-les-formations-humanitaires-a-distance/ (6 chunks)
+2025-03-18 14:32:26,068 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:32:26,092 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:26,158 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 5 chunks existants pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:32:26,214 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/
+2025-03-18 14:32:26,316 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/bachelor-post-bac-responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire/ (5 chunks)
+2025-03-18 14:32:26,709 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:26,730 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:26,753 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:26,805 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:26,906 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=50&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (1 chunks)
+2025-03-18 14:32:27,221 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:27,243 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:27,266 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:27,316 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:27,416 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-cycle=0&f-duree=0&f-age=0&f-mode=66&f-date=&action=formations-filter&page=&type-formation=individus (1 chunks)
+2025-03-18 14:32:28,039 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:28,064 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:28,085 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:28,132 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-18 14:32:28,233 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=470&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (1 chunks)
+2025-03-18 14:32:28,499 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:28,514 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:28,582 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:28,635 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+2025-03-18 14:32:28,739 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/ (6 chunks)
+2025-03-18 14:32:29,094 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:29,119 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:29,142 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:29,198 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/
+2025-03-18 14:32:29,299 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/logisticien-de-laction-humanitaire/ (1 chunks)
+2025-03-18 14:32:29,583 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:29,605 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:29,677 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 7 chunks existants pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:29,739 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/
+2025-03-18 14:32:29,841 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-logistique/ (7 chunks)
+2025-03-18 14:32:30,196 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:30,220 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:30,286 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 9 chunks existants pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:30,392 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-18 14:32:30,495 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/ (9 chunks)
+2025-03-18 14:32:30,837 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:30,859 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:32:30,881 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:30,932 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/humanitarian-programme-manager/
+2025-03-18 14:32:31,033 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/humanitarian-programme-manager/ (1 chunks)
+2025-03-18 14:32:31,033 - __main__ - INFO - Lot 1 indexé avec succès: 20 documents (2 FAQ, 18 standards)
+2025-03-18 14:32:32,538 - __main__ - INFO - Traitement de l'URL standard (23/500): https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:32:32,538 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:32:32,552 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\b6698b317c46bf283e79acaee1e3fbc5_2025-03-18T12-24-42.724149.json
+2025-03-18 14:32:32,678 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:32:34,269 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:34,279 - __main__ - INFO - Contenu pertinent (formation, score: 0.60): https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:32:34,280 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\b6698b317c46bf283e79acaee1e3fbc5_2025-03-18T14-32-34.279960.json
+2025-03-18 14:32:35,794 - __main__ - INFO - Traitement de l'URL standard (24/500): https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:32:35,794 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:32:35,809 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f4738d5bbb525da4cd836eb3c48c0ee3_2025-03-18T12-24-45.825084.json
+2025-03-18 14:32:36,001 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:32:37,635 - __main__ - INFO - URL FAQ détectée: https://www.bioforce.org/question/comment-utiliser-lespace-candidat/
+2025-03-18 14:32:37,647 - __main__ - INFO - Contenu pertinent (formation, score: 0.60): https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:32:37,650 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f4738d5bbb525da4cd836eb3c48c0ee3_2025-03-18T14-32-37.648504.json
+2025-03-18 14:32:39,153 - __main__ - INFO - Traitement de l'URL standard (25/500): https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:32:39,153 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:32:39,169 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\699d3cb8851ecfaf86f52b7bebf90817_2025-03-18T12-24-48.826707.json
+2025-03-18 14:32:39,303 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:32:40,907 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:32:40,910 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\699d3cb8851ecfaf86f52b7bebf90817_2025-03-18T14-32-40.907956.json
+2025-03-18 14:32:42,424 - __main__ - INFO - Traitement de l'URL standard (26/500): https://www.bioforce.org/learn/les-formations-courtes-continues/
+2025-03-18 14:32:42,424 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-formations-courtes-continues/
+2025-03-18 14:32:43,869 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/learn/les-formations-courtes-continues/
+2025-03-18 14:32:45,382 - __main__ - INFO - Traitement de l'URL standard (27/500): https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:32:45,387 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:32:45,405 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\bcca23261c77a2a02fc1adee0b6e0911_2025-03-18T12-24-54.848490.json
+2025-03-18 14:32:45,547 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:32:47,051 - __main__ - INFO - Contenu pertinent (formation, score: 0.85): https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:32:47,051 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\bcca23261c77a2a02fc1adee0b6e0911_2025-03-18T14-32-47.051182.json
+2025-03-18 14:32:48,557 - __main__ - INFO - Traitement de l'URL standard (28/500): https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:32:48,557 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:32:48,573 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\07d6fce67ce595e93fb6b7287a30e72a_2025-03-18T12-24-57.842915.json
+2025-03-18 14:32:48,705 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:32:50,274 - __main__ - INFO - Contenu pertinent (formation, score: 0.60): https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:32:50,317 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\07d6fce67ce595e93fb6b7287a30e72a_2025-03-18T14-32-50.313703.json
+2025-03-18 14:32:51,833 - __main__ - INFO - Traitement de l'URL standard (29/500): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:32:51,834 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:32:51,837 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\e1302b124e40042366b5c0645ae64b88_2025-03-18T12-25-00.865090.json
+2025-03-18 14:32:51,969 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:32:53,717 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:32:53,717 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\e1302b124e40042366b5c0645ae64b88_2025-03-18T14-32-53.717381.json
+2025-03-18 14:32:55,223 - __main__ - INFO - Traitement de l'URL standard (30/500): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:32:55,224 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:32:55,229 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\b16716fd696ec5fd1d9a841cb39b1107_2025-03-18T12-25-05.101894.json
+2025-03-18 14:32:55,377 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:32:58,985 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:32:58,987 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\b16716fd696ec5fd1d9a841cb39b1107_2025-03-18T14-32-58.986426.json
+2025-03-18 14:33:00,499 - __main__ - INFO - Traitement de l'URL standard (31/500): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:00,512 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:00,538 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\50c14ba9b18e0ac5c97eace3fad13175_2025-03-18T12-25-08.787900.json
+2025-03-18 14:33:00,668 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:02,742 - __main__ - INFO - Contenu pertinent (formation, score: 0.95): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:02,742 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\50c14ba9b18e0ac5c97eace3fad13175_2025-03-18T14-33-02.742807.json
+2025-03-18 14:33:04,244 - __main__ - INFO - Traitement de l'URL standard (32/500): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:04,245 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:04,259 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\5a89926e93839bcf4a3855656be7ff57_2025-03-18T12-25-12.479757.json
+2025-03-18 14:33:04,351 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:06,409 - __main__ - INFO - Contenu pertinent (formation, score: 0.95): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:06,410 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\5a89926e93839bcf4a3855656be7ff57_2025-03-18T14-33-06.409622.json
+2025-03-18 14:33:07,919 - __main__ - INFO - Traitement de l'URL standard (33/500): https://www.bioforce.org/build/missions/
+2025-03-18 14:33:07,921 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/build/missions/
+2025-03-18 14:33:07,937 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f34b1d0dbafe0f5d2145e59257e2973b_2025-03-18T12-25-15.696730.json
+2025-03-18 14:33:08,033 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/build/missions/
+2025-03-18 14:33:09,545 - __main__ - INFO - Contenu pertinent (faq, score: 0.55): https://www.bioforce.org/build/missions/
+2025-03-18 14:33:09,546 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f34b1d0dbafe0f5d2145e59257e2973b_2025-03-18T14-33-09.545315.json
+2025-03-18 14:33:11,059 - __main__ - INFO - Traitement de l'URL standard (34/500): https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:11,071 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:11,091 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\c2395a4625d21f994eaee42658426a99_2025-03-18T12-25-19.235290.json
+2025-03-18 14:33:11,199 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:13,335 - __main__ - INFO - Contenu pertinent (formation, score: 0.60): https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:13,335 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\c2395a4625d21f994eaee42658426a99_2025-03-18T14-33-13.335294.json
+2025-03-18 14:33:14,845 - __main__ - INFO - Traitement de l'URL standard (35/500): https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:14,845 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:14,845 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\5651bc4f5d18fcf328608369c447721b_2025-03-18T12-25-22.185473.json
+2025-03-18 14:33:14,957 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:16,552 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:16,553 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\5651bc4f5d18fcf328608369c447721b_2025-03-18T14-33-16.552844.json
+2025-03-18 14:33:18,070 - __main__ - INFO - Traitement de l'URL standard (36/500): https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:33:18,070 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:33:18,070 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\580c4ce6b492ba7b870668cfd8fa658a_2025-03-18T12-25-25.335246.json
+2025-03-18 14:33:18,177 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:33:19,639 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:33:19,640 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\580c4ce6b492ba7b870668cfd8fa658a_2025-03-18T14-33-19.639876.json
+2025-03-18 14:33:21,143 - __main__ - INFO - Traitement de l'URL standard (37/500): https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:33:21,143 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:33:21,143 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\fd71cc11517ff7e630760c962494330e_2025-03-18T12-25-28.473143.json
+2025-03-18 14:33:21,259 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:33:22,868 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:33:22,868 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\fd71cc11517ff7e630760c962494330e_2025-03-18T14-33-22.868868.json
+2025-03-18 14:33:24,384 - __main__ - INFO - Traitement de l'URL standard (38/500): https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:33:24,385 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:33:24,402 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\4960300c3af8427d92c16857524ee0ad_2025-03-18T12-25-31.559420.json
+2025-03-18 14:33:24,512 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:33:26,095 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:33:26,107 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\4960300c3af8427d92c16857524ee0ad_2025-03-18T14-33-26.095412.json
+2025-03-18 14:33:27,612 - __main__ - INFO - Traitement de l'URL standard (39/500): https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:33:27,613 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:33:27,630 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\86f03396466383f00b8b5ca567e5f185_2025-03-18T12-25-34.591400.json
+2025-03-18 14:33:27,759 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:33:30,378 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:33:30,379 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\86f03396466383f00b8b5ca567e5f185_2025-03-18T14-33-30.378453.json
+2025-03-18 14:33:31,896 - __main__ - INFO - Traitement de l'URL standard (40/500): https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:33:31,896 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:33:31,900 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f05d000a1c476d37fec29e6192c4a43d_2025-03-18T12-25-37.563637.json
+2025-03-18 14:33:32,013 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:33:33,989 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:33:33,993 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f05d000a1c476d37fec29e6192c4a43d_2025-03-18T14-33-33.990506.json
+2025-03-18 14:33:35,500 - __main__ - INFO - Traitement de l'URL standard (41/500): https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:33:35,501 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:33:35,505 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\31730d3cafbda07a2052a998f5dd6911_2025-03-18T12-25-40.750231.json
+2025-03-18 14:33:35,608 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:33:37,424 - __main__ - INFO - Contenu pertinent (formation, score: 0.55): https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:33:37,426 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\31730d3cafbda07a2052a998f5dd6911_2025-03-18T14-33-37.426990.json
+2025-03-18 14:33:38,934 - __main__ - INFO - Traitement de l'URL standard (42/500): https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:33:38,935 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:33:38,939 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f772a553f272a1b1f1f4ef6ea16a9e45_2025-03-18T12-25-44.809605.json
+2025-03-18 14:33:39,073 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:33:40,602 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:33:40,604 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\f772a553f272a1b1f1f4ef6ea16a9e45_2025-03-18T14-33-40.603152.json
+2025-03-18 14:33:42,113 - __main__ - INFO - Traitement de l'URL standard (43/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:33:42,113 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:33:42,116 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\e96a3d3ee1077026d6cbec9d0f18e600_2025-03-18T12-25-47.753983.json
+2025-03-18 14:33:42,201 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:33:43,685 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:33:43,685 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\e96a3d3ee1077026d6cbec9d0f18e600_2025-03-18T14-33-43.685192.json
+2025-03-18 14:33:43,685 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-18 14:33:43,685 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-18 14:33:44,096 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:33:44,182 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:44,205 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:33:44,269 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/
+2025-03-18 14:33:44,372 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement/ (1 chunks)
+2025-03-18 14:33:44,785 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:33:44,806 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:44,829 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:33:44,877 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+2025-03-18 14:33:44,979 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/ (1 chunks)
+2025-03-18 14:33:45,724 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:33:45,744 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:45,809 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:33:45,877 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/vae/
+2025-03-18 14:33:45,978 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/vae/ (4 chunks)
+2025-03-18 14:33:46,276 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:33:46,298 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:46,363 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 2 chunks existants pour https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:33:46,413 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/
+2025-03-18 14:33:46,516 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-formations-courtes-en-presentiel/ (2 chunks)
+2025-03-18 14:33:47,149 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:33:47,169 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:47,233 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 3 chunks existants pour https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:33:47,285 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/centres/plateforme-e-learning/
+2025-03-18 14:33:47,386 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/centres/plateforme-e-learning/ (3 chunks)
+2025-03-18 14:33:47,869 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:33:47,892 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:47,914 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:33:47,962 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 14:33:48,063 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/ (1 chunks)
+2025-03-18 14:33:48,327 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:33:48,346 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:48,413 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 2 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:33:48,463 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/
+2025-03-18 14:33:48,567 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/ (2 chunks)
+2025-03-18 14:33:48,863 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:48,887 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:48,949 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:49,004 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/
+2025-03-18 14:33:49,105 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/ (4 chunks)
+2025-03-18 14:33:49,413 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:49,435 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:49,497 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 3 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:49,548 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/
+2025-03-18 14:33:49,652 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/sur-mesure/ (3 chunks)
+2025-03-18 14:33:49,884 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/build/missions/
+2025-03-18 14:33:49,905 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:49,969 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 2 chunks existants pour https://www.bioforce.org/build/missions/
+2025-03-18 14:33:50,016 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/build/missions/
+2025-03-18 14:33:50,131 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/build/missions/ (2 chunks)
+2025-03-18 14:33:53,463 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:53,485 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:53,542 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 3 chunks existants pour https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:53,600 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/build/campus-ephemere/
+2025-03-18 14:33:53,701 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/build/campus-ephemere/ (3 chunks)
+2025-03-18 14:33:54,743 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:54,776 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:33:54,835 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 3 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:54,892 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/
+2025-03-18 14:33:54,994 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/un-lien-unique-avec-les-organisations-humanitaires/ (3 chunks)
+2025-03-18 14:34:17,727 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:34:17,822 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:17,885 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:34:17,991 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/
+2025-03-18 14:34:18,093 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/preparez-vous-au-terrain/ (4 chunks)
+2025-03-18 14:34:18,451 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:34:18,471 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:18,532 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:34:18,609 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/
+2025-03-18 14:34:18,710 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/ (6 chunks)
+2025-03-18 14:34:19,151 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:34:19,176 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:19,242 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 11 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:34:19,321 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/
+2025-03-18 14:34:19,422 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/comptez-sur-nous/ (11 chunks)
+2025-03-18 14:34:20,986 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:34:21,003 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:21,070 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:34:21,126 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-18 14:34:21,234 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/ (6 chunks)
+2025-03-18 14:34:21,630 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:34:21,651 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:21,713 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 6 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:34:21,771 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/
+2025-03-18 14:34:21,873 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/ (6 chunks)
+2025-03-18 14:34:25,585 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:34:25,602 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:25,668 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:34:25,721 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/
+2025-03-18 14:34:25,822 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/chiffres-cles/ (1 chunks)
+2025-03-18 14:34:26,110 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:34:26,133 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:26,197 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 4 chunks existants pour https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:34:26,250 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/
+2025-03-18 14:34:26,353 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-engagements-bioforce/accessibilite-aux-personnes-en-situation-de-handicap/ (4 chunks)
+2025-03-18 14:34:26,667 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:34:26,692 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:34:26,751 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 2 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:34:26,804 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/
+2025-03-18 14:34:26,908 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/ (2 chunks)
+2025-03-18 14:34:26,909 - __main__ - INFO - Lot 2 indexé avec succès: 20 documents (0 FAQ, 20 standards)
+2025-03-18 14:34:28,420 - __main__ - INFO - Traitement de l'URL standard (44/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+2025-03-18 14:34:28,420 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+2025-03-18 14:34:28,435 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\54caf2a2602925a3b3d55d3dd9ca6ce8_2025-03-18T12-26-16.801530.json
+2025-03-18 14:34:28,571 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+2025-03-18 14:34:31,344 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+2025-03-18 14:34:31,346 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\54caf2a2602925a3b3d55d3dd9ca6ce8_2025-03-18T14-34-31.345471.json
+2025-03-18 14:34:32,858 - __main__ - INFO - Traitement de l'URL standard (45/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 14:34:32,859 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 14:34:32,873 - __main__ - INFO - Document existant trouvé: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\8332ada72312091adac5713732f6ceaf_2025-03-18T12-26-20.784967.json
+2025-03-18 14:34:32,983 - __main__ - INFO - Page modifiée depuis le dernier scraping, re-scraping: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 14:34:35,804 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 14:34:35,806 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\8332ada72312091adac5713732f6ceaf_2025-03-18T14-34-35.805400.json
+2025-03-18 14:34:36,996 - __main__ - ERROR - Erreur lors de la fermeture des ressources: BrowserContext.close: Target page, context or browser has been closed

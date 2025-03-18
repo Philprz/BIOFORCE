@@ -4,7 +4,7 @@
 */
 
 :root {
-    --bioforce-orange: #ef7d00;
+    --bioforce-orange: #FF5733;
     --bioforce-dark: #333333;
     --bioforce-light: #f5f5f5;
     --bioforce-blue: #0072b1;
@@ -56,8 +56,8 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #d06c00;
-    border-color: #d06c00;
+    background-color: #FF8C69;
+    border-color: #FF8C69;
 }
 
 .status-indicator {
@@ -109,7 +109,7 @@ body {
 }
 
 .action-card:hover {
-    background-color: rgba(239, 125, 0, 0.1);
+    background-color: rgba(255, 87, 51, 0.1);
 }
 
 .sidebar-nav {
@@ -125,7 +125,7 @@ body {
 }
 
 .sidebar-nav li:hover, .sidebar-nav li.active {
-    background-color: rgba(239, 125, 0, 0.1);
+    background-color: rgba(255, 87, 51, 0.1);
 }
 
 .sidebar-nav a {

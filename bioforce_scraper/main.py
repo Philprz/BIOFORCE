@@ -14,19 +14,22 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from urllib.parse import urljoin, urlparse
-
+import sys
 import aiohttp
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
-# Import de bioforce_scraper
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent))
+
 from bioforce_scraper.config import (
     API_HOST, BASE_URL, COLLECTION_NAME, EXCLUDE_EXTENSIONS, EXCLUDE_PATTERNS,
     LOG_FILE, MAX_PAGES, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR,
     PDF_DIR, PRIORITY_PATTERNS, REQUEST_DELAY, RETRY_DELAY, USER_AGENT,
-    DATA_DIR, QDRANT_URL, QDRANT_API_KEY, START_URLS, FAQ_URLS, FAQ_PATTERNS
+    DATA_DIR, QDRANT_URL, QDRANT_API_KEY, START_URLS, FAQ_URLS, FAQ_PATTERNS, FAQ_INDEX_URLS, FAQ_SITEMAP_URL
 )
-from bioforce_scraper.extractors.html_extractor import extract_html_content
+from bioforce_scraper.extractors.html_extractor import extract_metadata, clean_text
 from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
 from bioforce_scraper.utils.content_classifier import ContentClassifier
 from bioforce_scraper.utils.logger import setup_logger
@@ -130,67 +133,159 @@ class BioforceScraperMain:
             logger.error(f"Erreur lors de la fermeture des ressources: {str(e)}")
 
     async def run(self):
-        """Exécute le processus de scraping"""
-        logger.info("Démarrage du scraper Bioforce")
-        
-        await self.initialize()
-        
-        # Test de la connexion à Qdrant et de la génération d'embeddings
-        if not await self.test_qdrant_and_embedding():
-            logger.error("Erreur lors du test de Qdrant et des embeddings, arrêt du processus")
-            return
-        
+        """
+        Exécute le processus de scraping
+        """
         try:
-            logger.info(f"Début du scraping, limite: {MAX_PAGES} pages")
+            # Tester la connexion à Qdrant et la génération d'embeddings
+            if not await self.test_qdrant_and_embedding():
+                logger.error("Échec des tests préliminaires, arrêt du traitement")
+                return
             
-            # Compteur pour le nombre de pages traitées
+            # Initialiser le navigateur
+            await self.initialize()
+            
+            logger.info("Démarrage du scraping...")
             processed_count = 0
             batch_count = 0
             
-            # Ajouter des URLs de la FAQ en priorité
-            if not self.queue:
+            # Créer le répertoire de données s'il n'existe pas
+            os.makedirs(DATA_DIR, exist_ok=True)
+            
+            # Récupérer les URLs FAQ depuis le sitemap XML
+            logger.info("Récupération des URLs FAQ depuis le sitemap...")
+            faq_urls_with_dates = {}
+            
+            # Utiliser le SitemapParser pour récupérer les URLs FAQ avec leurs dates de dernière modification
+            sitemap_parser = SitemapParser()
+            faq_urls_with_dates = await sitemap_parser.parse_faq_sitemap(FAQ_SITEMAP_URL)
+            
+            if not faq_urls_with_dates:
+                logger.warning(f"Aucune URL FAQ trouvée dans le sitemap. Utilisation de l'approche classique.")
+                # Ajouter les URLs FAQ directement depuis la configuration
                 for url in FAQ_URLS:
                     self.queue.append({"url": url, "priority": 100, "depth": 0, "is_faq": True})
                 logger.info(f"Ajout prioritaire des {len(FAQ_URLS)} URLs de la FAQ")
+                
+                # Explorer les pages index de FAQ pour trouver toutes les questions
+                await self.explore_faq_pages()
+            else:
+                logger.info(f"{len(faq_urls_with_dates)} URLs FAQ trouvées dans le sitemap.")
+                
+                # Stocker les timestamps des documents déjà traités pour décider quoi mettre à jour
+                processed_doc_timestamps = {}
+                if self.incremental:
+                    # Récupérer les informations des documents déjà traités
+                    for file_name in os.listdir(DATA_DIR):
+                        if file_name.endswith('.json'):
+                            try:
+                                file_path = os.path.join(DATA_DIR, file_name)
+                                with open(file_path, 'r', encoding='utf-8') as f:
+                                    doc_data = json.load(f)
+                                    url = doc_data.get('url', '')
+                                    timestamp = doc_data.get('timestamp', '')
+                                    if url and timestamp:
+                                        processed_doc_timestamps[url] = timestamp
+                            except Exception as e:
+                                logger.error(f"Erreur lors du chargement du document existant {file_name}: {e}")
+                
+                # Ajouter les URLs FAQ à la queue en fonction de leur date de dernière modification
+                faq_added = 0
+                for url, lastmod in faq_urls_with_dates.items():
+                    # Vérifier si l'URL a déjà été traitée et si elle a été modifiée depuis
+                    needs_update = True
+                    if self.incremental and url in processed_doc_timestamps:
+                        stored_timestamp = processed_doc_timestamps[url]
+                        
+                        # Comparer les dates
+                        try:
+                            # Convertir lastmod en datetime
+                            if 'T' in lastmod:
+                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%dT%H:%M:%S')
+                            else:
+                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%d')
+                            
+                            # Convertir stored_timestamp en datetime
+                            if 'T' in stored_timestamp:
+                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%dT%H:%M:%S.%f')
+                            else:
+                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%d')
+                            
+                            # Si la date stockée est plus récente, pas besoin de mettre à jour
+                            if stored_dt >= lastmod_dt:
+                                needs_update = False
+                                logger.debug(f"FAQ déjà à jour, ignorée: {url}")
+                        except Exception as e:
+                            logger.warning(f"Erreur lors de la comparaison des dates pour {url}: {e}")
+                    
+                    if needs_update and url not in self.visited_urls:
+                        self.queue.append({"url": url, "priority": 100, "depth": 0, "is_faq": True, "lastmod": lastmod})
+                        faq_added += 1
+                
+                logger.info(f"{faq_added} URLs FAQ ajoutées à la file d'attente pour traitement")
             
             # Traiter la file d'attente jusqu'à ce qu'elle soit vide ou qu'on atteigne la limite
             while self.queue and len(self.visited_urls) < MAX_PAGES:
                 # Trier la file d'attente par priorité
-                self.queue.sort(key=lambda x: x.get("priority", 0), reverse=True)
+                self.queue.sort(key=lambda x: x.get('priority', 0), reverse=True)
                 
-                # Extraire l'URL avec la priorité la plus élevée
+                # Récupérer l'URL avec la priorité la plus élevée
                 url_info = self.queue.pop(0)
                 url = url_info.get("url")
                 depth = url_info.get("depth", 0)
                 is_faq = url_info.get("is_faq", False)
+                lastmod = url_info.get("lastmod", None)
                 
-                # Vérifier si l'URL a déjà été visitée
+                # Vérifier si l'URL doit être scrapée (mode incrémental)
+                if self.incremental and url in processed_doc_timestamps and lastmod:
+                    stored_timestamp = processed_doc_timestamps[url]
+                    
+                    # Comparer les dates
+                    try:
+                        # Convertir lastmod en datetime
+                        if lastmod:
+                            if 'T' in lastmod:
+                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%dT%H:%M:%S')
+                            else:
+                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%d')
+                            
+                            # Convertir stored_timestamp en datetime
+                            if 'T' in stored_timestamp:
+                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%dT%H:%M:%S.%f')
+                            else:
+                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%d')
+                            
+                            # Si la date stockée est plus récente, pas besoin de mettre à jour
+                            if stored_dt >= lastmod_dt:
+                                logger.info(f"URL déjà à jour, ignorée: {url}")
+                                self.skipped_count += 1
+                                continue
+                            else:
+                                logger.info(f"URL modifiée, re-scraping: {url}")
+                    except Exception as e:
+                        logger.warning(f"Erreur lors de la comparaison des dates pour {url}: {e}")
+                
+                # Vérifier si l'URL est déjà dans les URLs visitées
                 if url in self.visited_urls:
                     continue
                 
-                # Vérifier si l'URL est autorisée par robots.txt
+                # Vérifier le robots.txt
                 if not self.robots_parser.is_allowed(url):
-                    logger.info(f"URL non autorisée par robots.txt: {url}")
+                    logger.info(f"URL {url} non autorisée par robots.txt, ignorée")
                     continue
                 
-                # Marquer l'URL comme visitée
-                self.visited_urls.add(url)
+                # Incrémenter le compteur de pages traitées
                 processed_count += 1
+                logger.info(f"Traitement de l'URL {processed_count}/{MAX_PAGES}: {url}")
                 
-                # Traiter l'URL
-                if is_faq or any(pattern in url for pattern in FAQ_PATTERNS):
-                    logger.info(f"Traitement de l'URL FAQ ({processed_count}/{MAX_PAGES}): {url}")
-                    is_faq = True
-                else:
-                    logger.info(f"Traitement de l'URL standard ({processed_count}/{MAX_PAGES}): {url}")
-                
-                # Vérifier si l'URL est un PDF
-                if url.endswith(".pdf"):
-                    # Traiter un PDF
+                # Traiter l'URL en fonction de son type
+                if url.endswith('.pdf'):
+                    # Traiter un fichier PDF
                     data = await self.process_pdf(url)
+                    
                     if data:
                         self.pdf_count += 1
-                        # Sauvegarder le document PDF (incluant le filtrage par pertinence)
+                        # Sauvegarder le document PDF
                         data_to_index = self.save_data(data)
                         if data_to_index:
                             self.doc_batch.append(data_to_index)
@@ -435,170 +530,141 @@ class BioforceScraperMain:
         Returns:
             Tuple (données extraites, nouvelles URLs)
         """
-        logger.info(f"Traitement de la page HTML: {url}")
+        logger.info(f"Traitement de {url}")
         
-        # Vérifier si la page a déjà été scrapée (mode incrémental)
-        if self.incremental:
-            # Générer l'ID de document basé sur l'URL
-            import hashlib
-            doc_id = hashlib.md5(url.encode()).hexdigest()
-            
-            # Vérifier si le fichier existe déjà
-            os.makedirs(DATA_DIR, exist_ok=True)
-            existing_files = [f for f in os.listdir(DATA_DIR) if f.startswith(doc_id)]
-            
-            if existing_files:
-                # Trier par date pour obtenir le fichier le plus récent
-                existing_files.sort(reverse=True)
-                latest_file = existing_files[0]
-                file_path = os.path.join(DATA_DIR, latest_file)
-                
-                try:
-                    # Charger le document existant
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        existing_document = json.load(f)
-                    
-                    logger.info(f"Document existant trouvé: {file_path}")
-                    
-                    # Vérifier si la page a changé (en faisant une requête HEAD)
-                    async with aiohttp.ClientSession() as session:
-                        try:
-                            async with session.head(url, allow_redirects=True, timeout=10) as response:
-                                # Vérifier si la page existe toujours
-                                if response.status != 200:
-                                    logger.warning(f"La page n'existe plus ou a été déplacée: {url}")
-                                    return existing_document, []
-                                
-                                # Vérifier si la page a été modifiée
-                                last_modified = response.headers.get('Last-Modified')
-                                etag = response.headers.get('ETag')
-                                
-                                # Si on n'a pas d'info sur la modification, on doit la scraper à nouveau
-                                if not last_modified and not etag:
-                                    logger.info(f"Pas d'info de modification, re-scraping: {url}")
-                                else:
-                                    # Comparer avec les données stockées
-                                    stored_timestamp = existing_document.get('timestamp', '')
-                                    if last_modified and stored_timestamp and last_modified <= stored_timestamp:
-                                        # La page n'a pas changé depuis le dernier scraping
-                                        logger.info(f"Page inchangée depuis le dernier scraping: {url}")
-                                        self.unchanged_content_count += 1
-                                        return existing_document, []
-                                    
-                                    logger.info(f"Page modifiée depuis le dernier scraping, re-scraping: {url}")
-                                    self.updated_content_count += 1
-                                    
-                        except Exception as e:
-                            logger.warning(f"Erreur lors de la vérification de modification: {e}")
-                            # En cas d'erreur, on utilise le document existant par sécurité
-                            return existing_document, []
-                except Exception as e:
-                    logger.warning(f"Erreur lors du chargement du document existant: {e}")
+        # Vérifier si l'URL a déjà été scrapée
+        if self.incremental and url in self.visited_urls:
+            logger.info(f"URL déjà visitée, ignorée: {url}")
+            return None, []
         
-        # Si on arrive ici, il faut scraper la page
+        # Ajouter l'URL à la liste des URLs visitées
+        self.visited_urls.add(url)
+        
         page = await self.context.new_page()
         try:
-            # Utiliser la méthode avec retry dans html_extractor.py
-            html_data = await extract_html_content(page, url)
+            # Accéder à la page
+            await page.goto(url, wait_until="networkidle")
             
-            # Extraire le titre
-            title = await page.title()
+            # Vérifier si c'est une page FAQ (en utilisant l'URL et le contenu)
+            is_faq = any(pattern in url for pattern in FAQ_PATTERNS)
             
-            # Extraire le contenu principal
-            content = html_data.get('text', '')
-            
-            # Extraire les métadonnées
-            metadata = await page.evaluate("""() => {
-                const meta = {};
-                
-                // Récupérer les balises meta
-                const metaTags = document.querySelectorAll('meta');
-                metaTags.forEach(tag => {
-                    const name = tag.getAttribute('name') || tag.getAttribute('property');
-                    const content = tag.getAttribute('content');
+            # Vérifier également le contenu de la page pour des indicateurs de FAQ
+            if not is_faq:
+                # Rechercher des éléments typiques des pages FAQ dans le contenu
+                faq_indicators = await page.evaluate("""() => {
+                    // Vérifier des schémas courants dans les pages FAQ
+                    const hasQuestionTitle = !!document.querySelector('h1, h2, h3').textContent.includes('?');
+                    const hasQuestionSections = document.querySelectorAll('h2, h3, .question, .faq-question').length > 0;
+                    const hasFaqClasses = !!document.querySelector('.faq, .question, .answer, .qa, .accordion');
+                    const hasQuestionMark = document.body.textContent.split('?').length > 3; // Plusieurs points d'interrogation
                     
-                    if (name && content) {
-                        meta[name] = content;
-                    }
-                });
+                    return {
+                        hasQuestionTitle,
+                        hasQuestionSections,
+                        hasFaqClasses,
+                        hasQuestionMark
+                    };
+                }""")
                 
-                return meta;
-            }""")
-            
-            # Extraire les titres h1, h2, h3
-            headings = await page.evaluate("""() => {
-                const headingElements = document.querySelectorAll('h1, h2, h3');
-                return Array.from(headingElements).map(h => ({
-                    level: parseInt(h.tagName.substring(1)),
-                    text: h.innerText.trim()
-                }));
-            }""")
-            
-            # Extraire les liens
-            links = await page.evaluate("""() => {
-                const anchors = Array.from(document.querySelectorAll('a[href]'));
-                return anchors.map(a => a.href);
-            }""")
-            
-            # Filtrer les liens par domaine (bioforce.org) et patterns d'exclusion
-            filtered_links = []
-            for link in links:
-                if link and not link.startswith('javascript:') and not link.startswith('#'):
-                    # Convertir en URL absolue
-                    full_url = urljoin(url, link)
-                    parsed_url = urlparse(full_url)
-                    
-                    # Vérifier si le lien appartient au domaine bioforce.org
-                    if parsed_url.netloc and "bioforce.org" in parsed_url.netloc:
-                        # Vérifier les patterns d'exclusion
-                        exclude = False
-                        for pattern in EXCLUDE_PATTERNS:
-                            if pattern in full_url:
-                                exclude = True
-                                break
-                        
-                        if not exclude:
-                            filtered_links.append(full_url)
-            
-            # Prioriser les URLs
-            new_urls = []
-            for link in filtered_links:
-                # Vérifier si c'est un lien FAQ
-                is_faq_link = any(pattern in link for pattern in FAQ_PATTERNS)
+                # Considérer comme FAQ si plusieurs indicateurs sont présents
+                is_faq = (faq_indicators.get('hasQuestionTitle', False) and faq_indicators.get('hasQuestionMark', False)) or \
+                         (faq_indicators.get('hasQuestionSections', False) and faq_indicators.get('hasFaqClasses', False))
                 
-                # Attribuer une priorité en fonction du type de lien
-                if is_faq_link:
-                    # Priorité maximale pour les URLs FAQ
-                    priority = 100
-                    logger.info(f"URL FAQ détectée: {link}")
-                else:
-                    # Priorité standard basée sur les mots-clés
-                    priority = 10 if prioritize_url(link, PRIORITY_PATTERNS) else 1
-                
-                new_urls.append({
-                    "url": link,
-                    "priority": priority,
-                    "depth": depth + 1,
-                    "is_faq": is_faq_link
-                })
+                if is_faq:
+                    logger.info(f"Page identifiée comme FAQ par analyse de contenu: {url}")
             
-            # Créer le document extrait
-            data = {
+            # Obtenir le contenu HTML
+            html_content = await page.content()
+            
+            # Extraire le contenu de la page
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # Extraction des données manuellement
+            content_data = {
                 "url": url,
-                "title": title,
-                "content": content,
-                "metadata": metadata,
-                "headings": headings,
-                "links": filtered_links,
+                "title": soup.title.text.strip() if soup.title else "",
+                "content": clean_text(soup.get_text()),
                 "timestamp": datetime.now().isoformat(),
-                "is_faq": any(pattern in url for pattern in FAQ_PATTERNS)
+                "is_faq": is_faq,
+                "relevance_score": 0.7,  # Score de base
             }
             
-            return data, new_urls
+            # Ajout des métadonnées
+            metadata = extract_metadata(soup)
+            content_data.update(metadata)
+            
+            # Analyse avec le classifieur si disponible
+            if self.content_classifier:
+                # Obtenir les résultats de classification
+                is_relevant, relevance_score, category = self.content_classifier.classify_content(content_data)
+                content_data["relevance_score"] = relevance_score
+                content_data["category"] = category
+            
+            if not content_data:
+                logger.warning(f"Aucun contenu extrait pour {url}")
+                return None, []
+            
+            # Si c'est une FAQ, augmenter le score de pertinence
+            if is_faq:
+                content_data["relevance_score"] = max(content_data.get("relevance_score", 0.5), 0.9)
+                logger.info(f"Traitement d'une page FAQ: {url}")
+            
+            # Extraire les liens de la page
+            links = []
+            for a_tag in soup.find_all('a', href=True):
+                href = a_tag['href']
+                # Traiter les URLs relatives
+                if href.startswith('/'): 
+                    href = f"{BASE_URL}{href}"
+                elif not href.startswith(('http://', 'https://')):
+                    continue
+                
+                # Vérifier si l'URL appartient au domaine
+                parsed_href = urlparse(href)
+                if not parsed_href.netloc or "bioforce.org" not in parsed_href.netloc:
+                    continue
+                
+                # Vérifier les patterns d'exclusion
+                exclude = False
+                for pattern in EXCLUDE_PATTERNS:
+                    if pattern in href:
+                        exclude = True
+                        break
+                
+                # Vérifier les extensions exclues
+                for ext in EXCLUDE_EXTENSIONS:
+                    if href.endswith(ext):
+                        if ext == '.pdf':
+                            # Ajouter les PDFs à la file pour traitement
+                            links.append({"url": href, "priority": 50, "depth": depth + 1, "is_pdf": True, "is_faq": is_faq})
+                        exclude = True
+                        break
+                
+                if exclude:
+                    continue
+                
+                # Vérifier si c'est une URL de FAQ
+                link_is_faq = any(pattern in href for pattern in FAQ_PATTERNS)
+                
+                # Calculer la priorité de l'URL
+                priority = 10  # Priorité de base
+                if prioritize_url(href, PRIORITY_PATTERNS):
+                    priority = 50  # Priorité élevée pour les URLs importantes
+                
+                # Augmenter significativement la priorité si c'est une URL de FAQ
+                if link_is_faq:
+                    priority = 100  # Priorité maximale pour les FAQs
+                
+                # Augmenter la priorité des liens trouvés dans une page FAQ
+                if is_faq and not link_is_faq:
+                    priority += 20  # Les liens trouvés dans des pages FAQ sont aussi importants
+                
+                links.append({"url": href, "priority": priority, "depth": depth + 1, "is_faq": link_is_faq})
+            
+            return content_data, links
             
         except Exception as e:
-            logger.error(f"Erreur lors du traitement de la page HTML {url}: {str(e)}")
-            self.failed_urls.append(url)
+            logger.error(f"Erreur lors du traitement de {url}: {e}")
             return None, []
             
         finally:
@@ -664,6 +730,65 @@ class BioforceScraperMain:
             logger.error(f"Erreur lors du traitement du PDF {url}: {str(e)}")
             self.failed_urls.append(url)
             return None
+
+    async def explore_faq_pages(self):
+        """
+        Explore spécifiquement les pages FAQ pour les ajouter à la file d'attente en priorité
+        Cette fonction parcourt systématiquement les pages index de FAQ pour trouver toutes les questions
+        """
+        logger.info("Exploration dédiée des pages FAQ...")
+        
+        # Initialiser un ensemble pour éviter les doublons
+        faq_urls = set()
+        
+        # Explorer chaque page index de FAQ
+        for index_url in FAQ_INDEX_URLS:
+            logger.info(f"Exploration de la page index FAQ: {index_url}")
+            
+            page = await self.context.new_page()
+            try:
+                # Accéder à la page d'index de FAQ
+                await page.goto(index_url, wait_until="networkidle")
+                
+                # Extraire tous les liens
+                links = await page.evaluate("""() => {
+                    const anchors = Array.from(document.querySelectorAll('a[href]'));
+                    return anchors.map(a => a.href);
+                }""")
+                
+                # Filtrer les liens pour ne garder que les questions FAQ
+                for link in links:
+                    # Vérifier si le lien est une page de question FAQ
+                    if link and isinstance(link, str) and any(pattern in link for pattern in FAQ_PATTERNS):
+                        # Vérifier que l'URL est du domaine bioforce.org
+                        parsed_url = urlparse(link)
+                        if parsed_url.netloc and "bioforce.org" in parsed_url.netloc:
+                            # Vérifier les patterns d'exclusion
+                            exclude = False
+                            for pattern in EXCLUDE_PATTERNS:
+                                if pattern in link:
+                                    exclude = True
+                                    break
+                            
+                            if not exclude and link not in faq_urls:
+                                faq_urls.add(link)
+                                logger.info(f"URL FAQ trouvée: {link}")
+            
+            except Exception as e:
+                logger.error(f"Erreur lors de l'exploration de la page FAQ {index_url}: {str(e)}")
+            
+            finally:
+                await page.close()
+        
+        # Ajouter toutes les URLs FAQ à la file d'attente avec une priorité maximale
+        faq_count = 0
+        for url in faq_urls:
+            if url not in self.visited_urls:
+                self.queue.append({"url": url, "priority": 100, "depth": 0, "is_faq": True})
+                faq_count += 1
+        
+        logger.info(f"Exploration FAQ terminée: {faq_count} URLs de FAQ ajoutées à la file d'attente")
+        return faq_count
 
 async def main():
     """Fonction principale"""

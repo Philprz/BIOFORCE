@@ -1,7 +1,6 @@
 """
 Module pour la priorisation des URLs à scraper
 """
-import logging
 from typing import List
 
 from bioforce_scraper.config import LOG_FILE, PRIORITY_PATTERNS

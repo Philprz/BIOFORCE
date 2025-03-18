@@ -1,12 +1,9 @@
 """
 Module d'intégration principal pour mettre à jour la base de connaissances du chatbot
 """
-import asyncio
 import json
-import logging
 import os
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
 
 from integration.qdrant_connector import QdrantConnector
 from main import BioforceScraperMain

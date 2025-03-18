@@ -1,11 +1,9 @@
 """
 Module pour l'extraction de contenu à partir des pages HTML
 """
-import logging
-import re
-from typing import Dict, List, Any, Optional
 import asyncio
-import time
+import re
+from typing import Dict, List, Any
 
 # Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
 import sys

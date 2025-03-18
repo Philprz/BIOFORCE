@@ -1,9 +1,8 @@
 """
 Module pour la classification automatique du contenu
 """
-import logging
 import re
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List
 
 import sys
 import pathlib

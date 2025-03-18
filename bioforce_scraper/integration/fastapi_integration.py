@@ -1,12 +1,10 @@
 """
 Module d'intégration avec FastAPI pour le scraper Bioforce
 """
-import asyncio
-import logging
 import os
 import json
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, List, Optional
 
 import sys
 import pathlib
@@ -14,7 +12,7 @@ import pathlib
 sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
 
 from bioforce_scraper.config import DATA_DIR
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from pydantic import BaseModel
 
 from integration.knowledge_updater import KnowledgeUpdater
@@ -74,7 +72,7 @@ async def get_job_status(job_id: str):
     if job_id not in scrape_jobs:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Job {job_id} not found"
+            detail="Job {} not found".format(job_id)
         )
     
     return scrape_jobs[job_id]
@@ -89,7 +87,7 @@ async def update_knowledge_base(
     Lance une tâche de mise à jour de la base de connaissances
     """
     # Générer un ID de tâche
-    job_id = f"scrape_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    job_id = "scrape_{}".format(datetime.now().strftime('%Y%m%d_%H%M%S'))
     
     # Enregistrer la tâche
     scrape_jobs[job_id] = ScrapeStatus(
@@ -124,7 +122,7 @@ async def sync_knowledge_base(
     Lance une tâche de synchronisation initiale de la base de connaissances
     """
     # Générer un ID de tâche
-    job_id = f"sync_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    job_id = "sync_{}".format(datetime.now().strftime('%Y%m%d_%H%M%S'))
     
     # Enregistrer la tâche
     scrape_jobs[job_id] = ScrapeStatus(
@@ -187,7 +185,7 @@ async def get_change_reports():
                     "unchanged_count": report.get("unchanged_count", 0),
                     "total_count": report.get("total_count", 0)
                 })
-            except Exception as e:
+            except Exception:
                 continue
     
     # Trier par timestamp décroissant
@@ -209,17 +207,17 @@ async def get_report_details(report_name: str):
     if not os.path.exists(file_path):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Report {report_name} not found"
+            detail="Report {} not found".format(report_name)
         )
     
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             report = json.load(f)
         return report
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error reading report: {str(e)}"
+            detail="Error reading report"
         )
 
 async def run_update_task(
@@ -252,11 +250,11 @@ async def run_update_task(
         scrape_jobs[job_id]["progress"] = 100.0
         scrape_jobs[job_id]["stats"] = stats
         
-    except Exception as e:
+    except Exception:
         # Gérer les erreurs
         scrape_jobs[job_id]["status"] = "failed"
         scrape_jobs[job_id]["end_time"] = datetime.now().isoformat()
-        scrape_jobs[job_id]["error"] = str(e)
+        scrape_jobs[job_id]["error"] = ""
 
 async def run_sync_task(job_id: str, updater: KnowledgeUpdater):
     """
@@ -276,8 +274,8 @@ async def run_sync_task(job_id: str, updater: KnowledgeUpdater):
         scrape_jobs[job_id]["progress"] = 100.0
         scrape_jobs[job_id]["stats"] = stats
         
-    except Exception as e:
+    except Exception:
         # Gérer les erreurs
         scrape_jobs[job_id]["status"] = "failed"
         scrape_jobs[job_id]["end_time"] = datetime.now().isoformat()
-        scrape_jobs[job_id]["error"] = str(e)
+        scrape_jobs[job_id]["error"] = ""

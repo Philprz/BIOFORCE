@@ -1,0 +1,49 @@
+2025-03-18 14:48:39,428 - bioforce_scraper.integration.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io
+2025-03-18 14:48:39,429 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-18 14:48:40,283 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-18 14:48:40,366 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:48:40,395 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/test
+2025-03-18 14:48:40,472 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/test
+2025-03-18 14:48:40,575 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/test (1 chunks)
+2025-03-18 14:48:40,595 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 14:48:40,646 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/question/test
+2025-03-18 14:48:40,774 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/question/test (1 chunks)
+2025-03-18 14:48:40,774 - __main__ - INFO - Test de connexion à Qdrant et d'upsert de documents réussi
+2025-03-18 14:48:40,774 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-18 14:48:40,818 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-18 14:48:41,627 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-18 14:48:41,627 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-18 14:48:41,627 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-18 14:48:42,303 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-18 14:48:42,319 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-18 14:48:44,300 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-18 14:48:44,409 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:44,705 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-18 14:48:44,709 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:45,047 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-18 14:48:45,059 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:45,313 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-18 14:48:45,321 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:46,076 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-18 14:48:46,109 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:46,442 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-18 14:48:46,450 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:46,959 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:48:46,986 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:47,291 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-18 14:48:47,292 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:47,947 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-18 14:48:47,969 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-18 14:48:47,973 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-18 14:48:47,973 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-18 14:48:47,974 - __main__ - INFO - Mode incrémental: True
+2025-03-18 14:48:47,974 - __main__ - INFO - Démarrage du scraping...
+2025-03-18 14:48:47,975 - __main__ - INFO - Récupération des URLs FAQ depuis le sitemap...
+2025-03-18 14:48:47,975 - bioforce_scraper.utils.sitemap_parser - INFO - Parsing du sitemap FAQ: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:48:48,642 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:48:48,676 - bioforce_scraper.utils.sitemap_parser - INFO - 232 URLs FAQ trouvées dans le sitemap
+2025-03-18 14:48:48,681 - __main__ - INFO - 232 URLs FAQ trouvées dans le sitemap.
+2025-03-18 14:48:49,165 - __main__ - INFO - 230 URLs FAQ ajoutées à la file d'attente pour traitement
+2025-03-18 14:48:49,165 - __main__ - ERROR - Erreur lors du scraping: 'BioforceScraperMain' object has no attribute 'is_allowed_by_robots'
+2025-03-18 14:48:49,832 - __main__ - INFO - Ressources libérées
+2025-03-18 14:48:49,833 - __main__ - INFO - Temps d'exécution total: 11.01 secondes

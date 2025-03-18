@@ -2,9 +2,8 @@
 Module pour analyser le sitemap XML de Bioforce et extraire les URLs pertinentes
 """
 import asyncio
-import logging
 import re
-from typing import Dict, List, Any, Optional, Set, Tuple
+from typing import Dict, List, Any, Optional, Tuple
 from urllib.parse import urlparse
 
 import aiohttp
@@ -37,6 +36,7 @@ class SitemapParser:
         self.urls = set()
         self.sitemaps = set()
         self.urls_with_priority = []  # Liste de tuples (url, priorité, date de modification)
+        self.faq_urls = {}  # Dictionnaire {url: dernière_modification} pour les FAQs
         
         # Patterns pour filtrer les URLs pertinentes
         self.high_priority_patterns = [
@@ -44,8 +44,17 @@ class SitemapParser:
             r'/candidature/',
             r'/financement/',
             r'/faq/',
+            r'/question/',
             r'/learn/',
             r'/about/'
+        ]
+        
+        # Patterns pour identifier les FAQs
+        self.faq_patterns = [
+            r'/question/',
+            r'/?faq=',
+            r'/faq-',
+            r'/faq/'
         ]
         
         # Patterns pour exclure des URLs non pertinentes
@@ -172,8 +181,62 @@ class SitemapParser:
                     self.urls.add(url)
                     self.urls_with_priority.append((url, priority, lastmod_date))
                     new_urls += 1
+                    
+                # Vérifier si l'URL est une FAQ
+                for pattern in self.faq_patterns:
+                    if re.search(pattern, url, re.IGNORECASE):
+                        self.faq_urls[url] = lastmod_date
+                        break
             
             logger.info(f"Sitemap analysé: {new_urls} nouvelles URLs pertinentes trouvées")
+    
+    async def parse_faq_sitemap(self, sitemap_url: str) -> Dict[str, Any]:
+        """
+        Parse spécifiquement le sitemap des FAQs (questions) et retourne leurs URLs avec dates de modification
+        
+        Args:
+            sitemap_url: URL du sitemap des FAQs (ex: question-sitemap.xml)
+            
+        Returns:
+            Dictionnaire {url: date_modification} pour les FAQs
+        """
+        logger.info(f"Parsing du sitemap FAQ: {sitemap_url}")
+        content = await self.fetch_sitemap(sitemap_url)
+        
+        if not content:
+            logger.error(f"Impossible de récupérer le sitemap FAQ: {sitemap_url}")
+            return {}
+        
+        soup = BeautifulSoup(content, 'xml')
+        urls_with_dates = {}
+        
+        # Extraire les URLs et les dates de dernière modification
+        for url_tag in soup.find_all('url'):
+            loc = url_tag.find('loc')
+            lastmod = url_tag.find('lastmod')
+            
+            if loc:
+                url = loc.text.strip()
+                lastmod_date = None
+                
+                if lastmod:
+                    try:
+                        # Format YYYY-MM-DD ou YYYY-MM-DDThh:mm:ss+00:00
+                        lastmod_text = lastmod.text.strip()
+                        if 'T' in lastmod_text:
+                            lastmod_date = lastmod_text.split('+')[0]
+                        else:
+                            lastmod_date = lastmod_text
+                    except Exception as e:
+                        logger.warning(f"Erreur de parsing de date pour {url}: {e}")
+                
+                # Vérifier si c'est une FAQ
+                if any(re.search(pattern, url, re.IGNORECASE) for pattern in self.faq_patterns):
+                    urls_with_dates[url] = lastmod_date
+                    logger.debug(f"URL FAQ trouvée: {url}, dernière modification: {lastmod_date}")
+        
+        logger.info(f"{len(urls_with_dates)} URLs FAQ trouvées dans le sitemap")
+        return urls_with_dates
     
     async def run(self) -> List[Dict[str, Any]]:
         """

@@ -14,8 +14,9 @@ START_URLS = [
     "https://www.bioforce.org/learn/financer-ma-formation/",
 ]
 
-# URL spécifique pour la FAQ
-FAQ_URL = "https://www.bioforce.org/faq/"
+# URLs des sitemaps
+SITEMAP_INDEX_URL = "https://www.bioforce.org/sitemap_index.xml"
+FAQ_SITEMAP_URL = "https://www.bioforce.org/question-sitemap.xml"
 
 # URLs spécifiques pour la FAQ
 FAQ_URLS = [
@@ -23,9 +24,18 @@ FAQ_URLS = [
     "https://www.bioforce.org/en/question/"
 ]
 
+# URLs des pages index de FAQ (pages qui listent les questions)
+FAQ_INDEX_URLS = [
+    "https://www.bioforce.org/faq/",
+    "https://www.bioforce.org/en/faq/"
+]
+
 # Patterns pour détecter les URLs de la FAQ
 FAQ_PATTERNS = [
-    "/question/"
+    "/question/",
+    "/?faq=",
+    "/faq-",
+    "/faq/"
 ]
 
 # Patterns à exclure

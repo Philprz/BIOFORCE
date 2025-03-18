@@ -1,9 +1,7 @@
 """
 Module pour filtrer les URLs selon différents critères
 """
-import logging
-import re
-from typing import List, Optional
+from typing import List
 from urllib.parse import urlparse
 
 # Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API

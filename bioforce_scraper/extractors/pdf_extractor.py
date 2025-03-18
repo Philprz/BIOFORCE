@@ -2,7 +2,6 @@
 Module pour l'extraction de contenu à partir des fichiers PDF
 """
 import io
-import logging
 import os
 import re
 import tempfile
@@ -13,7 +12,6 @@ import pytesseract
 from PIL import Image
 from pdfminer.high_level import extract_text
 from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 from PyPDF2 import PdfReader
 
@@ -220,7 +218,7 @@ def extract_pdf_metadata(pdf_data: bytes) -> Dict[str, Any]:
                     if isinstance(value, bytes):
                         try:
                             value = value.decode('utf-8', errors='ignore')
-                        except:
+                        except UnicodeError:
                             value = str(value)
                     metadata[key] = value
     
