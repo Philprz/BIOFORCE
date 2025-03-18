@@ -2,9 +2,6 @@
 Module principal pour le scraper Bioforce
 """
 import asyncio
-from bioforce_scraper.extractors.html_extractor import extract_page_content # Importation de la fonction extract_page_content
-from tqdm import tqdm # Import de tqdm pour éviter le NameError
-from bioforce_scraper.utils.classifier import classify_content  
 import hashlib
 import json
 import logging
@@ -18,22 +15,33 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple, Set
 from urllib.parse import urljoin, urlparse
 
-import aiohttp
-from bs4 import BeautifulSoup
-from playwright.async_api import async_playwright, Page, Browser
+# Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent))
 
-from bioforce_scraper.config import (BASE_URL, DATA_DIR, EXCLUDE_PATTERNS, LOG_FILE,
-                   MAX_PAGES, PDF_DIR, PRIORITY_PATTERNS, 
-                   REQUEST_DELAY, START_URLS, USER_AGENT)
-from bioforce_scraper.utils.content_tracker import ContentTracker
+from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
+from qdrant_client.http import models
+
+from bioforce_scraper.config import (
+    VECTOR_SIZE, BASE_URL, START_URLS, EXCLUDE_PATTERNS,
+    USER_AGENT, TIMEOUT, MAX_PAGES, MAX_LINKS_PER_PAGE,
+    LOG_FILE, QDRANT_HOST, QDRANT_API_KEY, COLLECTION_NAME_ALL,
+    PROCESSED_URLS_FILE, USE_QDRANT, DEBUG
+)
+from bioforce_scraper.utils.robots_parser import RobotsParser
+from bioforce_scraper.utils.url_filter import is_valid_url
+from bioforce_scraper.utils.qdrant_connector import QdrantConnector
 from bioforce_scraper.utils.embeddings import generate_embeddings
+from bioforce_scraper.utils.content_classifier import ContentClassifier
+from bioforce_scraper.utils.sitemap_parser import SitemapParser
+from bioforce_scraper.extractors.html_extractor import extract_content
+from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
+from bioforce_scraper.utils.classifier import classify_content  
 from bioforce_scraper.utils.language_detector import detect_language
 from bioforce_scraper.utils.logger import setup_logger
-from bioforce_scraper.utils.qdrant_connector import QdrantConnector
-from bioforce_scraper.utils.robots_parser import RobotsParser
-from bioforce_scraper.utils.url_prioritizer import prioritize_url
-from bioforce_scraper.utils.sitemap_parser import SitemapParser
-from bioforce_scraper.utils.content_classifier import ContentClassifier
+from bioforce_scraper.utils.content_tracker import ContentTracker
 
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
@@ -340,7 +348,7 @@ class BioforceScraperMain:
         page = await self.context.new_page()
         try:
             # Utiliser la méthode avec retry dans html_extractor.py
-            await extract_page_content(page, url)
+            await extract_content(page, url)
             
             # Extraire le titre
             title = await page.title()

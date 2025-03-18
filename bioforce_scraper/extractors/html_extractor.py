@@ -6,9 +6,15 @@ import re
 from typing import Dict, List, Any
 import asyncio
 
+# Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
 from bs4 import BeautifulSoup
-from config import LOG_FILE
-from utils.logger import setup_logger
+from bioforce_scraper.config import LOG_FILE
+from bioforce_scraper.utils.logger import setup_logger
 
 logger = setup_logger(__name__, LOG_FILE)
 
@@ -30,19 +36,19 @@ CONTENT_SELECTORS = [
     '.build-section'
 ]
 
-async def extract_page_content(page) -> Dict[str, Any]:
+async def extract_content(page, url) -> Dict[str, Any]:
     """
     Extrait le contenu d'une page HTML utilisant Playwright
     
     Args:
         page: L'objet page Playwright
+        url: L'URL de la page à extraire
         
     Returns:
         Un dictionnaire contenant le contenu extrait
     """
     try:
         # Récupérer l'URL, le titre et le contenu HTML complet
-        url = page.url
         retries = 3
         for attempt in range(retries):
             try:

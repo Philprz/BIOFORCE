@@ -31,24 +31,29 @@ EXCLUDE_PATTERNS = [
     "sitemap", "mentions-legales", "confidentialite"
 ]
 
-# Configuration technique
-REQUEST_DELAY = 1.5  # Delay between requests in seconds
-MAX_PAGES = 500      # Maximum number of pages to scrape
-PDF_MAX_SIZE = 20 * 1024 * 1024  # 20 MB max PDF size
-USER_AGENT = "BioforceBot/1.0 (+https://www.bioforce.org/; Data collection for educational chatbot)"
-
-# Catégories de contenu
-CONTENT_CATEGORIES = [
-    "formation", "admission", "financement", "logistique", 
-    "faq", "processus", "informations_pratiques", "général"
-]
-
 # Structure de répertoire
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 PDF_DIR = os.path.join(OUTPUT_DIR, "pdfs")
 DATA_DIR = os.path.join(OUTPUT_DIR, "data")
 LOG_DIR = os.path.join(OUTPUT_DIR, "logs")
 REPORTS_DIR = os.path.join(OUTPUT_DIR, "reports")
+
+# Configuration technique
+REQUEST_DELAY = 1.5  # Delay between requests in seconds
+MAX_PAGES = 500      # Maximum number of pages to scrape
+PDF_MAX_SIZE = 20 * 1024 * 1024  # 20 MB max PDF size
+USER_AGENT = "BioforceBot/1.0 (+https://www.bioforce.org/; Data collection for educational chatbot)"
+MAX_LINKS_PER_PAGE = 100  # Nombre maximum de liens à extraire par page
+TIMEOUT = 30  # Timeout en secondes pour les requêtes
+PROCESSED_URLS_FILE = os.path.join(OUTPUT_DIR, "processed_urls.json")  # Fichier pour stocker les URLs traitées
+USE_QDRANT = True  # Utilisation de Qdrant pour stocker les embeddings
+DEBUG = False  # Mode debug
+
+# Catégories de contenu
+CONTENT_CATEGORIES = [
+    "formation", "admission", "financement", "logistique", 
+    "faq", "processus", "informations_pratiques", "général"
+]
 
 # Format de date pour l'extraction
 DATE_FORMAT = "%Y-%m-%d"
@@ -61,8 +66,10 @@ SUPPORTED_LANGUAGES = ["fr", "en"]
 QDRANT_COLLECTION = "BIOFORCE"  # Collection pour la FAQ
 QDRANT_COLLECTION_ALL = "BIOFORCE_ALL"  # Collection pour le site complet
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+QDRANT_HOST = os.getenv("QDRANT_URL", "http://localhost:6333")  # Alias pour QDRANT_URL pour compatibilité
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
 VECTOR_SIZE = 1536  # Taille des vecteurs OpenAI
+COLLECTION_NAME_ALL = "BIOFORCE_ALL"  # Alias pour QDRANT_COLLECTION_ALL pour compatibilité
 
 # Configuration OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")

@@ -5,6 +5,12 @@ import logging
 import re
 from typing import Dict, Any, List, Tuple, Set, Optional
 
+# Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
 from bioforce_scraper.config import LOG_FILE
 from bioforce_scraper.utils.logger import setup_logger
 

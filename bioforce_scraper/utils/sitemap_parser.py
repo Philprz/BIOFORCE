@@ -10,6 +10,11 @@ from urllib.parse import urlparse
 import aiohttp
 from bs4 import BeautifulSoup
 
+import sys
+import pathlib
+# Ajouter le répertoire parent au path pour pouvoir importer les modules
+sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
+
 from bioforce_scraper.config import BASE_URL, LOG_FILE
 from bioforce_scraper.utils.logger import setup_logger
 
