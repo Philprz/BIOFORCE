@@ -4,6 +4,7 @@ Module d'intégration avec Qdrant pour stocker les données scrapées dans la ba
 import logging
 import os
 import json
+import time
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
@@ -27,7 +28,7 @@ class QdrantConnector:
     Connector pour intégrer les données scrapées dans Qdrant
     """
     
-    def __init__(self, url=None, api_key=None, collection_name="bioforce_knowledge"):
+    def __init__(self, url=None, api_key=None, collection_name=None):
         """
         Initialise la connexion à Qdrant
         
@@ -219,11 +220,20 @@ class QdrantConnector:
             return False
         
         try:
+            # Déterminer la collection en fonction de l'URL
+            source_url = document.get("source_url", "")
+            if source_url.startswith("https://www.bioforce.org/question") or source_url.startswith("https://www.bioforce.org/en/question"):
+                collection_name = "BIOFORCE"
+            else:
+                collection_name = "BIOFORCE_ALL"
+            
+            # Mettre à jour la collection à utiliser
+            self.collection_name = collection_name
+            
             # S'assurer que la collection existe
             self.ensure_collection()
             
             # Vérifier si le document existe déjà
-            source_url = document.get("source_url")
             existing_ids = self.get_document_ids_by_url(source_url)
             
             # Si le document existe, le supprimer d'abord

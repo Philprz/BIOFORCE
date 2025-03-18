@@ -135,6 +135,11 @@ class BioforceScraperMain:
         
         await self.initialize()
         
+        # Test de la connexion à Qdrant et de la génération d'embeddings
+        if not await self.test_qdrant_and_embedding():
+            logger.error("Erreur lors du test de Qdrant et des embeddings, arrêt du processus")
+            return
+        
         try:
             logger.info(f"Début du scraping, limite: {MAX_PAGES} pages")
             
@@ -261,7 +266,17 @@ class BioforceScraperMain:
                 }
                 
                 # Ajouter le document à Qdrant
-                result = self.qdrant_connector.upsert_document(doc_id, embedding, payload)
+                result = self.qdrant_connector.upsert_document_chunks({
+                    "source_url": document["url"],
+                    "title": document["title"],
+                    "content": document["content"],
+                    "category": document["category"],
+                    "timestamp": document.get("timestamp", ""),
+                    "language": document.get("language", "fr"),
+                    "relevance_score": document.get("relevance_score", 0.5),
+                    "type": "html" if not document.get("pdf_path") else "pdf",
+                    "vector": embedding if embedding else None
+                }, generate_id=True)
                 
                 if result:
                     indexed_count += 1
@@ -278,12 +293,62 @@ class BioforceScraperMain:
         # Vider le batch après l'indexation
         self.doc_batch = []
 
+    async def test_qdrant_and_embedding(self):
+        """
+        Teste la connexion à Qdrant et la génération d'embeddings au début du processus
+        
+        Returns:
+            bool: True si le test est réussi, False sinon
+        """
+        logger.info("Test de la connexion à Qdrant et de la génération d'embeddings...")
+        try:
+            # Test de génération d'embeddings
+            test_text = "Ceci est un test de génération d'embeddings pour Bioforce"
+            embedding = await generate_embeddings(test_text)
+            
+            if embedding is None:
+                logger.error("Échec du test de génération d'embeddings")
+                return False
+            
+            logger.info(f"Test de génération d'embeddings réussi (dimension: {len(embedding)})")
+            
+            # Test d'upsert dans Qdrant
+            test_doc = {
+                "source_url": "https://www.bioforce.org/test",
+                "title": "Test Document",
+                "content": test_text,
+                "category": "test",
+                "type": "html",
+                "language": "fr",
+                "vector": embedding
+            }
+            
+            # Test d'upsert dans Qdrant (collection BIOFORCE_ALL)
+            result_all = self.qdrant_connector.upsert_document_chunks(test_doc)
+            if not result_all:
+                logger.error("Échec du test d'upsert dans la collection BIOFORCE_ALL")
+                return False
+            
+            # Test d'upsert dans Qdrant (collection BIOFORCE)
+            test_doc["source_url"] = "https://www.bioforce.org/question/test"
+            result_faq = self.qdrant_connector.upsert_document_chunks(test_doc)
+            if not result_faq:
+                logger.error("Échec du test d'upsert dans la collection BIOFORCE")
+                return False
+            
+            logger.info("Test de connexion à Qdrant et d'upsert de documents réussi")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Erreur lors du test de Qdrant et des embeddings: {str(e)}")
+            return False
+
     def save_data(self, url_data):
         """Sauvegarde les données extraites"""
         url = url_data.get("url", "")
         content = url_data.get("content", "")
         title = url_data.get("title", "")
-        timestamp = url_data.get("timestamp", "")
+        timestamp = url_data.get("timestamp", datetime.now().isoformat())  # Utiliser le timestamp actuel s'il n'est pas défini
         links = url_data.get("links", [])
         pdf_links = url_data.get("pdf_links", [])
         other_links = url_data.get("other_links", [])
@@ -320,16 +385,19 @@ class BioforceScraperMain:
         doc_id = hashlib.md5(url.encode()).hexdigest()
        
         # Si le contenu a un timestamp, l'ajouter à l'ID pour suivre les mises à jour
-        if timestamp:
-            doc_id = f"{doc_id}_{timestamp.replace(':', '-').replace(' ', '_')}"
+        current_time = datetime.now().strftime("%Y-%m-%dT%H-%M-%S.%f")
+        file_id = f"{doc_id}_{current_time}"
 
         # Archiver les données extraites
         os.makedirs(DATA_DIR, exist_ok=True)
-        file_path = os.path.join(DATA_DIR, f"{doc_id}.json")
+        file_path = os.path.join(DATA_DIR, f"{file_id}.json")
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(document, f, ensure_ascii=False, indent=2)
         logger.info(f"Données sauvegardées dans {file_path}")
 
+        # Incrémenter le compteur de nouveaux contenus
+        self.new_content_count += 1
+        
         return document
 
     async def process_html(self, url, depth):
@@ -345,6 +413,65 @@ class BioforceScraperMain:
         """
         logger.info(f"Traitement de la page HTML: {url}")
         
+        # Vérifier si la page a déjà été scrapée (mode incrémental)
+        if self.incremental:
+            # Générer l'ID de document basé sur l'URL
+            import hashlib
+            doc_id = hashlib.md5(url.encode()).hexdigest()
+            
+            # Vérifier si le fichier existe déjà
+            os.makedirs(DATA_DIR, exist_ok=True)
+            existing_files = [f for f in os.listdir(DATA_DIR) if f.startswith(doc_id)]
+            
+            if existing_files:
+                # Trier par date pour obtenir le fichier le plus récent
+                existing_files.sort(reverse=True)
+                latest_file = existing_files[0]
+                file_path = os.path.join(DATA_DIR, latest_file)
+                
+                try:
+                    # Charger le document existant
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        existing_document = json.load(f)
+                    
+                    logger.info(f"Document existant trouvé: {file_path}")
+                    
+                    # Vérifier si la page a changé (en faisant une requête HEAD)
+                    async with aiohttp.ClientSession() as session:
+                        try:
+                            async with session.head(url, allow_redirects=True, timeout=10) as response:
+                                # Vérifier si la page existe toujours
+                                if response.status != 200:
+                                    logger.warning(f"La page n'existe plus ou a été déplacée: {url}")
+                                    return existing_document, []
+                                
+                                # Vérifier si la page a été modifiée
+                                last_modified = response.headers.get('Last-Modified')
+                                etag = response.headers.get('ETag')
+                                
+                                # Si on n'a pas d'info sur la modification, on doit la scraper à nouveau
+                                if not last_modified and not etag:
+                                    logger.info(f"Pas d'info de modification, re-scraping: {url}")
+                                else:
+                                    # Comparer avec les données stockées
+                                    stored_timestamp = existing_document.get('timestamp', '')
+                                    if last_modified and stored_timestamp and last_modified <= stored_timestamp:
+                                        # La page n'a pas changé depuis le dernier scraping
+                                        logger.info(f"Page inchangée depuis le dernier scraping: {url}")
+                                        self.unchanged_content_count += 1
+                                        return existing_document, []
+                                    
+                                    logger.info(f"Page modifiée depuis le dernier scraping, re-scraping: {url}")
+                                    self.updated_content_count += 1
+                                    
+                        except Exception as e:
+                            logger.warning(f"Erreur lors de la vérification de modification: {e}")
+                            # En cas d'erreur, on utilise le document existant par sécurité
+                            return existing_document, []
+                except Exception as e:
+                    logger.warning(f"Erreur lors du chargement du document existant: {e}")
+        
+        # Si on arrive ici, il faut scraper la page
         page = await self.context.new_page()
         try:
             # Utiliser la méthode avec retry dans html_extractor.py

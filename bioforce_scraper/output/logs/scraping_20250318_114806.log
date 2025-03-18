@@ -1,0 +1,217 @@
+2025-03-18 11:48:10,929 - bioforce_scraper.integration.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io
+2025-03-18 11:48:10,930 - __main__ - INFO - Démarrage du scraper Bioforce
+2025-03-18 11:48:10,931 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-18 11:48:10,974 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-18 11:48:11,516 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-18 11:48:11,517 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-18 11:48:11,518 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-18 11:48:12,207 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-18 11:48:12,212 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-18 11:48:12,794 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 11:48:12,823 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:13,118 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-18 11:48:13,124 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:13,446 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-18 11:48:13,455 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:14,095 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-18 11:48:14,127 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:14,369 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-18 11:48:14,372 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:14,688 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-18 11:48:14,696 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:14,962 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-18 11:48:14,966 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:16,799 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-18 11:48:16,907 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:17,570 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-18 11:48:17,585 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-18 11:48:17,586 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-18 11:48:17,587 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-18 11:48:17,587 - __main__ - INFO - Mode incrémental: True
+2025-03-18 11:48:17,587 - __main__ - INFO - Début du scraping, limite: 500 pages
+2025-03-18 11:48:17,588 - __main__ - INFO - Traitement de l'URL (1/500): https://www.bioforce.org/learn/
+2025-03-18 11:48:17,589 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/
+2025-03-18 11:48:20,334 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/
+2025-03-18 11:48:20,337 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\54967440f0086c2cb5320eb36304ecf3_2025-03-18T11-48-20.324861.json
+2025-03-18 11:48:21,847 - __main__ - INFO - Traitement de l'URL (2/500): https://www.bioforce.org/faq/
+2025-03-18 11:48:21,848 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/faq/
+2025-03-18 11:49:06,928 - bioforce_scraper.extractors.html_extractor - WARNING - Timeout lors du chargement de https://www.bioforce.org/faq/, tentative 1/3
+2025-03-18 11:49:53,944 - bioforce_scraper.extractors.html_extractor - WARNING - Timeout lors du chargement de https://www.bioforce.org/faq/, tentative 2/3
+2025-03-18 11:50:40,967 - bioforce_scraper.extractors.html_extractor - WARNING - Timeout lors du chargement de https://www.bioforce.org/faq/, tentative 3/3
+2025-03-18 11:50:40,967 - bioforce_scraper.extractors.html_extractor - ERROR - Échec après 3 tentatives pour https://www.bioforce.org/faq/
+2025-03-18 11:50:40,967 - __main__ - ERROR - Erreur lors du traitement de la page HTML https://www.bioforce.org/faq/: Page.goto: Timeout 45000ms exceeded.
+Call log:
+  - navigating to "https://www.bioforce.org/faq/", waiting until "networkidle"
+
+2025-03-18 11:50:42,480 - __main__ - INFO - Traitement de l'URL (3/500): https://www.bioforce.org/learn/formations-humanitaires/
+2025-03-18 11:50:42,481 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/
+2025-03-18 11:50:44,069 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/formations-humanitaires/
+2025-03-18 11:50:44,070 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\e80b49e7fc3b6da532468f7a76a41d46_2025-03-18T11-50-44.061759.json
+2025-03-18 11:50:45,575 - __main__ - INFO - Traitement de l'URL (4/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/un-site-pour-tout-savoir-de-lengagement-solidaire/
+2025-03-18 11:50:45,576 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/un-site-pour-tout-savoir-de-lengagement-solidaire/
+2025-03-18 11:50:47,047 - __main__ - INFO - Contenu pertinent (formation, score: 0.35): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/un-site-pour-tout-savoir-de-lengagement-solidaire/
+2025-03-18 11:50:47,049 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\1a400b756e6d69d506e2a391e6f7e7db_2025-03-18T11-50-47.039929.json
+2025-03-18 11:50:48,559 - __main__ - INFO - Traitement de l'URL (5/500): https://www.bioforce.org/learn/les-engagements-bioforce/
+2025-03-18 11:50:48,560 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/
+2025-03-18 11:50:50,116 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/les-engagements-bioforce/
+2025-03-18 11:50:50,118 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\9cebbbb4bc694882988aa7ff334c05cd_2025-03-18T11-50-50.110247.json
+2025-03-18 11:50:51,632 - __main__ - INFO - Traitement de l'URL (6/500): https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/coordinateurs-de-formations-de-poles/
+2025-03-18 11:50:51,633 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/coordinateurs-de-formations-de-poles/
+2025-03-18 11:50:54,154 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/coordinateurs-de-formations-de-poles/
+2025-03-18 11:50:54,156 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\286329a029cdbd929f2af97edc5e5ae9_2025-03-18T11-50-54.148657.json
+2025-03-18 11:50:55,670 - __main__ - INFO - Traitement de l'URL (7/500): https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/formateurs-associes/
+2025-03-18 11:50:55,672 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/formateurs-associes/
+2025-03-18 11:50:57,141 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/formateurs-associes/
+2025-03-18 11:50:57,141 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\590fa78ad8e86c6ae0f9c8e578241574_2025-03-18T11-50-57.133255.json
+2025-03-18 11:50:58,645 - __main__ - INFO - Traitement de l'URL (8/500): https://www.bioforce.org/en/learn/partners/
+2025-03-18 11:50:58,646 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/partners/
+2025-03-18 11:51:00,116 - __main__ - INFO - Contenu pertinent (formation, score: 0.40): https://www.bioforce.org/en/learn/partners/
+2025-03-18 11:51:00,119 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\0646e2bb2d63829ed58c8c79844ea920_2025-03-18T11-51-00.106132.json
+2025-03-18 11:51:01,619 - __main__ - INFO - Traitement de l'URL (9/500): https://www.bioforce.org/en/learn/
+2025-03-18 11:51:01,621 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/
+2025-03-18 11:51:03,230 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/
+2025-03-18 11:51:04,735 - __main__ - INFO - Traitement de l'URL (10/500): https://www.bioforce.org/en/learn/bioforce-commitments/
+2025-03-18 11:51:04,736 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/bioforce-commitments/
+2025-03-18 11:51:06,197 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/bioforce-commitments/
+2025-03-18 11:51:07,700 - __main__ - INFO - Traitement de l'URL (11/500): https://www.bioforce.org/en/learn/humanitarian-training-courses/
+2025-03-18 11:51:07,701 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/humanitarian-training-courses/
+2025-03-18 11:51:09,197 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/humanitarian-training-courses/
+2025-03-18 11:51:10,707 - __main__ - INFO - Traitement de l'URL (12/500): https://www.bioforce.org/learn/actualites/
+2025-03-18 11:51:10,709 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/actualites/
+2025-03-18 11:51:12,295 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/actualites/
+2025-03-18 11:51:12,296 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\78593707525a4686bca8b0413382adac_2025-03-18T11-51-12.284821.json
+2025-03-18 11:51:13,802 - __main__ - INFO - Traitement de l'URL (13/500): https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/
+2025-03-18 11:51:13,803 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/
+2025-03-18 11:51:15,911 - __main__ - INFO - Contenu pertinent (formation, score: 0.95): https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/
+2025-03-18 11:51:15,912 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\5cfe6b59418b1c66b93f2f6e38de9623_2025-03-18T11-51-15.896906.json
+2025-03-18 11:51:17,418 - __main__ - INFO - Traitement de l'URL (14/500): https://www.bioforce.org/en/learn/centres/europe/conferences/
+2025-03-18 11:51:17,419 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/europe/conferences/
+2025-03-18 11:51:19,169 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/centres/europe/conferences/
+2025-03-18 11:51:20,671 - __main__ - INFO - Traitement de l'URL (15/500): https://www.bioforce.org/en/learn/actualites/
+2025-03-18 11:51:20,671 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/actualites/
+2025-03-18 11:51:22,105 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/actualites/
+2025-03-18 11:51:23,614 - __main__ - INFO - Traitement de l'URL (16/500): https://www.bioforce.org/en/learn/application-individual-career-guidance/
+2025-03-18 11:51:23,615 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/application-individual-career-guidance/
+2025-03-18 11:51:25,016 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/application-individual-career-guidance/
+2025-03-18 11:51:26,519 - __main__ - INFO - Traitement de l'URL (17/500): https://www.bioforce.org/en/learn/application-open-training-course/
+2025-03-18 11:51:26,520 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/application-open-training-course/
+2025-03-18 11:51:27,938 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/application-open-training-course/
+2025-03-18 11:51:29,449 - __main__ - INFO - Traitement de l'URL (18/500): https://www.bioforce.org/en/learn/application-apl/
+2025-03-18 11:51:29,449 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/application-apl/
+2025-03-18 11:51:30,907 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/application-apl/
+2025-03-18 11:51:32,412 - __main__ - INFO - Traitement de l'URL (19/500): https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/
+2025-03-18 11:51:32,413 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/
+2025-03-18 11:51:33,895 - __main__ - INFO - Contenu pertinent (formation, score: 0.90): https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/
+2025-03-18 11:51:33,898 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\b0d30c2309572fa2a0fbd5dfbc81cea6_2025-03-18T11-51-33.884232.json
+2025-03-18 11:51:35,407 - __main__ - INFO - Traitement de l'URL (20/500): https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/
+2025-03-18 11:51:35,407 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/
+2025-03-18 11:51:36,917 - __main__ - INFO - Contenu pertinent (formation, score: 0.60): https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/
+2025-03-18 11:51:36,930 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\23ba434e3ee1b6c0a4d647ac5aec5ef9_2025-03-18T11-51-36.901031.json
+2025-03-18 11:51:38,442 - __main__ - INFO - Traitement de l'URL (21/500): https://www.bioforce.org/en/learn/centres/
+2025-03-18 11:51:38,443 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/
+2025-03-18 11:51:39,917 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/centres/
+2025-03-18 11:51:41,422 - __main__ - INFO - Traitement de l'URL (22/500): https://www.bioforce.org/en/learn/centres/europe/bioreseau/
+2025-03-18 11:51:41,423 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/europe/bioreseau/
+2025-03-18 11:51:43,171 - __main__ - INFO - Contenu pertinent (formation, score: 0.65): https://www.bioforce.org/en/learn/centres/europe/bioreseau/
+2025-03-18 11:51:43,172 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\b28d695f95525f10cb86240f70ac128e_2025-03-18T11-51-43.159432.json
+2025-03-18 11:51:44,687 - __main__ - INFO - Traitement de l'URL (23/500): https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/
+2025-03-18 11:51:44,687 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/
+2025-03-18 11:51:46,130 - __main__ - INFO - Contenu pertinent (formation, score: 0.35): https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/
+2025-03-18 11:51:46,132 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\65192eb83f0323af18eab996abef5d98_2025-03-18T11-51-46.122706.json
+2025-03-18 11:51:47,641 - __main__ - INFO - Traitement de l'URL (24/500): https://www.bioforce.org/learn/candidature-entretien-individuel/
+2025-03-18 11:51:47,641 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/candidature-entretien-individuel/
+2025-03-18 11:51:49,260 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/candidature-entretien-individuel/
+2025-03-18 11:51:49,261 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\95f5362d0f7956a182597f2cb587ccd7_2025-03-18T11-51-49.253015.json
+2025-03-18 11:51:50,777 - __main__ - INFO - Traitement de l'URL (25/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/conseillers-dorientation/
+2025-03-18 11:51:50,777 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/conseillers-dorientation/
+2025-03-18 11:51:52,274 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/conseillers-dorientation/
+2025-03-18 11:51:52,276 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\42fa190cd8df742ddd3fdc0c703e1580_2025-03-18T11-51-52.267249.json
+2025-03-18 11:51:53,778 - __main__ - INFO - Traitement de l'URL (26/500): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 11:51:53,778 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 11:51:56,379 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/learn/formations-humanitaires/former-vos-equipes/cle-en-main/nos-formations-disponibles/
+2025-03-18 11:51:56,381 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\e1302b124e40042366b5c0645ae64b88_2025-03-18T11-51-56.371027.json
+2025-03-18 11:51:57,894 - __main__ - INFO - Traitement de l'URL (27/500): https://www.bioforce.org/learn/centres/europe/le-bioreseau/
+2025-03-18 11:51:57,895 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/centres/europe/le-bioreseau/
+2025-03-18 11:51:59,569 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/centres/europe/le-bioreseau/
+2025-03-18 11:51:59,571 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\2acc45571a704e45827f44da845d7a25_2025-03-18T11-51-59.556679.json
+2025-03-18 11:52:01,095 - __main__ - INFO - Traitement de l'URL (28/500): https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/obtenez-et-partagez-votre-badge-hpass/
+2025-03-18 11:52:01,103 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/obtenez-et-partagez-votre-badge-hpass/
+2025-03-18 11:52:04,117 - __main__ - INFO - Contenu pertinent (formation, score: 0.55): https://www.bioforce.org/learn/les-engagements-bioforce/references-qualite/obtenez-et-partagez-votre-badge-hpass/
+2025-03-18 11:52:04,120 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\57650d7630a069e20bfa9215cd9627d5_2025-03-18T11-52-04.110324.json
+2025-03-18 11:52:05,629 - __main__ - INFO - Traitement de l'URL (29/500): https://www.bioforce.org/learn/centres/europe/des-temps-dinformations/soliway-solidarite-internationale-mode-demplois/
+2025-03-18 11:52:05,630 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/centres/europe/des-temps-dinformations/soliway-solidarite-internationale-mode-demplois/
+2025-03-18 11:52:07,244 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/centres/europe/des-temps-dinformations/soliway-solidarite-internationale-mode-demplois/
+2025-03-18 11:52:07,245 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\dcd7ad6bc0fa28ad5d80ad0fdf8eafd4_2025-03-18T11-52-07.234198.json
+2025-03-18 11:52:08,746 - __main__ - INFO - Traitement de l'URL (30/500): https://www.bioforce.org/en/learn/bioforce-commitments/a-unique-connection-with-humanitarian-organisations/
+2025-03-18 11:52:08,747 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/bioforce-commitments/a-unique-connection-with-humanitarian-organisations/
+2025-03-18 11:52:10,214 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/bioforce-commitments/a-unique-connection-with-humanitarian-organisations/
+2025-03-18 11:52:11,719 - __main__ - INFO - Traitement de l'URL (31/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/eau-hygiene-et-assainissement/
+2025-03-18 11:52:11,720 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/eau-hygiene-et-assainissement/
+2025-03-18 11:52:14,699 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/eau-hygiene-et-assainissement/
+2025-03-18 11:52:14,703 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\268ea0dac1bb471653f2a32757ce5a93_2025-03-18T11-52-14.684845.json
+2025-03-18 11:52:14,704 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-18 11:52:14,704 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-18 11:52:15,605 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:16,565 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:17,101 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:18,038 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:20,183 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:22,641 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:23,720 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:26,730 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:28,290 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:29,241 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:30,273 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:32,650 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:35,838 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:36,139 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:36,461 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:39,383 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:46,195 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:52,158 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:52:55,983 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:53:03,367 - __main__ - ERROR - Erreur lors de l'indexation dans Qdrant: 'QdrantConnector' object has no attribute 'upsert_document'
+2025-03-18 11:53:03,368 - __main__ - INFO - Indexation terminée: 0 documents indexés, 20 erreurs
+2025-03-18 11:53:04,869 - __main__ - INFO - Traitement de l'URL (32/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 11:53:04,869 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 11:53:08,906 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/logistique-et-securite/
+2025-03-18 11:53:08,908 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\8332ada72312091adac5713732f6ceaf_2025-03-18T11-53-08.892355.json
+2025-03-18 11:53:10,416 - __main__ - INFO - Traitement de l'URL (33/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/gestion-de-projets/
+2025-03-18 11:53:10,417 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/gestion-de-projets/
+2025-03-18 11:53:13,344 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/gestion-de-projets/
+2025-03-18 11:53:13,346 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\218fc0d8cc9a837a33af4b0270064bb4_2025-03-18T11-53-13.327721.json
+2025-03-18 11:53:14,857 - __main__ - INFO - Traitement de l'URL (34/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/nutrition/
+2025-03-18 11:53:14,857 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/nutrition/
+2025-03-18 11:53:18,064 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/nutrition/
+2025-03-18 11:53:18,065 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\7ac3b875bed28a657ddba45436ab2011_2025-03-18T11-53-18.052273.json
+2025-03-18 11:53:19,577 - __main__ - INFO - Traitement de l'URL (35/500): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/protection-de-lenfance/
+2025-03-18 11:53:19,578 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/protection-de-lenfance/
+2025-03-18 11:53:22,321 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/protection-de-lenfance/
+2025-03-18 11:53:22,323 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\86b5a3f398d2aa4f8aef18493d6ed55a_2025-03-18T11-53-22.307617.json
+2025-03-18 11:53:23,838 - __main__ - INFO - Traitement de l'URL (36/500): https://www.bioforce.org/learn/centres/notre-partenaire-au-moyen-orient/
+2025-03-18 11:53:23,838 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/learn/centres/notre-partenaire-au-moyen-orient/
+2025-03-18 11:53:25,609 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/centres/notre-partenaire-au-moyen-orient/
+2025-03-18 11:53:25,609 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\1728c2596e5b8997d91058308aec864c_2025-03-18T11-53-25.599595.json
+2025-03-18 11:53:27,116 - __main__ - INFO - Traitement de l'URL (37/500): https://www.bioforce.org/en/learn/humanitarian-training-courses/at-your-own-pace/
+2025-03-18 11:53:27,116 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/humanitarian-training-courses/at-your-own-pace/
+2025-03-18 11:53:28,684 - __main__ - INFO - Contenu pertinent (formation, score: 0.30): https://www.bioforce.org/en/learn/humanitarian-training-courses/at-your-own-pace/
+2025-03-18 11:53:28,692 - __main__ - INFO - Données sauvegardées dans C:\BIOFORCE\BUILD\bioforce_scraper\output\data\98479282dac869e4066ff9bbcdeb956c_2025-03-18T11-53-28.677054.json
+2025-03-18 11:53:30,206 - __main__ - INFO - Traitement de l'URL (38/500): https://www.bioforce.org/en/learn/centres/europe/
+2025-03-18 11:53:30,206 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/europe/
+2025-03-18 11:53:32,165 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/centres/europe/
+2025-03-18 11:53:33,679 - __main__ - INFO - Traitement de l'URL (39/500): https://www.bioforce.org/en/learn/centres/open-day/
+2025-03-18 11:53:33,680 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/open-day/
+2025-03-18 11:53:35,559 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/centres/open-day/
+2025-03-18 11:53:37,074 - __main__ - INFO - Traitement de l'URL (40/500): https://www.bioforce.org/en/learn/centres/e-learning-platform/
+2025-03-18 11:53:37,075 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/e-learning-platform/
+2025-03-18 11:53:39,470 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/learn/centres/e-learning-platform/
+2025-03-18 11:53:40,977 - __main__ - INFO - Traitement de l'URL (41/500): https://www.bioforce.org/en/learn/centres/partner-middle-east/
+2025-03-18 11:53:40,977 - __main__ - INFO - Traitement de la page HTML: https://www.bioforce.org/en/learn/centres/partner-middle-east/
+2025-03-18 11:53:42,705 - bioforce_scraper.extractors.html_extractor - ERROR - Erreur lors de l'extraction de contenu pour https://www.bioforce.org/en/learn/centres/partner-middle-east/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.bioforce.org/en/learn/centres/partner-middle-east/", waiting until "networkidle"
+
+2025-03-18 11:53:44,728 - bioforce_scraper.extractors.html_extractor - ERROR - Erreur lors de l'extraction de contenu pour https://www.bioforce.org/en/learn/centres/partner-middle-east/: Page.goto: Target page, context or browser has been closed
+2025-03-18 11:53:46,742 - bioforce_scraper.extractors.html_extractor - ERROR - Erreur lors de l'extraction de contenu pour https://www.bioforce.org/en/learn/centres/partner-middle-east/: Page.goto: Target page, context or browser has been closed
+2025-03-18 11:53:46,742 - bioforce_scraper.extractors.html_extractor - ERROR - Échec après 3 tentatives pour https://www.bioforce.org/en/learn/centres/partner-middle-east/
+2025-03-18 11:53:46,743 - __main__ - ERROR - Erreur lors du traitement de la page HTML https://www.bioforce.org/en/learn/centres/partner-middle-east/: Page.goto: Target page, context or browser has been closed
