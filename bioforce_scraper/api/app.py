@@ -58,9 +58,11 @@ app.add_middleware(
 # Montage des routes admin
 app.include_router(admin_router)
 
-# Montage des fichiers statiques
-app.mount("/static", StaticFiles(directory="bioforce_scraper/api/static"), name="static")
-os.makedirs("bioforce_scraper/api/static", exist_ok=True)
+# Montage des fichiers statiques avec un chemin absolu
+current_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(current_dir, "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+os.makedirs(static_dir, exist_ok=True)
 
 # Services
 scheduler_service = SchedulerService()

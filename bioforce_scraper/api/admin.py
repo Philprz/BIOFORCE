@@ -1,18 +1,15 @@
 """
 Module pour l'interface administrateur du projet Bioforce
 """
-import asyncio
 import os
 import sys
-import subprocess
 import platform
-from typing import Dict, List, Any, Optional
-from datetime import datetime
-
-import uvicorn
-from fastapi import APIRouter, Request, Form, BackgroundTasks
-from fastapi.responses import HTMLResponse
+import datetime
+import asyncio
+from typing import Dict, Any, List, Optional
+from fastapi import APIRouter, Request, BackgroundTasks, Form
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 # Ajout du répertoire parent au path pour les importations
@@ -28,9 +25,11 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# Initialisation des templates
-templates = Jinja2Templates(directory="bioforce_scraper/api/templates")
-os.makedirs("bioforce_scraper/api/templates", exist_ok=True)
+# Initialisation des templates avec un chemin absolu
+current_dir = os.path.dirname(os.path.abspath(__file__))
+templates_dir = os.path.join(current_dir, "templates")
+templates = Jinja2Templates(directory=templates_dir)
+os.makedirs(templates_dir, exist_ok=True)
 
 # Création de l'instance QdrantConnector
 qdrant = QdrantConnector()
@@ -57,7 +56,7 @@ def get_system_info() -> SystemInfo:
         python_version=sys.version.split()[0],
         platform=platform.platform(),
         github_repo=GITHUB_REPO,
-        current_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        current_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         uptime="N/A"  # TODO: Implémenter le calcul du temps d'activité
     )
 
