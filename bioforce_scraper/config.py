@@ -17,10 +17,15 @@ START_URLS = [
 # URL spécifique pour la FAQ
 FAQ_URL = "https://www.bioforce.org/faq/"
 
-# Priorité des pages (mots-clés dans l'URL)
-PRIORITY_PATTERNS = [
-    "formation", "learn", "build", "candidature", "admission", 
-    "financement", "logement", "faq", "pdf", "processus"
+# URLs spécifiques pour la FAQ
+FAQ_URLS = [
+    "https://www.bioforce.org/question/",
+    "https://www.bioforce.org/en/question/"
+]
+
+# Patterns pour détecter les URLs de la FAQ
+FAQ_PATTERNS = [
+    "/question/"
 ]
 
 # Patterns à exclure
@@ -29,6 +34,12 @@ EXCLUDE_PATTERNS = [
     "?replytocom=", "?share=", "/feed/", "/comment-page-",
     "/cdn-cgi/", "/wp-json/", ".xml", ".rss", "contact", 
     "sitemap", "mentions-legales", "confidentialite"
+]
+
+# Priorité des pages (mots-clés dans l'URL)
+PRIORITY_PATTERNS = [
+    "formation", "learn", "build", "candidature", "admission", 
+    "financement", "logement", "faq", "pdf", "processus"
 ]
 
 # Structure de répertoire

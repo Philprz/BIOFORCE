@@ -1,9 +1,0 @@
-2025-03-18 09:40:47,164 - __main__ - INFO - Démarrage du scraper Bioforce
-2025-03-18 09:40:47,180 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
-2025-03-18 09:40:59,355 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
-2025-03-18 09:40:59,355 - __main__ - INFO - Initialisation du scraper Bioforce
-2025-03-18 09:41:00,231 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
-2025-03-18 09:41:01,034 - __main__ - INFO - Chargement de 0 URLs déjà connues
-2025-03-18 09:41:01,035 - __main__ - INFO - File d'attente initialisée avec 5 URLs de départ
-2025-03-18 09:41:01,035 - __main__ - INFO - Mode incrémental: True
-2025-03-18 09:41:01,735 - __main__ - INFO - Ressources libérées

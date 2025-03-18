@@ -1,6 +1,0 @@
-2025-03-17 14:08:21,685 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
-2025-03-17 14:08:23,620 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
-2025-03-17 14:08:24,505 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
-2025-03-17 14:08:24,518 - bioforce_scraper.faq_scraper - INFO - Initialisation du scraper de FAQ
-2025-03-17 14:08:25,396 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
-2025-03-17 14:08:25,501 - bioforce_scraper.faq_scraper - INFO - Navigateur fermé

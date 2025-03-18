@@ -24,7 +24,7 @@ from bioforce_scraper.config import (
     API_HOST, BASE_URL, COLLECTION_NAME, EXCLUDE_EXTENSIONS, EXCLUDE_PATTERNS,
     LOG_FILE, MAX_PAGES, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR,
     PDF_DIR, PRIORITY_PATTERNS, REQUEST_DELAY, RETRY_DELAY, USER_AGENT,
-    DATA_DIR, QDRANT_URL, QDRANT_API_KEY, START_URLS
+    DATA_DIR, QDRANT_URL, QDRANT_API_KEY, START_URLS, FAQ_URLS, FAQ_PATTERNS
 )
 from bioforce_scraper.extractors.html_extractor import extract_html_content
 from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
@@ -147,6 +147,12 @@ class BioforceScraperMain:
             processed_count = 0
             batch_count = 0
             
+            # Ajouter des URLs de la FAQ en priorité
+            if not self.queue:
+                for url in FAQ_URLS:
+                    self.queue.append({"url": url, "priority": 100, "depth": 0, "is_faq": True})
+                logger.info(f"Ajout prioritaire des {len(FAQ_URLS)} URLs de la FAQ")
+            
             # Traiter la file d'attente jusqu'à ce qu'elle soit vide ou qu'on atteigne la limite
             while self.queue and len(self.visited_urls) < MAX_PAGES:
                 # Trier la file d'attente par priorité
@@ -156,6 +162,7 @@ class BioforceScraperMain:
                 url_info = self.queue.pop(0)
                 url = url_info.get("url")
                 depth = url_info.get("depth", 0)
+                is_faq = url_info.get("is_faq", False)
                 
                 # Vérifier si l'URL a déjà été visitée
                 if url in self.visited_urls:
@@ -171,8 +178,13 @@ class BioforceScraperMain:
                 processed_count += 1
                 
                 # Traiter l'URL
-                logger.info(f"Traitement de l'URL ({processed_count}/{MAX_PAGES}): {url}")
+                if is_faq or any(pattern in url for pattern in FAQ_PATTERNS):
+                    logger.info(f"Traitement de l'URL FAQ ({processed_count}/{MAX_PAGES}): {url}")
+                    is_faq = True
+                else:
+                    logger.info(f"Traitement de l'URL standard ({processed_count}/{MAX_PAGES}): {url}")
                 
+                # Vérifier si l'URL est un PDF
                 if url.endswith(".pdf"):
                     # Traiter un PDF
                     data = await self.process_pdf(url)
@@ -237,6 +249,8 @@ class BioforceScraperMain:
         success_count = 0
         error_count = 0
         indexed_count = 0
+        faq_count = 0
+        regular_count = 0
         
         for document in self.doc_batch:
             try:
@@ -250,24 +264,13 @@ class BioforceScraperMain:
                 
                 embedding = await generate_embeddings(content_to_embed)
                 
+                # Vérifier si c'est un document FAQ
+                url = document["url"]
+                is_faq = document.get("is_faq", False) or any(pattern in url for pattern in FAQ_PATTERNS)
+                
                 # Créer le payload pour Qdrant
                 payload = {
-                    "url": document["url"],
-                    "title": document["title"],
-                    "content": document["content"],
-                    "category": document["category"],
-                    "timestamp": document.get("timestamp", ""),
-                    "language": document.get("language", ""),
-                    "relevance_score": document.get("relevance_score", 0.5),
-                    "pdf_path": document.get("pdf_path", ""),
-                    "metadata": {
-                        "extraction_date": datetime.now().isoformat()
-                    }
-                }
-                
-                # Ajouter le document à Qdrant
-                result = self.qdrant_connector.upsert_document_chunks({
-                    "source_url": document["url"],
+                    "source_url": url,
                     "title": document["title"],
                     "content": document["content"],
                     "category": document["category"],
@@ -275,23 +278,44 @@ class BioforceScraperMain:
                     "language": document.get("language", "fr"),
                     "relevance_score": document.get("relevance_score", 0.5),
                     "type": "html" if not document.get("pdf_path") else "pdf",
+                    "is_faq": is_faq,
                     "vector": embedding if embedding else None
-                }, generate_id=True)
+                }
                 
-                if result:
-                    indexed_count += 1
+                # Ajouter le document à Qdrant
+                if is_faq:
+                    # Les documents FAQ vont UNIQUEMENT dans la collection BIOFORCE
+                    logger.info(f"Indexation document FAQ dans la collection BIOFORCE: {url}")
+                    self.qdrant_connector.collection_name = "BIOFORCE"
+                    result = self.qdrant_connector.upsert_document_chunks(payload, generate_id=True)
+                    if result:
+                        faq_count += 1
+                        indexed_count += 1
                 else:
+                    # Les documents NON-FAQ vont UNIQUEMENT dans BIOFORCE_ALL
+                    logger.info(f"Indexation document dans la collection BIOFORCE_ALL: {url}")
+                    self.qdrant_connector.collection_name = "BIOFORCE_ALL"
+                    result = self.qdrant_connector.upsert_document_chunks(payload, generate_id=True)
+                    if result:
+                        regular_count += 1
+                        indexed_count += 1
+                
+                if not result:
                     error_count += 1
-                    logger.error(f"Erreur lors de l'indexation dans Qdrant: {document['url']}")
+                    logger.error(f"Erreur lors de l'indexation dans Qdrant: {url}")
                 
             except Exception as e:
                 error_count += 1
                 logger.error(f"Erreur lors de l'indexation dans Qdrant: {str(e)}")
         
-        logger.info(f"Indexation terminée: {indexed_count} documents indexés, {error_count} erreurs")
+        self.doc_batch = []  # Vider le batch après traitement
+        self.batch_count += 1
         
-        # Vider le batch après l'indexation
-        self.doc_batch = []
+        # Journalisation des résultats
+        if indexed_count > 0:
+            logger.info(f"Lot {self.batch_count} indexé avec succès: {indexed_count} documents ({faq_count} FAQ, {regular_count} standards)")
+        if error_count > 0:
+            logger.warning(f"Erreurs d'indexation dans le lot {self.batch_count}: {error_count} documents")
 
     async def test_qdrant_and_embedding(self):
         """
@@ -539,11 +563,23 @@ class BioforceScraperMain:
             # Prioriser les URLs
             new_urls = []
             for link in filtered_links:
-                priority = prioritize_url(link, PRIORITY_PATTERNS)
+                # Vérifier si c'est un lien FAQ
+                is_faq_link = any(pattern in link for pattern in FAQ_PATTERNS)
+                
+                # Attribuer une priorité en fonction du type de lien
+                if is_faq_link:
+                    # Priorité maximale pour les URLs FAQ
+                    priority = 100
+                    logger.info(f"URL FAQ détectée: {link}")
+                else:
+                    # Priorité standard basée sur les mots-clés
+                    priority = 10 if prioritize_url(link, PRIORITY_PATTERNS) else 1
+                
                 new_urls.append({
                     "url": link,
                     "priority": priority,
-                    "depth": depth + 1
+                    "depth": depth + 1,
+                    "is_faq": is_faq_link
                 })
             
             # Créer le document extrait
@@ -554,7 +590,8 @@ class BioforceScraperMain:
                 "metadata": metadata,
                 "headings": headings,
                 "links": filtered_links,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
+                "is_faq": any(pattern in url for pattern in FAQ_PATTERNS)
             }
             
             return data, new_urls
