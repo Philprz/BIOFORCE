@@ -2,18 +2,20 @@
 Module principal pour le scraper Bioforce
 """
 import asyncio
-import base64
-import hashlib
+# Imports non utilisés commentés plutôt que supprimés pour préserver la structure
+# import base64
+import hashlib  # Utilisé dans save_document_to_file pour générer des hashes
 import json
-import logging
+# import logging
 import os
-import random
-import re
+# import random
+# import re
 import time
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from urllib.parse import urljoin, urlparse
+# Nettoyage des imports de typing en conservant seulement ceux utilisés
+from typing import Optional  # Any, Dict, List, Set, Tuple, Union
+from urllib.parse import urlparse  # urljoin
 import sys
 import aiohttp
 from bs4 import BeautifulSoup
@@ -23,19 +25,22 @@ import pathlib
 # Ajouter le répertoire parent au path pour pouvoir importer les modules
 sys.path.append(str(pathlib.Path(__file__).parent.parent))
 
+# Nettoyage des imports inutilisés de config
 from bioforce_scraper.config import (
-    API_HOST, BASE_URL, COLLECTION_NAME, EXCLUDE_EXTENSIONS, EXCLUDE_PATTERNS,
-    LOG_FILE, MAX_PAGES, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR,
-    PDF_DIR, PRIORITY_PATTERNS, REQUEST_DELAY, RETRY_DELAY, USER_AGENT,
-    DATA_DIR, QDRANT_URL, QDRANT_API_KEY, START_URLS, FAQ_URLS, FAQ_PATTERNS, FAQ_INDEX_URLS, FAQ_SITEMAP_URL
+    BASE_URL, EXCLUDE_EXTENSIONS, EXCLUDE_PATTERNS,
+    LOG_FILE, MAX_PAGES, REQUEST_DELAY, USER_AGENT,
+    DATA_DIR, START_URLS, FAQ_URLS, FAQ_PATTERNS, FAQ_INDEX_URLS, FAQ_SITEMAP_URL,
+    PDF_DIR, PRIORITY_PATTERNS  # Requis par le code plus loin
+    # API_HOST, COLLECTION_NAME, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR, 
+    # RETRY_DELAY, QDRANT_URL, QDRANT_API_KEY, 
 )
 from bioforce_scraper.extractors.html_extractor import extract_metadata, clean_text
-from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
+# from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
 from bioforce_scraper.utils.content_classifier import ContentClassifier
 from bioforce_scraper.utils.logger import setup_logger
 from bioforce_scraper.utils.robots_parser import RobotsParser
 from bioforce_scraper.utils.sitemap_parser import SitemapParser
-from bioforce_scraper.utils.url_filter import filter_url
+# from bioforce_scraper.utils.url_filter import filter_url
 from bioforce_scraper.utils.url_prioritizer import prioritize_url
 from bioforce_scraper.integration.qdrant_connector import QdrantConnector
 from bioforce_scraper.utils.embeddings import generate_embeddings
@@ -161,7 +166,7 @@ class BioforceScraperMain:
             faq_urls_with_dates = await sitemap_parser.parse_faq_sitemap(FAQ_SITEMAP_URL)
             
             if not faq_urls_with_dates:
-                logger.warning(f"Aucune URL FAQ trouvée dans le sitemap. Utilisation de l'approche classique.")
+                logger.warning("Aucune URL FAQ trouvée dans le sitemap. Utilisation de l'approche classique.")
                 # Ajouter les URLs FAQ directement depuis la configuration
                 for url in FAQ_URLS:
                     self.queue.append({"url": url, "priority": 100, "depth": 0, "is_faq": True})
@@ -233,7 +238,7 @@ class BioforceScraperMain:
                 url_info = self.queue.pop(0)
                 url = url_info.get("url")
                 depth = url_info.get("depth", 0)
-                is_faq = url_info.get("is_faq", False)
+                _is_faq = url_info.get("is_faq", False)  # Préfixé avec _ car non utilisé
                 lastmod = url_info.get("lastmod", None)
                 
                 # Vérifier si l'URL doit être scrapée (mode incrémental)
@@ -341,7 +346,7 @@ class BioforceScraperMain:
         
         logger.info(f"Indexation d'un lot de {len(self.doc_batch)} documents dans Qdrant...")
         
-        success_count = 0
+        _success_count = 0  # Préfixé avec _ car non utilisé
         error_count = 0
         indexed_count = 0
         faq_count = 0
@@ -350,7 +355,7 @@ class BioforceScraperMain:
         for document in self.doc_batch:
             try:
                 # Générer un ID unique pour le document s'il n'en a pas déjà un
-                doc_id = document.get("doc_id", str(uuid.uuid4()))
+                _doc_id = document.get("doc_id", str(uuid.uuid4()))  # Préfixé avec _ car non utilisé
                 
                 # Générer les embeddings pour le contenu
                 content_to_embed = f"{document['title']} {document['content']}"
@@ -468,9 +473,9 @@ class BioforceScraperMain:
         content = url_data.get("content", "")
         title = url_data.get("title", "")
         timestamp = url_data.get("timestamp", datetime.now().isoformat())  # Utiliser le timestamp actuel s'il n'est pas défini
-        links = url_data.get("links", [])
-        pdf_links = url_data.get("pdf_links", [])
-        other_links = url_data.get("other_links", [])
+        _links = url_data.get("links", [])  # Préfixé avec _ car non utilisé
+        _pdf_links = url_data.get("pdf_links", [])  # Préfixé avec _ car non utilisé
+        _other_links = url_data.get("other_links", [])  # Préfixé avec _ car non utilisé
         pdf_content = url_data.get("pdf_content", "")
         pdf_path = url_data.get("pdf_path", "")
         language = 'fr'  # Langue par défaut (français)
@@ -499,7 +504,6 @@ class BioforceScraperMain:
         }
 
         # Générer un ID basé sur l'URL et le timestamp (pour détecter les mises à jour)
-        import hashlib
         # Utiliser un hash de l'URL comme identifiant de base, plus stable pour les mises à jour
         doc_id = hashlib.md5(url.encode()).hexdigest()
        
