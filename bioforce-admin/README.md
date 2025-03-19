@@ -16,8 +16,8 @@ Interface d'administration pour le chatbot Bioforce. Cette interface permet aux 
 2. Nom suggéré : `Bioforce-admin`
 3. GitHub repo : URL de votre dépôt GitHub contenant ces fichiers
 4. Branch : `main`
-5. Build command : Laisser vide (pas de build nécessaire)
-6. Publish directory : `/` (racine)
+5. Build command : `echo "Build completed"`
+6. Publish directory : `/bioforce-admin` (suivant le même modèle que demo_interface)
 
 ## Configuration
 

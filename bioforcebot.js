@@ -512,6 +512,18 @@ class BioforceBot {
         
         this.isLoading = true;
         
+        // Vérifier si c'est une commande d'administration
+        if (text.toLowerCase() === "admin" || text.toLowerCase() === "/admin") {
+            this._addMessage('user', text);
+            this._addMessage('assistant', "Ouverture de l'interface d'administration...");
+            
+            // Rediriger vers l'interface d'administration
+            window.open('/bioforce-admin/index.html', '_blank');
+            
+            this.isLoading = false;
+            return;
+        }
+        
         // Ajouter le message utilisateur
         this._addMessage('user', text);
         

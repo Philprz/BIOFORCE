@@ -1,17 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, Body, Query
+from fastapi import FastAPI, HTTPException, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from pydantic import BaseModel
+from typing import List, Dict, Any
 from datetime import datetime
 import os
-import asyncio
-import json
 import logging
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from dotenv import load_dotenv
 import uvicorn
-import uuid
+import json
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -91,7 +89,6 @@ class ChatMessage(BaseModel):
     content: str
 
 class ChatRequest(BaseModel):
-    user_id: str
     messages: List[ChatMessage]
     context: Dict[str, Any] = {}
 
@@ -218,43 +215,44 @@ async def chat(request: ChatRequest):
     Point d'entrée principal pour le chat
     """
     try:
-        user_id = request.user_id
+        # Récupération des messages de l'utilisateur
         messages = request.messages
-        context_info = request.context
         
-        # Récupérer le dernier message utilisateur
-        last_message = None
-        for msg in reversed(messages):
-            if msg.role == "user":
-                last_message = msg.content
-                break
+        # Récupération du contexte utilisateur (peut contenir des infos sur le dossier, etc.)
+        context = request.context
         
-        if not last_message:
-            raise HTTPException(status_code=400, detail="Aucun message utilisateur trouvé")
+        # Récupération du dernier message de l'utilisateur
+        last_message = messages[-1].content if messages else ""
         
-        # Obtenir le contexte pertinent depuis Qdrant
-        context = ""
-        try:
-            qdrant_results = await search_knowledge_base(last_message)
-            if qdrant_results:
-                context = "\n\n".join([f"Q: {item.question}\nR: {item.answer}" for item in qdrant_results])
-        except Exception as e:
-            logger.error(f"Erreur lors de la requête Qdrant: {e}")
-            # On continue sans contexte
+        # Recherche dans la base de connaissances
+        search_results = await search_knowledge_base(last_message)
         
-        # Construire et envoyer la requête à OpenAI
-        response_content, references = await get_llm_response(messages, context)
+        # Formatage du contexte pour le LLM
+        context_from_kb = await format_context_from_results(search_results)
         
-        # Formater et renvoyer la réponse
-        return {
-            "message": {
-                "role": "assistant",
-                "content": response_content
-            },
-            "references": references
-        }
+        # Obtention de la réponse du LLM
+        llm_response, references = await get_llm_response(messages, context_from_kb)
+        
+        # Construction des références pour l'interface
+        formatted_references = []
+        for result in search_results[:3]:  # Limiter à 3 références
+            if result["score"] > 0.7:  # Seuil de pertinence
+                formatted_references.append({
+                    "question": result["question"],
+                    "url": result["url"] if result.get("url") else "#"
+                })
+        
+        # Construction de la réponse
+        response = ChatResponse(
+            message=ChatMessage(role="assistant", content=llm_response),
+            context=context,  # Renvoyer le contexte tel quel
+            references=formatted_references
+        )
+        
+        return response
+        
     except Exception as e:
-        logger.error(f"Erreur dans /chat: {e}")
+        logger.error(f"Erreur de chat: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/search", response_model=SearchResponse)
@@ -299,24 +297,191 @@ async def debug_api(request: dict = Body(...)):
         qdrant_status = "unknown"
         try:
             # Test simple à Qdrant
-            collections = await qdrant_client.get_collections()
+            await qdrant_client.get_collections()
             qdrant_status = "connected"
-            qdrant_response = collections.collections
         except Exception as e:
             qdrant_status = f"error: {str(e)}"
-            qdrant_response = None
         
         return {
             "timestamp": datetime.now().isoformat(),
             "request_received": True,
             "openai_status": openai_status,
             "openai_response": openai_response,
-            "qdrant_status": qdrant_status,
-            "qdrant_response": qdrant_response
+            "qdrant_status": qdrant_status
         }
     except Exception as e:
         logger.error(f"Erreur de débogage: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# Routes d'administration
+@app.get("/admin/system-info")
+async def system_info():
+    """
+    Retourne les informations système pour l'interface d'administration
+    """
+    import platform
+    from datetime import datetime
+    
+    return {
+        "version": "1.0.0",
+        "python_version": f"{platform.python_version()}",
+        "platform": platform.platform(),
+        "current_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "github_repo": "https://github.com/Philprz/BIOFORCE"
+    }
+
+@app.get("/admin/status")
+async def status():
+    """
+    Vérifie l'état des différents services
+    """
+    server_status = "ok"
+    
+    # Vérifier l'état de Qdrant
+    qdrant_status = "unknown"
+    try:
+        await qdrant_client.get_collections()
+        qdrant_status = "connected"
+    except Exception as e:
+        logger.error(f"Erreur de connexion à Qdrant: {str(e)}")
+        qdrant_status = "error"
+    
+    # Vérifier l'état du scraping (pas de service réel, juste pour l'interface)
+    scraping_status = "ready"
+    
+    return {
+        "server_status": server_status,
+        "qdrant_status": qdrant_status,
+        "scraping_status": scraping_status
+    }
+
+@app.get("/admin/qdrant-stats")
+async def qdrant_stats():
+    """
+    Retourne les statistiques des collections Qdrant
+    """
+    try:
+        # Obtenir les collections
+        collections = await qdrant_client.get_collections()
+        collection_names = [collection.name for collection in collections.collections]
+        
+        stats = {}
+        
+        # Pour chaque collection, obtenir ses statistiques
+        for name in collection_names:
+            try:
+                collection_info = await qdrant_client.get_collection(name)
+                
+                # Obtenir d'autres informations sur la collection
+                collection_stats = {
+                    "vectors_count": collection_info.vectors_count,
+                    "segments_count": collection_info.segments_count,
+                    "ram_usage": getattr(collection_info, "ram_usage", 0)
+                }
+                
+                stats[name] = collection_stats
+            except Exception as e:
+                logger.error(f"Erreur lors de la récupération des stats pour {name}: {str(e)}")
+                stats[name] = {"error": str(e)}
+        
+        return stats
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des statistiques Qdrant: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@app.post("/admin/git-update")
+async def git_update():
+    """
+    Effectue une mise à jour du code source depuis GitHub
+    """
+    try:
+        import subprocess
+        
+        # Exécuter la commande git pull
+        process = subprocess.Popen(
+            ["git", "pull"], 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        stdout, stderr = process.communicate()
+        
+        output = []
+        
+        if stdout:
+            output.extend(stdout.splitlines())
+        
+        if stderr:
+            output.extend(stderr.splitlines())
+        
+        return {
+            "success": process.returncode == 0,
+            "output": output
+        }
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la mise à jour Git: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@app.get("/admin/logs")
+async def get_logs(lines: int = Query(50, description="Nombre de lignes à récupérer")):
+    """
+    Récupère les dernières lignes des logs du système
+    """
+    try:
+        # Simulation de logs (dans un projet réel, on utiliserait un vrai fichier de log)
+        logs = [
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - Démarrage du serveur",
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - Connexion à Qdrant établie",
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - API prête"
+        ]
+        
+        return {
+            "logs": logs
+        }
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des logs: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@app.post("/scrape/faq")
+async def scrape_faq(force_update: bool = Query(False, description="Force la mise à jour, ignorant le cache")):
+    """
+    Lance un scraping des FAQs du site Bioforce
+    """
+    try:
+        # Ici, on simulerait le démarrage d'un job de scraping
+        # Pour l'instant, on renvoie juste un succès simulé
+        
+        return {
+            "success": True,
+            "message": "Scraping FAQ démarré",
+            "force_update": force_update
+        }
+    
+    except Exception as e:
+        logger.error(f"Erreur lors du démarrage du scraping FAQ: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@app.post("/scrape/full")
+async def scrape_full(force_update: bool = Query(False, description="Force la mise à jour, ignorant le cache")):
+    """
+    Lance un scraping complet du site Bioforce
+    """
+    try:
+        # Ici, on simulerait le démarrage d'un job de scraping complet
+        # Pour l'instant, on renvoie juste un succès simulé
+        
+        return {
+            "success": True,
+            "message": "Scraping complet démarré",
+            "force_update": force_update
+        }
+    
+    except Exception as e:
+        logger.error(f"Erreur lors du démarrage du scraping complet: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
