@@ -446,7 +446,13 @@ class BioforceBot {
         // Créer élément de message
         const messageEl = document.createElement('div');
         messageEl.className = `bioforcebot-message ${role}`;
-        messageEl.innerHTML = content;
+        
+        // Support pour les liens HTML (seulement pour les messages du bot)
+        if (role === 'assistant' && content.includes('<a href=')) {
+            messageEl.innerHTML = content;
+        } else {
+            messageEl.textContent = content;
+        }
         
         // Ajouter à la liste
         messagesContainer.appendChild(messageEl);
@@ -454,8 +460,15 @@ class BioforceBot {
         // Scroll vers le bas
         this.container.querySelector('.bioforcebot-body').scrollTop = messagesContainer.scrollHeight;
         
-        // Ajouter aux messages stockés
-        this.messages.push({ role, content });
+        // Ajouter aux messages stockés (toujours stocker le texte brut pour l'API)
+        if (role === 'assistant' && content.includes('<a href=')) {
+            // Stocker une version texte pour l'API
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            this.messages.push({ role, content: tempDiv.textContent });
+        } else {
+            this.messages.push({ role, content });
+        }
     }
 
     _showTypingIndicator() {
@@ -524,8 +537,12 @@ class BioforceBot {
         // Vérifier si c'est une commande d'administration
         if (text.toLowerCase() === "admin" || text.toLowerCase() === "/admin") {
             this._addMessage('user', text);
-            this._addMessage('assistant', 'Voici le lien vers l\'interface d\'administration: <a href="https://bioforce.onrender.com/admin" target="_blank" class="bioforcebot-admin-link">Ouvrir l\'interface d\'administration</a>');
             
+            // Création d'un message avec un lien cliquable
+            const adminLink = "https://bioforce-admin.onrender.com/";
+            const adminMessage = `Pour accéder à l'interface d'administration, veuillez cliquer sur ce lien : <a href="${adminLink}" target="_blank" style="color: #0099cc; text-decoration: underline; font-weight: bold;">Interface d'administration Bioforce</a>`;
+            
+            this._addMessage('assistant', adminMessage);
             this.isLoading = false;
             return;
         }
