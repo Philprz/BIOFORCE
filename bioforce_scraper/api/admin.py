@@ -11,6 +11,7 @@ from fastapi import APIRouter, Request, BackgroundTasks, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+import logging
 
 # Ajout du répertoire parent au path pour les importations
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
@@ -33,6 +34,10 @@ os.makedirs(templates_dir, exist_ok=True)
 
 # Création de l'instance QdrantConnector
 qdrant = QdrantConnector()
+logger = logging.getLogger(__name__)
+
+# Initialisation du logger
+logging.basicConfig(level=logging.INFO)
 
 class SystemInfo(BaseModel):
     """Informations système"""
@@ -203,10 +208,12 @@ async def get_status_route():
         
         # Vérification de la connexion Qdrant
         try:
-            qdrant_stats = await qdrant.get_collection_stats()
-            qdrant_status = "connected" if qdrant_stats else "not_connected"
-        except Exception:
+            # Test simple de connexion à Qdrant en listant les collections
+            collections = await asyncio.to_thread(lambda: qdrant.client.get_collections())
+            qdrant_status = "connected" if collections else "not_connected"
+        except Exception as e:
             qdrant_status = "error"
+            logger.error(f"Erreur de vérification Qdrant: {str(e)}")
         
         return {
             "server_status": server_status,

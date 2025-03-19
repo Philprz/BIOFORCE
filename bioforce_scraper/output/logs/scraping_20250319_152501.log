@@ -1690,3 +1690,549 @@ Call log:
 2025-03-19 15:40:13,057 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\f1be31b40511c55487f360098f21984d_2025-03-19T15-40-13.055071.json
 2025-03-19 15:40:14,572 - __main__ - INFO - Traitement de l'URL 202/500: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/
 2025-03-19 15:40:14,573 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/
+2025-03-19 15:40:16,138 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/
+2025-03-19 15:40:16,140 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\d870b77b8accbf61f7c0e27964f5ceee_2025-03-19T15-40-16.138400.json
+2025-03-19 15:40:17,785 - __main__ - INFO - Traitement de l'URL 203/500: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf
+2025-03-19 15:40:17,785 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf
+2025-03-19 15:40:18,249 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf
+2025-03-19 15:40:18,263 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\63aaab225ecf7fc592f35784870df2a5_2025-03-19T15-40-18.250501.json
+2025-03-19 15:40:19,817 - __main__ - INFO - Traitement de l'URL 204/500: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 15:40:19,818 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 15:40:20,317 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 15:40:20,320 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\435b17f4f0fd026674a2b49124c138d0_2025-03-19T15-40-20.318384.json
+2025-03-19 15:40:21,828 - __main__ - INFO - Traitement de l'URL 205/500: https://www.bioforce.org/formation/print/1246
+2025-03-19 15:40:21,828 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/print/1246
+2025-03-19 15:40:22,572 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/formation/print/1246: Page.goto: net::ERR_ABORTED at https://www.bioforce.org/formation/print/1246
+Call log:
+  - navigating to "https://www.bioforce.org/formation/print/1246", waiting until "networkidle"
+
+2025-03-19 15:40:24,093 - __main__ - INFO - Traitement de l'URL 206/500: https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/
+2025-03-19 15:40:24,093 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/
+2025-03-19 15:40:26,644 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/
+2025-03-19 15:40:26,646 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\fc9d3f6d8b7cda6e67d986f297be5e60_2025-03-19T15-40-26.644086.json
+2025-03-19 15:40:28,161 - __main__ - INFO - Traitement de l'URL 207/500: https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/
+2025-03-19 15:40:28,161 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/
+2025-03-19 15:40:29,980 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/
+2025-03-19 15:40:29,993 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\0e1a4ef072bb0a245a4c34b40c93767e_2025-03-19T15-40-29.981553.json
+2025-03-19 15:40:31,504 - __main__ - INFO - Traitement de l'URL 208/500: https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/
+2025-03-19 15:40:31,507 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/
+2025-03-19 15:40:33,272 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/
+2025-03-19 15:40:33,285 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\ed4a0deddd9ec977881fa4bc77bd8760_2025-03-19T15-40-33.272623.json
+2025-03-19 15:40:34,797 - __main__ - INFO - Traitement de l'URL 209/500: https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/
+2025-03-19 15:40:34,798 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/
+2025-03-19 15:40:36,589 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/
+2025-03-19 15:40:36,601 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\673ad05f275c2286b02e65e04efa718e_2025-03-19T15-40-36.590831.json
+2025-03-19 15:40:38,108 - __main__ - INFO - Traitement de l'URL 210/500: https://www.bioforce.org/formation/responsable-logistique-profil-initial/
+2025-03-19 15:40:38,109 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/responsable-logistique-profil-initial/
+2025-03-19 15:40:40,251 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/responsable-logistique-profil-initial/
+2025-03-19 15:40:40,253 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\c4d95ae74147d7ad6aece646d5117ad1_2025-03-19T15-40-40.251039.json
+2025-03-19 15:40:40,253 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-19 15:40:40,253 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-19 15:40:40,615 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:40,680 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:40,747 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:40,895 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:40,996 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (8 chunks)
+2025-03-19 15:40:41,370 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:41,400 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:41,464 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 9 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:41,540 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:41,642 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=3&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (9 chunks)
+2025-03-19 15:40:42,017 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=75&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:42,037 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:42,109 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=75&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:42,171 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=75&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:42,273 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=75&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (8 chunks)
+2025-03-19 15:40:42,703 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=16&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:42,723 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:42,791 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=16&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:42,861 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=16&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:42,963 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=16&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (8 chunks)
+2025-03-19 15:40:43,530 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=22&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:43,550 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:43,612 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=22&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:43,678 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=22&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:43,779 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-thematique%5B%5D=22&f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (8 chunks)
+2025-03-19 15:40:44,661 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:44,682 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:44,748 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:44,809 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:44,910 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-cycle=58&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (8 chunks)
+2025-03-19 15:40:45,304 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-lieu%5B%5D=491&f-lieu%5B%5D=79&f-lieu%5B%5D=490&f-lieu%5B%5D=37&f-lieu%5B%5D=38&f-lieu%5B%5D=39&f-lieu%5B%5D=40&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:45,324 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:45,387 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 9 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-lieu%5B%5D=491&f-lieu%5B%5D=79&f-lieu%5B%5D=490&f-lieu%5B%5D=37&f-lieu%5B%5D=38&f-lieu%5B%5D=39&f-lieu%5B%5D=40&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:45,450 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-lieu%5B%5D=491&f-lieu%5B%5D=79&f-lieu%5B%5D=490&f-lieu%5B%5D=37&f-lieu%5B%5D=38&f-lieu%5B%5D=39&f-lieu%5B%5D=40&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus
+2025-03-19 15:40:45,551 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=36&f-lieu%5B%5D=491&f-lieu%5B%5D=79&f-lieu%5B%5D=490&f-lieu%5B%5D=37&f-lieu%5B%5D=38&f-lieu%5B%5D=39&f-lieu%5B%5D=40&f-cycle=60&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=&type-formation=individus (9 chunks)
+2025-03-19 15:40:45,852 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=32&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=3&type-formation=individus
+2025-03-19 15:40:45,875 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:45,943 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=32&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=3&type-formation=individus
+2025-03-19 15:40:46,003 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=32&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=3&type-formation=individus
+2025-03-19 15:40:46,104 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/?f-objectif=0&f-lieu%5B%5D=32&f-cycle=0&f-duree=0&f-age=0&f-mode=0&f-date=&action=formations-filter&page=3&type-formation=individus (8 chunks)
+2025-03-19 15:40:46,527 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation
+2025-03-19 15:40:46,547 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:46,616 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 12 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation
+2025-03-19 15:40:46,687 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation
+2025-03-19 15:40:46,789 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation (12 chunks)
+2025-03-19 15:40:47,078 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-post-bac-admission-1ere-annee/
+2025-03-19 15:40:47,098 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:47,136 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 26 chunks existants pour https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-post-bac-admission-1ere-annee/
+2025-03-19 15:40:47,245 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-post-bac-admission-1ere-annee/
+2025-03-19 15:40:47,346 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-post-bac-admission-1ere-annee/ (26 chunks)
+2025-03-19 15:40:47,705 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-admission-2e-annee/
+2025-03-19 15:40:47,725 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:40:47,764 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 26 chunks existants pour https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-admission-2e-annee/
+2025-03-19 15:40:47,867 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-admission-2e-annee/
+2025-03-19 15:40:47,968 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-de-lenvironnement-de-travail-et-de-la-logistique-humanitaire-admission-2e-annee/ (26 chunks)
+2025-03-19 15:41:11,116 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/formations-humanitaires/financements/bourses-partielles-europe/
+2025-03-19 15:41:11,216 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:11,286 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 12 chunks existants pour https://www.bioforce.org/learn/formations-humanitaires/financements/bourses-partielles-europe/
+2025-03-19 15:41:11,476 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/formations-humanitaires/financements/bourses-partielles-europe/
+2025-03-19 15:41:11,578 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/formations-humanitaires/financements/bourses-partielles-europe/ (12 chunks)
+2025-03-19 15:41:11,988 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/
+2025-03-19 15:41:12,004 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:12,068 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 9 chunks existants pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/
+2025-03-19 15:41:12,139 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/
+2025-03-19 15:41:12,240 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/ (9 chunks)
+2025-03-19 15:41:12,563 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf
+2025-03-19 15:41:12,583 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:12,648 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 12 chunks existants pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf
+2025-03-19 15:41:12,722 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf
+2025-03-19 15:41:12,823 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_RespRHFinances.pdf (12 chunks)
+2025-03-19 15:41:13,200 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 15:41:13,218 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:13,286 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 12 chunks existants pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 15:41:13,351 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 15:41:13,455 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf (12 chunks)
+2025-03-19 15:41:13,836 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/
+2025-03-19 15:41:13,850 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:13,920 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 17 chunks existants pour https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/
+2025-03-19 15:41:14,001 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/
+2025-03-19 15:41:14,107 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/gestion-des-infrastructures-et-des-equipements-dune-mission-humanitaire/ (17 chunks)
+2025-03-19 15:41:14,695 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/
+2025-03-19 15:41:14,716 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:14,783 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 16 chunks existants pour https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/
+2025-03-19 15:41:14,876 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/
+2025-03-19 15:41:14,977 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/gestion-de-la-chaine-dapprovisionnement-dune-mission-humanitaire/ (17 chunks)
+2025-03-19 15:41:15,736 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/
+2025-03-19 15:41:15,751 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:15,833 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 17 chunks existants pour https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/
+2025-03-19 15:41:15,921 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/
+2025-03-19 15:41:16,026 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/gestion-des-operations-logistiques-dune-mission-humanitaire/ (18 chunks)
+2025-03-19 15:41:16,346 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/
+2025-03-19 15:41:16,368 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:16,433 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 17 chunks existants pour https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/
+2025-03-19 15:41:16,516 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/
+2025-03-19 15:41:16,618 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/gestion-des-ressources-rh-et-finances-des-activites-logistiques-dune-mission-humanitaire/ (17 chunks)
+2025-03-19 15:41:16,992 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-logistique-profil-initial/
+2025-03-19 15:41:17,013 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:41:17,036 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 21 chunks existants pour https://www.bioforce.org/formation/responsable-logistique-profil-initial/
+2025-03-19 15:41:17,133 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-logistique-profil-initial/
+2025-03-19 15:41:17,235 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-logistique-profil-initial/ (21 chunks)
+2025-03-19 15:41:17,235 - __main__ - INFO - Lot 9 indexé avec succès: 20 documents (0 FAQ, 20 standards)
+2025-03-19 15:41:18,751 - __main__ - INFO - Traitement de l'URL 211/500: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145
+2025-03-19 15:41:18,751 - __main__ - INFO - Traitement de https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145
+2025-03-19 15:41:21,348 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145
+2025-03-19 15:41:21,352 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\dffa803ad7b462aa984d7dcc56c834bd_2025-03-19T15-41-21.350938.json
+2025-03-19 15:41:22,889 - __main__ - INFO - Traitement de l'URL 212/500: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+2025-03-19 15:41:22,889 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+2025-03-19 15:41:24,716 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+2025-03-19 15:41:24,716 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\758ef7fbf12a37af9d0f69a351949278_2025-03-19T15-41-24.716148.json
+2025-03-19 15:41:26,221 - __main__ - INFO - Traitement de l'URL 213/500: https://www.bioforce.org/formation/responsable-logistique/
+2025-03-19 15:41:26,221 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/responsable-logistique/
+2025-03-19 15:41:27,950 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/responsable-logistique/
+2025-03-19 15:41:27,966 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\1fb8a3195380df48a37d9f4d781596ef_2025-03-19T15-41-27.950799.json
+2025-03-19 15:41:29,483 - __main__ - INFO - Traitement de l'URL 214/500: https://www.bioforce.org/formation/responsable-logistique-profil-experimente/
+2025-03-19 15:41:29,486 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/responsable-logistique-profil-experimente/
+2025-03-19 15:41:31,193 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/responsable-logistique-profil-experimente/
+2025-03-19 15:41:31,203 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\1791c0ded2418bb14a55d9928ecf1547_2025-03-19T15-41-31.195221.json
+2025-03-19 15:41:32,718 - __main__ - INFO - Traitement de l'URL 215/500: https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf
+2025-03-19 15:41:32,718 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf
+2025-03-19 15:41:35,441 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf
+2025-03-19 15:41:35,456 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\b7d40a0266d8975e0fda1b744dec42ab_2025-03-19T15-41-35.441099.json
+2025-03-19 15:41:36,978 - __main__ - INFO - Traitement de l'URL 216/500: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+2025-03-19 15:41:36,978 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+2025-03-19 15:41:37,466 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+2025-03-19 15:41:37,477 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\9507cf6cd698d9005c98431a5eb6f0b2_2025-03-19T15-41-37.466674.json
+2025-03-19 15:41:38,983 - __main__ - INFO - Traitement de l'URL 217/500: https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf
+2025-03-19 15:41:38,983 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf
+2025-03-19 15:41:39,444 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf
+2025-03-19 15:41:39,460 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\09c425d5c4c37b7545e9c7558cb11fd2_2025-03-19T15-41-39.444973.json
+2025-03-19 15:41:41,003 - __main__ - INFO - Traitement de l'URL 218/500: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_HumanitarianProgrammeManager.pdf
+2025-03-19 15:41:41,003 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_HumanitarianProgrammeManager.pdf
+2025-03-19 15:41:41,358 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_HumanitarianProgrammeManager.pdf
+2025-03-19 15:41:41,377 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\9edba482f9500edda97d32689fd25e14_2025-03-19T15-41-41.366504.json
+2025-03-19 15:41:42,886 - __main__ - INFO - Traitement de l'URL 219/500: https://www.bioforce.org/formation/print/1309
+2025-03-19 15:41:42,886 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/print/1309
+2025-03-19 15:41:43,630 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/formation/print/1309: Page.goto: net::ERR_ABORTED at https://www.bioforce.org/formation/print/1309
+Call log:
+  - navigating to "https://www.bioforce.org/formation/print/1309", waiting until "networkidle"
+
+2025-03-19 15:41:45,145 - __main__ - INFO - Traitement de l'URL 220/500: https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/
+2025-03-19 15:41:45,146 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/
+2025-03-19 15:41:47,000 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/
+2025-03-19 15:41:47,000 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\c9c0484d455da4e25b688f6852839d05_2025-03-19T15-41-47.000539.json
+2025-03-19 15:41:48,510 - __main__ - INFO - Traitement de l'URL 221/500: https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/
+2025-03-19 15:41:48,510 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/
+2025-03-19 15:41:50,250 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/
+2025-03-19 15:41:50,272 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\3494e1cdad43ebfc5b3ae883c1a3f5c0_2025-03-19T15-41-50.250707.json
+2025-03-19 15:41:51,780 - __main__ - INFO - Traitement de l'URL 222/500: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687
+2025-03-19 15:41:51,780 - __main__ - INFO - Traitement de https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687
+2025-03-19 15:41:54,036 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687
+2025-03-19 15:41:54,036 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\ed9e0494acfc87d192609922fe75f059_2025-03-19T15-41-54.036260.json
+2025-03-19 15:41:55,600 - __main__ - INFO - Traitement de l'URL 223/500: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-19 15:41:55,600 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-19 15:41:56,600 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-19 15:41:56,600 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\032a5f848a1a542d07df8e3c08d081c7_2025-03-19T15-41-56.600747.json
+2025-03-19 15:41:58,105 - __main__ - INFO - Traitement de l'URL 224/500: https://www.bioforce.org/formation/print/230
+2025-03-19 15:41:58,105 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/print/230
+2025-03-19 15:41:58,899 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/formation/print/230: Page.goto: net::ERR_ABORTED at https://www.bioforce.org/formation/print/230
+Call log:
+  - navigating to "https://www.bioforce.org/formation/print/230", waiting until "networkidle"
+
+2025-03-19 15:42:00,409 - __main__ - INFO - Traitement de l'URL 225/500: https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/
+2025-03-19 15:42:00,409 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/
+2025-03-19 15:42:02,983 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/
+2025-03-19 15:42:02,986 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\b393223dd4ebf813b9c624d2cfd1893b_2025-03-19T15-42-02.983305.json
+2025-03-19 15:42:04,496 - __main__ - INFO - Traitement de l'URL 226/500: https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/
+2025-03-19 15:42:04,496 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/
+2025-03-19 15:42:06,208 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/
+2025-03-19 15:42:06,208 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\762cd7f1a67b819c4246944e37cf63f0_2025-03-19T15-42-06.208005.json
+2025-03-19 15:42:07,751 - __main__ - INFO - Traitement de l'URL 227/500: https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf
+2025-03-19 15:42:07,751 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf
+2025-03-19 15:42:08,407 - __main__ - INFO - Contenu pertinent (candidature, score: 1.00): https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf
+2025-03-19 15:42:08,412 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\775adffb1cbc0cdd900e6f719f1403ff_2025-03-19T15-42-08.407406.json
+2025-03-19 15:42:09,916 - __main__ - INFO - Traitement de l'URL 228/500: https://www.bioforce.org/formation/print/33026
+2025-03-19 15:42:09,916 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/print/33026
+2025-03-19 15:42:10,818 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/formation/print/33026: Page.goto: net::ERR_ABORTED at https://www.bioforce.org/formation/print/33026
+Call log:
+  - navigating to "https://www.bioforce.org/formation/print/33026", waiting until "networkidle"
+
+2025-03-19 15:42:12,336 - __main__ - INFO - Traitement de l'URL 229/500: https://www.bioforce.org/autoformation-protection-de-lenfance-dans-laction-humanitaire/
+2025-03-19 15:42:12,336 - __main__ - INFO - Traitement de https://www.bioforce.org/autoformation-protection-de-lenfance-dans-laction-humanitaire/
+2025-03-19 15:42:42,412 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/autoformation-protection-de-lenfance-dans-laction-humanitaire/: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.bioforce.org/autoformation-protection-de-lenfance-dans-laction-humanitaire/", waiting until "networkidle"
+
+2025-03-19 15:42:43,933 - __main__ - INFO - Traitement de l'URL 230/500: https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:43,933 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:46,186 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:46,188 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\8229de9821d41c322a3891601b05f196_2025-03-19T15-42-46.187619.json
+2025-03-19 15:42:47,691 - __main__ - INFO - Traitement de l'URL 231/500: https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:47,691 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:49,436 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:49,451 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\2c5cc14956e22a9adfbcde8ef3e85a47_2025-03-19T15-42-49.436323.json
+2025-03-19 15:42:50,964 - __main__ - INFO - Traitement de l'URL 232/500: https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:50,966 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:52,677 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:42:52,694 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\2ddbb60cb50cdb143b52d9381f7782cc_2025-03-19T15-42-52.678458.json
+2025-03-19 15:42:54,198 - __main__ - INFO - Traitement de l'URL 233/500: https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239
+2025-03-19 15:42:54,198 - __main__ - INFO - Traitement de https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239
+2025-03-19 15:42:56,536 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239
+2025-03-19 15:42:56,536 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\9901e662c0913201a4537b6f6b8874b4_2025-03-19T15-42-56.536686.json
+2025-03-19 15:42:58,066 - __main__ - INFO - Traitement de l'URL 234/500: https://www.bioforce.org/formation/logisticien-vae/
+2025-03-19 15:42:58,066 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/logisticien-vae/
+2025-03-19 15:42:59,757 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/logisticien-vae/
+2025-03-19 15:42:59,770 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\108848bef76f25c4e7a7ad73fea90b71_2025-03-19T15-42-59.757853.json
+2025-03-19 15:42:59,770 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-19 15:42:59,770 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-19 15:43:00,309 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145
+2025-03-19 15:43:00,403 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:00,467 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 5 chunks existants pour https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145
+2025-03-19 15:43:00,595 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145
+2025-03-19 15:43:00,700 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1246&session=53145 (5 chunks)
+2025-03-19 15:43:01,159 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+2025-03-19 15:43:01,180 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:01,203 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 21 chunks existants pour https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+2025-03-19 15:43:01,354 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+2025-03-19 15:43:01,458 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/ (21 chunks)
+2025-03-19 15:43:02,016 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-logistique/
+2025-03-19 15:43:02,040 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:02,051 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 21 chunks existants pour https://www.bioforce.org/formation/responsable-logistique/
+2025-03-19 15:43:02,166 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-logistique/
+2025-03-19 15:43:02,269 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-logistique/ (21 chunks)
+2025-03-19 15:43:02,678 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-logistique-profil-experimente/
+2025-03-19 15:43:02,702 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:02,776 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 22 chunks existants pour https://www.bioforce.org/formation/responsable-logistique-profil-experimente/
+2025-03-19 15:43:02,863 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-logistique-profil-experimente/
+2025-03-19 15:43:02,965 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-logistique-profil-experimente/ (22 chunks)
+2025-03-19 15:43:03,544 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf
+2025-03-19 15:43:03,551 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:03,633 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 13 chunks existants pour https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf
+2025-03-19 15:43:03,703 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf
+2025-03-19 15:43:03,804 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2024/12/2025_Bioforce_RespLogistiqueAH.pdf (13 chunks)
+2025-03-19 15:43:04,277 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+2025-03-19 15:43:04,299 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:04,354 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 16 chunks existants pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+2025-03-19 15:43:04,443 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+2025-03-19 15:43:04,546 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf (16 chunks)
+2025-03-19 15:43:04,916 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf
+2025-03-19 15:43:04,943 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:05,007 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 13 chunks existants pour https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf
+2025-03-19 15:43:05,080 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf
+2025-03-19 15:43:05,181 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2024/02/2025_Bioforce_CoordProgrammeHumnitaire_distanciel.pdf (13 chunks)
+2025-03-19 15:43:05,768 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_HumanitarianProgrammeManager.pdf
+2025-03-19 15:43:05,790 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:05,890 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_HumanitarianProgrammeManager.pdf
+2025-03-19 15:43:05,991 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_HumanitarianProgrammeManager.pdf (22 chunks)
+2025-03-19 15:43:06,331 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/
+2025-03-19 15:43:06,351 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:06,375 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 18 chunks existants pour https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/
+2025-03-19 15:43:06,468 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/
+2025-03-19 15:43:06,569 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/the-fundamentals-of-humanitarian-action/ (18 chunks)
+2025-03-19 15:43:06,859 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/
+2025-03-19 15:43:06,883 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:06,948 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/
+2025-03-19 15:43:07,046 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/
+2025-03-19 15:43:07,148 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/humanitarian-programme-managing-finance-funding/ (20 chunks)
+2025-03-19 15:43:07,479 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687
+2025-03-19 15:43:07,505 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:07,571 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 5 chunks existants pour https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687
+2025-03-19 15:43:07,628 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687
+2025-03-19 15:43:07,730 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1309&session=53687 (5 chunks)
+2025-03-19 15:43:08,196 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-19 15:43:08,217 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:08,257 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 30 chunks existants pour https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-19 15:43:08,378 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-19 15:43:08,479 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf (30 chunks)
+2025-03-19 15:43:09,666 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/
+2025-03-19 15:43:09,690 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:09,756 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/
+2025-03-19 15:43:09,846 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/
+2025-03-19 15:43:09,947 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/promouvoir-la-sante-et-favoriser-la-participation-communautaire-en-contexte-humanitaire/ (19 chunks)
+2025-03-19 15:43:10,343 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/
+2025-03-19 15:43:10,364 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:10,428 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/
+2025-03-19 15:43:10,511 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/
+2025-03-19 15:43:10,612 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-les-infrastructures-deau-potable-et-dassainissement-en-contexte-humanitaire/ (20 chunks)
+2025-03-19 15:43:11,158 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf
+2025-03-19 15:43:11,181 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:11,220 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 24 chunks existants pour https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf
+2025-03-19 15:43:11,336 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf
+2025-03-19 15:43:11,438 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/wp-content/uploads/2022/05/2023_Bioforce_RPProtectionEnfance-2-1.pdf (24 chunks)
+2025-03-19 15:43:11,860 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:11,882 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:11,947 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 8 chunks existants pour https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:12,016 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:12,117 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/pilotage-dun-programme-protection-de-lenfance-en-situation-durgence/ (8 chunks)
+2025-03-19 15:43:12,895 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:12,915 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:12,977 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:13,105 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:13,207 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/gestion-des-ressources-dun-programme-protection-de-lenfance-en-situation-durgence/ (19 chunks)
+2025-03-19 15:43:13,840 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:13,860 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:13,927 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:14,018 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/
+2025-03-19 15:43:14,119 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/developper-et-mettre-en-oeuvre-une-intervention-de-qualite-dans-le-domaine-de-la-protection-de-lenfance-en-situation-durgence/ (20 chunks)
+2025-03-19 15:43:14,700 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239
+2025-03-19 15:43:14,716 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:14,786 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 5 chunks existants pour https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239
+2025-03-19 15:43:14,855 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239
+2025-03-19 15:43:14,956 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/inscription-a-la-formation/?formation_id=33026&session=53239 (5 chunks)
+2025-03-19 15:43:15,266 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/logisticien-vae/
+2025-03-19 15:43:15,290 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:43:15,356 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 18 chunks existants pour https://www.bioforce.org/formation/logisticien-vae/
+2025-03-19 15:43:15,445 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/logisticien-vae/
+2025-03-19 15:43:15,549 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/logisticien-vae/ (18 chunks)
+2025-03-19 15:43:15,549 - __main__ - INFO - Lot 10 indexé avec succès: 20 documents (0 FAQ, 20 standards)
+2025-03-19 15:43:17,062 - __main__ - INFO - Traitement de l'URL 235/500: https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/
+2025-03-19 15:43:17,062 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/
+2025-03-19 15:43:18,828 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/
+2025-03-19 15:43:18,843 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\227e6535c449a5ee5ab2b5b836638554_2025-03-19T15-43-18.828318.json
+2025-03-19 15:43:20,356 - __main__ - INFO - Traitement de l'URL 236/500: https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/
+2025-03-19 15:43:20,357 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/
+2025-03-19 15:43:22,127 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/
+2025-03-19 15:43:22,129 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\6be709f1973680d77bb74cb22875bdac_2025-03-19T15-43-22.128366.json
+2025-03-19 15:43:23,633 - __main__ - INFO - Traitement de l'URL 237/500: https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/
+2025-03-19 15:43:23,633 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/
+2025-03-19 15:43:25,416 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/
+2025-03-19 15:43:25,428 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\0876d5ab2d987d61bfb24e326b8f0fc8_2025-03-19T15-43-25.416539.json
+2025-03-19 15:43:26,937 - __main__ - INFO - Traitement de l'URL 238/500: https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:43:26,937 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:43:28,658 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:43:28,671 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\96c0ebe4f5f260c202597eaa24a04d67_2025-03-19T15-43-28.659066.json
+2025-03-19 15:43:30,189 - __main__ - INFO - Traitement de l'URL 239/500: https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:43:30,190 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:43:31,852 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:43:31,865 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\8fac1965fa310f4c12a0af8e79f23224_2025-03-19T15-43-31.852538.json
+2025-03-19 15:43:33,368 - __main__ - INFO - Traitement de l'URL 240/500: https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:43:33,368 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:43:35,066 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:43:35,066 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\ae5e8aa7d6ba42f0413a0f054ac91d73_2025-03-19T15-43-35.066433.json
+2025-03-19 15:43:36,576 - __main__ - INFO - Traitement de l'URL 241/500: https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:43:36,576 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:43:38,420 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:43:38,434 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\087253adc1ae0935f8526074edea400c_2025-03-19T15-43-38.420214.json
+2025-03-19 15:43:39,948 - __main__ - INFO - Traitement de l'URL 242/500: https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/
+2025-03-19 15:43:39,950 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/
+2025-03-19 15:43:41,643 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/
+2025-03-19 15:43:41,645 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\8335255ba96b634bae417c08ae3d4f64_2025-03-19T15-43-41.643771.json
+2025-03-19 15:43:43,155 - __main__ - INFO - Traitement de l'URL 243/500: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/
+2025-03-19 15:43:43,155 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/
+2025-03-19 15:43:45,878 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/
+2025-03-19 15:43:45,893 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\0c8c3f7c65f8f96e19e3ac8431e82d1d_2025-03-19T15-43-45.878092.json
+2025-03-19 15:43:47,396 - __main__ - INFO - Traitement de l'URL 244/500: https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:43:47,396 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:43:49,204 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:43:49,217 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\b9b8c57865d46e3f2d1abeea03b4d904_2025-03-19T15-43-49.204150.json
+2025-03-19 15:43:50,720 - __main__ - INFO - Traitement de l'URL 245/500: https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:43:50,720 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:43:52,464 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:43:52,464 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\87067f7556be051401f2bf8536c18552_2025-03-19T15-43-52.464309.json
+2025-03-19 15:43:53,967 - __main__ - INFO - Traitement de l'URL 246/500: https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:43:53,967 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:43:55,769 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:43:55,786 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\48326d0ff65f5faa2272bfb011d8dd1c_2025-03-19T15-43-55.769965.json
+2025-03-19 15:43:57,300 - __main__ - INFO - Traitement de l'URL 247/500: https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:43:57,300 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:43:59,006 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:43:59,029 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\52c0af8170d343672b7c484326b1a627_2025-03-19T15-43-59.006307.json
+2025-03-19 15:44:00,531 - __main__ - INFO - Traitement de l'URL 248/500: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/
+2025-03-19 15:44:00,533 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/
+2025-03-19 15:44:02,334 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/
+2025-03-19 15:44:02,347 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\3bbf2da9cc6ae69163caec510eadfbfd_2025-03-19T15-44-02.334095.json
+2025-03-19 15:44:03,851 - __main__ - INFO - Traitement de l'URL 249/500: https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/
+2025-03-19 15:44:03,851 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/
+2025-03-19 15:44:05,624 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/
+2025-03-19 15:44:05,625 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\50ddc2c06726db4d5322d9582c330773_2025-03-19T15-44-05.625847.json
+2025-03-19 15:44:07,128 - __main__ - INFO - Traitement de l'URL 250/500: https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/
+2025-03-19 15:44:07,128 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/
+2025-03-19 15:44:08,850 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/
+2025-03-19 15:44:08,855 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\ea1fa46e1cb210c3e23d8a01b3da267e_2025-03-19T15-44-08.850914.json
+2025-03-19 15:44:10,367 - __main__ - INFO - Traitement de l'URL 251/500: https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/
+2025-03-19 15:44:10,368 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/
+2025-03-19 15:44:12,191 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/
+2025-03-19 15:44:12,193 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\f890beed6afb38e4bd8a6c6149e41bba_2025-03-19T15-44-12.191135.json
+2025-03-19 15:44:13,706 - __main__ - INFO - Traitement de l'URL 252/500: https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/
+2025-03-19 15:44:13,706 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/
+2025-03-19 15:44:15,419 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/
+2025-03-19 15:44:15,441 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\dc2754aa8e1cb9f6a8d3b34fcbd2cd3b_2025-03-19T15-44-15.419263.json
+2025-03-19 15:44:16,945 - __main__ - INFO - Traitement de l'URL 253/500: https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/
+2025-03-19 15:44:16,945 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/
+2025-03-19 15:44:18,714 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/
+2025-03-19 15:44:18,728 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\77da430f7e86be895b5645ae3c00ccfc_2025-03-19T15-44-18.715074.json
+2025-03-19 15:44:20,241 - __main__ - INFO - Traitement de l'URL 254/500: https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/
+2025-03-19 15:44:20,241 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/
+2025-03-19 15:44:22,003 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/
+2025-03-19 15:44:22,023 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\58ee310b3d0102897c33b9d3c532cd20_2025-03-19T15-44-22.003973.json
+2025-03-19 15:44:22,024 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-19 15:44:22,024 - __main__ - INFO - Indexation d'un lot de 20 documents dans Qdrant...
+2025-03-19 15:44:22,395 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/
+2025-03-19 15:44:22,482 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:22,546 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/
+2025-03-19 15:44:22,727 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/
+2025-03-19 15:44:22,830 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/mettre-a-disposition-de-lorganisation-humanitaire-les-infrastructures-et-les-equipements-techniques-bloc-1-vae/ (20 chunks)
+2025-03-19 15:44:23,295 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/
+2025-03-19 15:44:23,317 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:23,383 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/
+2025-03-19 15:44:23,491 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/
+2025-03-19 15:44:23,593 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/assurer-lapprovisionnement-de-lorganisation-humanitaire-en-termes-dachats-de-transport-et-de-stockage-bloc-2-vae/ (20 chunks)
+2025-03-19 15:44:24,167 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/
+2025-03-19 15:44:24,189 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:24,254 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/
+2025-03-19 15:44:24,338 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/
+2025-03-19 15:44:24,440 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/gerer-les-ressources-humaines-et-financieres-dune-equipe-logistique-dans-lorganisation-humanitaire-bloc-3-vae/ (19 chunks)
+2025-03-19 15:44:24,833 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:44:24,854 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:24,875 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:44:24,984 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:44:25,085 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/conduire-les-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/ (20 chunks)
+2025-03-19 15:44:28,283 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:44:28,300 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:28,366 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:44:28,459 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:44:28,560 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/assurer-la-gestion-financiere-dune-mission-humanitaire-bloc-1-vae/ (20 chunks)
+2025-03-19 15:44:29,036 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:44:29,057 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:29,128 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:44:29,244 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:44:29,345 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/assurer-la-gestion-des-ressources-humaines-dune-mission-humanitaire-bloc-2-vae/ (20 chunks)
+2025-03-19 15:44:29,679 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:44:29,700 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:29,763 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:44:29,859 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:44:29,960 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/assurer-la-gestion-administrative-et-juridique-dune-mission-humanitaire-bloc-3-vae/ (19 chunks)
+2025-03-19 15:44:30,386 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/
+2025-03-19 15:44:30,409 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:30,471 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/
+2025-03-19 15:44:30,558 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/
+2025-03-19 15:44:30,659 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-et-mettre-en-oeuvre-la-strategie-du-departement-administratif-rh-et-financier-dune-mission-humanitaire-dans-le-respect-des-procedures-internes-des-normes-humanitaires-et-en-integrant-la/ (19 chunks)
+2025-03-19 15:44:31,210 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/
+2025-03-19 15:44:31,245 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:31,311 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/
+2025-03-19 15:44:31,391 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/
+2025-03-19 15:44:31,492 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-vae/ (19 chunks)
+2025-03-19 15:44:32,168 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:44:32,189 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:32,259 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:44:32,349 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/
+2025-03-19 15:44:32,450 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/mobiliser-les-infrastructures-et-les-equipements-necessaires-au-fonctionnement-dune-mission-humanitaire-bloc-1-vae/ (20 chunks)
+2025-03-19 15:44:32,784 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:44:32,805 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:32,872 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:44:32,963 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/
+2025-03-19 15:44:33,065 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/superviser-et-organiser-la-chaine-dapprovisionnement-dune-mission-humanitaire-bloc-2-vae/ (19 chunks)
+2025-03-19 15:44:33,569 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:44:33,595 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:33,659 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:44:33,744 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/
+2025-03-19 15:44:33,845 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-et-piloter-le-service-logistique-dune-mission-humanitaire-bloc-3-vae/ (20 chunks)
+2025-03-19 15:44:34,200 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:44:34,221 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:34,287 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:44:34,382 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/
+2025-03-19 15:44:34,483 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/definir-la-strategie-et-piloter-la-mise-en-oeuvre-des-projets-logistiques-de-lorganisation-humanitaire-bloc-4-vae/ (19 chunks)
+2025-03-19 15:44:34,795 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/
+2025-03-19 15:44:34,816 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:34,878 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 18 chunks existants pour https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/
+2025-03-19 15:44:34,964 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/
+2025-03-19 15:44:35,066 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/responsable-de-projets-eau-hygiene-et-assainissement-vae/ (18 chunks)
+2025-03-19 15:44:35,789 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/
+2025-03-19 15:44:35,809 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:35,866 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/
+2025-03-19 15:44:35,971 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/
+2025-03-19 15:44:36,073 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-et-piloter-les-projets-eau-hygiene-et-assainissement-dans-une-intervention-humanitaire-bloc-1-vae/ (19 chunks)
+2025-03-19 15:44:36,626 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/
+2025-03-19 15:44:36,647 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:36,709 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/
+2025-03-19 15:44:36,796 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/
+2025-03-19 15:44:36,897 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/coordonner-les-ressources-humaines-materielles-et-financieres-necessaires-a-la-mise-en-oeuvre-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-humanitaire-bloc-2-vae/ (20 chunks)
+2025-03-19 15:44:37,239 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/
+2025-03-19 15:44:37,260 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:37,323 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/
+2025-03-19 15:44:37,413 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/
+2025-03-19 15:44:37,515 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-des-activites-favorisant-lamelioration-des-conditions-dhygiene-ainsi-que-la-participation-communautaire-dans-un-projet-eha-dans-le-respect-des-normes-humanitaires-et-en-in/ (19 chunks)
+2025-03-19 15:44:38,298 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/
+2025-03-19 15:44:38,317 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:38,385 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/
+2025-03-19 15:44:38,478 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/
+2025-03-19 15:44:38,579 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-et-assurer-la-mise-en-oeuvre-des-infrastructures-de-fourniture-deau-potable-et-dassainissement-des-projets-eau-hygiene-et-assainissement-lors-dune-intervention-hu/ (20 chunks)
+2025-03-19 15:44:38,986 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/
+2025-03-19 15:44:39,009 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:39,078 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 20 chunks existants pour https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/
+2025-03-19 15:44:39,169 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/
+2025-03-19 15:44:39,270 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/concevoir-et-piloter-des-projets-humanitaires-dans-le-respect-dune-demarche-qualite-et-des-normes-humanitaires-bloc1-vae/ (20 chunks)
+2025-03-19 15:44:39,966 - __main__ - INFO - Indexation document dans la collection BIOFORCE_ALL: https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/
+2025-03-19 15:44:39,988 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-19 15:44:40,051 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 19 chunks existants pour https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/
+2025-03-19 15:44:40,156 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/
+2025-03-19 15:44:40,257 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/formation/manager-organiser-et-developper-les-equipes-projet-en-lien-avec-la-strategie-de-lorganisation-humanitaire-bloc-2-vae-2/ (19 chunks)
+2025-03-19 15:44:40,258 - __main__ - INFO - Lot 11 indexé avec succès: 20 documents (0 FAQ, 20 standards)
+2025-03-19 15:44:41,761 - __main__ - INFO - Traitement de l'URL 255/500: https://www.bioforce.org/formation/mobiliser-et-gerer-les-ressources-materielles-et-financieres-allouees-aux-projets-humanitaires-bloc-3-vae/
+2025-03-19 15:44:41,761 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/mobiliser-et-gerer-les-ressources-materielles-et-financieres-allouees-aux-projets-humanitaires-bloc-3-vae/
+2025-03-19 15:44:43,602 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/mobiliser-et-gerer-les-ressources-materielles-et-financieres-allouees-aux-projets-humanitaires-bloc-3-vae/
+2025-03-19 15:44:43,613 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\76636bab66fee8c5e7944e9158daaee0_2025-03-19T15-44-43.602071.json
+2025-03-19 15:44:45,133 - __main__ - INFO - Traitement de l'URL 256/500: https://www.bioforce.org/formation/coordonner-la-strategie-operationnelle-du-programme-avec-les-parties-prenantes-de-laction-humanitaire-bloc-4-vae/
+2025-03-19 15:44:45,133 - __main__ - INFO - Traitement de https://www.bioforce.org/formation/coordonner-la-strategie-operationnelle-du-programme-avec-les-parties-prenantes-de-laction-humanitaire-bloc-4-vae/
+2025-03-19 15:44:47,783 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/formation/coordonner-la-strategie-operationnelle-du-programme-avec-les-parties-prenantes-de-laction-humanitaire-bloc-4-vae/
+2025-03-19 15:44:47,799 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\857ff5fd9b1b5dbe49f000fef9de9f02_2025-03-19T15-44-47.786339.json
+2025-03-19 15:44:49,308 - __main__ - INFO - Traitement de l'URL 257/500: https://www.bioforce.org/wp-content/uploads/2023/04/Bioforce_DeuxRives_AccompagnementVAE.pdf
+2025-03-19 15:44:49,308 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2023/04/Bioforce_DeuxRives_AccompagnementVAE.pdf
+2025-03-19 15:44:49,840 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2023/04/Bioforce_DeuxRives_AccompagnementVAE.pdf
+2025-03-19 15:44:49,843 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\4f4f5894714da6cff2ec32c64dbedf5f_2025-03-19T15-44-49.843427.json
+2025-03-19 15:44:51,352 - __main__ - INFO - Traitement de l'URL 258/500: https://www.bioforce.org/wp-content/uploads/2020/05/Demande_recevabilite_VAE.pdf
+2025-03-19 15:44:51,352 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/05/Demande_recevabilite_VAE.pdf
+2025-03-19 15:44:51,516 - __main__ - INFO - Contenu pertinent (formation, score: 1.00): https://www.bioforce.org/wp-content/uploads/2020/05/Demande_recevabilite_VAE.pdf
+2025-03-19 15:44:51,531 - __main__ - INFO - Données sauvegardées dans c:\BIOFORCE\BUILD\bioforce_scraper\output\data\b4d9da1dbc62b89c8a56339e07d02f72_2025-03-19T15-44-51.516598.json
+2025-03-19 15:44:53,038 - __main__ - INFO - Traitement de l'URL 259/500: https://www.bioforce.org/wp-content/uploads/2020/05/Note_explicative_demande_recevabilite_VAE.pdf
+2025-03-19 15:44:53,040 - __main__ - INFO - Traitement du PDF: https://www.bioforce.org/wp-content/uploads/2020/05/Note_explicative_demande_recevabilite_VAE.pdf
