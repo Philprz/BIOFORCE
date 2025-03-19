@@ -184,14 +184,14 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         vector = await generate_embedding(query)
         
         logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: {limit})")
-        search_result = await qdrant_client.search(
+        search_result = await qdrant_client.query_points(
             collection_name=COLLECTION_NAME,
             query_vector=vector,
             limit=limit
         )
         
         results = []
-        for scored_point in search_result:
+        for scored_point in search_result.scored_points:
             results.append({
                 "score": scored_point.score,
                 "question": scored_point.payload.get("title"),  # Utiliser title comme question
