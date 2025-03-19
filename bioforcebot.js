@@ -371,6 +371,15 @@ class BioforceBot {
                     right: 10px;
                 }
             }
+            
+            .bioforcebot-admin-link {
+                color: #0099cc;
+                text-decoration: none;
+            }
+            
+            .bioforcebot-admin-link:hover {
+                text-decoration: underline;
+            }
         `;
         
         document.head.appendChild(style);
@@ -437,7 +446,7 @@ class BioforceBot {
         // Créer élément de message
         const messageEl = document.createElement('div');
         messageEl.className = `bioforcebot-message ${role}`;
-        messageEl.textContent = content;
+        messageEl.innerHTML = content;
         
         // Ajouter à la liste
         messagesContainer.appendChild(messageEl);
@@ -515,10 +524,7 @@ class BioforceBot {
         // Vérifier si c'est une commande d'administration
         if (text.toLowerCase() === "admin" || text.toLowerCase() === "/admin") {
             this._addMessage('user', text);
-            this._addMessage('assistant', "Ouverture de l'interface d'administration...");
-            
-            // Rediriger vers l'interface d'administration
-            window.open('https://bioforce.onrender.com/admin', '_blank');
+            this._addMessage('assistant', 'Voici le lien vers l\'interface d\'administration: <a href="https://bioforce.onrender.com/admin" target="_blank" class="bioforcebot-admin-link">Ouvrir l\'interface d\'administration</a>');
             
             this.isLoading = false;
             return;
