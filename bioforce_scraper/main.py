@@ -14,7 +14,6 @@ import time
 import uuid
 from datetime import datetime
 # Nettoyage des imports de typing en conservant seulement ceux utilisés
-from typing import Optional  # Any, Dict, List, Set, Tuple, Union
 from urllib.parse import urlparse  # urljoin
 import sys
 import aiohttp

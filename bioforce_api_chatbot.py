@@ -25,11 +25,16 @@ logger = logging.getLogger(__name__)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 QDRANT_URL = os.getenv('QDRANT_URL')
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
-COLLECTION_NAME = "BIOFORCE"
+COLLECTION_NAME = os.getenv('QDRANT_COLLECTION', 'BIOFORCE')
 
 # Initialisation des clients
 openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 qdrant_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+
+# Journalisation des paramètres de connexion (sans les valeurs sensibles)
+logger.info(f"Configuration Qdrant - URL: {QDRANT_URL} | Collection: {COLLECTION_NAME}")
+if not QDRANT_URL or not QDRANT_API_KEY:
+    logger.error("⚠️ Variables d'environnement Qdrant manquantes ou invalides")
 
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
@@ -120,8 +125,15 @@ async def generate_embedding(text: str) -> List[float]:
 async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
     """Recherche dans la base de connaissances"""
     try:
+        # Vérifier d'abord que les paramètres de connexion sont valides
+        if not QDRANT_URL or not QDRANT_API_KEY:
+            logger.error("Recherche impossible: paramètres de connexion Qdrant manquants")
+            return []
+            
+        logger.info(f"Génération d'embedding pour la requête: {query[:50]}...")
         vector = await generate_embedding(query)
         
+        logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: {limit})")
         search_result = await qdrant_client.search(
             collection_name=COLLECTION_NAME,
             query_vector=vector,
@@ -138,11 +150,20 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
                 "url": scored_point.payload.get("url")
             })
         
+        logger.info(f"Recherche réussie: {len(results)} résultats trouvés")
         return results
     
     except Exception as e:
-        logger.error(f"Erreur lors de la recherche: {str(e)}")
-        raise
+        error_msg = str(e)
+        logger.error(f"Erreur lors de la recherche dans Qdrant: {error_msg}")
+        # Ajouter plus de détails sur l'erreur
+        if "Connection refused" in error_msg or "ConnectionError" in error_msg:
+            logger.error("Problème de connexion à Qdrant - vérifier l'URL et l'accessibilité du serveur")
+        elif "Unauthorized" in error_msg or "forbidden" in error_msg:
+            logger.error("Problème d'authentification - vérifier la clé API Qdrant")
+        elif "collection not found" in error_msg.lower():
+            logger.error(f"Collection '{COLLECTION_NAME}' introuvable - vérifier que la collection existe")
+        return []
 
 async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     """Formate les résultats de recherche en contexte pour le LLM"""
