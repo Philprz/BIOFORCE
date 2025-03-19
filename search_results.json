@@ -1,0 +1,47 @@
+[
+  {
+    "index": 1,
+    "score": 0.014798934,
+    "payload": {
+      "source_url": "https://www.bioforce.org/en/question/can-i-request-a-price-quote-for-the-training-im-interested-in/",
+      "title": "Can I request a price quote for the training I'm interested in? - Bioforce",
+      "chunk_number": 2,
+      "total_chunks": 4,
+      "content": "Read more Missions Central African Republic Guinea Jordan Lebanon News Bioforce News Recruitment Log in share contributions SOHP: PROFESSIONALISATION, A GUARANTEE OF THE QUALITY OF HUMANITARIAN AID Download the full report. Analysis and synthesis of interviews of key informants, survey, 11 local workshops in 10 countries, additional study on the impact of covid-19 on humanitarian professions, and recommendations from the conference on professionalisation in the humanitarian sector. Read the Report What we believe in SOHP: The State of Humanitarian Professions Taking the Lead News Bioforce News Recruitment Log in Application, registration and cancellation Can I request a price quote for the training I'm interested in? For the “Humanitarian Programme Manager” diploma course at Bioforce: once you have applied, you can download the quote on your Application Platform (“Infos” menu, then “Formations diplômantes Europe et VAE : mes devis personnalisables”).",
+      "category": "faq",
+      "type": "html",
+      "language": "fr",
+      "date_extraction": ""
+    }
+  },
+  {
+    "index": 2,
+    "score": 0.014203268,
+    "payload": {
+      "source_url": "https://www.bioforce.org/question/will-i-receive-the-training-contents-after-the-open-course-training/",
+      "title": "Will I receive the training contents after the open course training? - Bioforce",
+      "chunk_number": 4,
+      "total_chunks": 5,
+      "content": "Retour à la page FAQ Accueil Foire Aux QuestionsWill I receive the training contents after the open course training? Inscrivez-vous à notre newsletter 41 Avenue du 8 Mai 1945 69200 Vénissieux Bioforce est depuis 1983 une association à but non lucratif déclarée d'intérêt général. Centres de formation Europe 41 avenue du 8 mai 1945 69200 Vénissieux - FRANCE Afrique Villa 4015, quartier Amitié 2 Dakar - SENEGAL Découvrez les implantations Vous avez une question sur Bioforce ? Trouvez la réponse Notre FAQ Mentions légales Plan du site Accessibilité © Copyright Bioforce OK",
+      "category": "formation",
+      "type": "html",
+      "language": "fr",
+      "date_extraction": ""
+    }
+  },
+  {
+    "index": 3,
+    "score": 0.012332358,
+    "payload": {
+      "source_url": "https://www.bioforce.org/en/question/what-are-the-admission-requirements-for-the-diploma-courses-in-english/",
+      "title": "What are the admission requirements for the diploma courses in English? - Bioforce",
+      "chunk_number": 3,
+      "total_chunks": 4,
+      "content": "Discover the prerequisites for each training on the training’s webpage: For the “Master of Science in Humanitarian Programme Management“ For the “Humanitarian Programme Manager” training programme. Please note that these prerequisites provide a base for any validation of the application form. The final decision lies with the Coordinators of the training programme. Retour à la page FAQ Home page Our FAQWhat are the admission requirements for the diploma courses in English? Subscribe to our newsletter 41 Avenue du 8 Mai 1945 69200 Vénissieux Bioforce has been working as a non-profit organisation, serving the public interest since 1983. Training centres Europe 41 avenue du 8 mai 1945 69200 Vénissieux - FRANCE Africa Villa 4015, quartier Amitié 2 Dakar - SENEGAL Discover our locations You have a question on Bioforce? Find the answer Our FAQ Terms & conditions Sitemap © Copyright Bioforce OK",
+      "category": "faq",
+      "type": "html",
+      "language": "fr",
+      "date_extraction": ""
+    }
+  }
+]

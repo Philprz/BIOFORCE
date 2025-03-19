@@ -1,0 +1,332 @@
+[
+  {
+    "question_id": 1,
+    "category": "générale",
+    "query": "Comment puis-je postuler à une formation chez Bioforce ?",
+    "response_time_ms": 448,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.012023684,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.0089898035,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.008240955,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 2,
+    "category": "frais",
+    "query": "Quel est le montant des frais de sélection pour une candidature ?",
+    "response_time_ms": 759,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.015786907,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.012208061,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.010695642,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 3,
+    "category": "processus",
+    "query": "Quelles sont les étapes du processus de sélection ?",
+    "response_time_ms": 695,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.011373439,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.011237143,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "faq",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.010459282,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 4,
+    "category": "délais",
+    "query": "Combien de temps faut-il pour recevoir une réponse après avoir soumis ma candidature ?",
+    "response_time_ms": 236,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.011016883,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.01098324,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.009733966,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 5,
+    "category": "prérequis",
+    "query": "Quelles sont les conditions d'admission pour la formation en logistique humanitaire ?",
+    "response_time_ms": 290,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.01475218,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.014370197,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.013196269,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "faq",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 6,
+    "category": "technique",
+    "query": "Comment puis-je modifier mes informations personnelles dans mon espace candidat ?",
+    "response_time_ms": 303,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.015165528,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.014119259,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.010711629,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "faq",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 7,
+    "category": "problèmes courants",
+    "query": "J'ai oublié mon mot de passe, comment le réinitialiser ?",
+    "response_time_ms": 251,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.016236387,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.013701123,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.01342883,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 8,
+    "category": "spécifique",
+    "query": "Quelle est la durée de la formation de Responsable de Projets Eau, Hygiène et Assainissement ?",
+    "response_time_ms": 392,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.014745233,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.012370623,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.012180727,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 9,
+    "category": "financements",
+    "query": "Est-il possible d'obtenir une bourse ou un financement pour suivre une formation ?",
+    "response_time_ms": 369,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.013909742,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.012102332,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.011419621,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      }
+    ]
+  },
+  {
+    "question_id": 10,
+    "category": "après-formation",
+    "query": "Quel est le taux d'insertion professionnelle après une formation chez Bioforce ?",
+    "response_time_ms": 355,
+    "results_count": 3,
+    "top_results": [
+      {
+        "position": 1,
+        "score": 0.013073933,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 2,
+        "score": 0.011852748,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "formation",
+        "url": "N/A"
+      },
+      {
+        "position": 3,
+        "score": 0.010486523,
+        "question": "N/A",
+        "answer": "N/A",
+        "category": "faq",
+        "url": "N/A"
+      }
+    ]
+  }
+]

@@ -10,6 +10,7 @@ from qdrant_client import AsyncQdrantClient
 from dotenv import load_dotenv
 import uvicorn
 import json
+import asyncio
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -29,17 +30,55 @@ COLLECTION_NAME = os.getenv('QDRANT_COLLECTION', 'BIOFORCE')
 
 # Initialisation des clients
 openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-qdrant_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+qdrant_client = None  # Sera initialisé pendant l'événement de démarrage
 
 # Journalisation des paramètres de connexion (sans les valeurs sensibles)
 logger.info(f"Configuration Qdrant - URL: {QDRANT_URL} | Collection: {COLLECTION_NAME}")
 if not QDRANT_URL or not QDRANT_API_KEY:
     logger.error("⚠️ Variables d'environnement Qdrant manquantes ou invalides")
 
+# Fonction pour initialiser le client Qdrant avec retry
+async def initialize_qdrant_client():
+    """Initialise le client Qdrant avec plusieurs tentatives en cas d'échec"""
+    global qdrant_client
+    max_retries = 3
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            logger.info(f"Tentative de connexion à Qdrant: {QDRANT_URL}")
+            temp_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+            
+            # Tester la connexion explicitement
+            await temp_client.get_collections()
+            
+            # Si on arrive ici, la connexion est réussie
+            qdrant_client = temp_client
+            logger.info("✅ Connexion à Qdrant établie avec succès")
+            return True
+        except Exception as e:
+            retry_count += 1
+            error_msg = str(e)
+            logger.error(f"❌ Échec de connexion à Qdrant (tentative {retry_count}/{max_retries}): {error_msg}")
+            
+            if retry_count >= max_retries:
+                logger.error("❌ Nombre maximum de tentatives atteint. Impossible de se connecter à Qdrant.")
+                return False
+            
+            # Attendre avant de réessayer
+            await asyncio.sleep(2)
+            
+    return False
+
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
     """Crée la collection bioforce_faq si elle n'existe pas déjà"""
     try:
+        # Vérifier si le client Qdrant est initialisé
+        if not qdrant_client:
+            logger.error("Client Qdrant non initialisé, impossible de créer la collection")
+            return
+            
         # Vérifier si la collection existe
         collections = await qdrant_client.get_collections()
         collection_names = [collection.name for collection in collections.collections]
@@ -83,10 +122,17 @@ app.add_middleware(
     max_age=86400,        # Cache les résultats preflight pour 24h
 )
 
-# Événement de démarrage pour initialiser la collection
+# Événement de démarrage pour initialiser le client et la collection
 @app.on_event("startup")
 async def startup_event():
-    await initialize_qdrant_collection()
+    # Initialiser le client Qdrant d'abord
+    connected = await initialize_qdrant_client()
+    
+    if connected:
+        # Seulement si la connexion est réussie, initialiser la collection
+        await initialize_qdrant_collection()
+    else:
+        logger.warning("⚠️ L'application démarre sans connexion à Qdrant. Certaines fonctionnalités seront limitées.")
 
 # Modèles de données
 class ChatMessage(BaseModel):
@@ -125,7 +171,11 @@ async def generate_embedding(text: str) -> List[float]:
 async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
     """Recherche dans la base de connaissances"""
     try:
-        # Vérifier d'abord que les paramètres de connexion sont valides
+        # Vérifier d'abord que le client est initialisé et que les paramètres de connexion sont valides
+        if not qdrant_client:
+            logger.error("Recherche impossible: client Qdrant non initialisé")
+            return []
+            
         if not QDRANT_URL or not QDRANT_API_KEY:
             logger.error("Recherche impossible: paramètres de connexion Qdrant manquants")
             return []
@@ -144,8 +194,8 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         for scored_point in search_result:
             results.append({
                 "score": scored_point.score,
-                "question": scored_point.payload.get("question"),
-                "answer": scored_point.payload.get("answer"),
+                "question": scored_point.payload.get("title"),  # Utiliser title comme question
+                "answer": scored_point.payload.get("content"),  # Utiliser content comme answer
                 "category": scored_point.payload.get("category"),
                 "url": scored_point.payload.get("url")
             })
@@ -361,8 +411,11 @@ async def status():
     # Vérifier l'état de Qdrant
     qdrant_status = "unknown"
     try:
-        await qdrant_client.get_collections()
-        qdrant_status = "connected"
+        if not qdrant_client:
+            qdrant_status = "not_initialized"
+        else:
+            await qdrant_client.get_collections()
+            qdrant_status = "connected"
     except Exception as e:
         logger.error(f"Erreur de connexion à Qdrant: {str(e)}")
         qdrant_status = "error"
@@ -382,6 +435,11 @@ async def qdrant_stats():
     Retourne les statistiques des collections Qdrant
     """
     try:
+        # Vérifier si le client Qdrant est initialisé
+        if not qdrant_client:
+            logger.error("Impossible de récupérer les statistiques: client Qdrant non initialisé")
+            raise HTTPException(status_code=500, detail="Client Qdrant non initialisé")
+            
         # Obtenir les collections
         collections = await qdrant_client.get_collections()
         collection_names = [collection.name for collection in collections.collections]
@@ -505,4 +563,4 @@ async def scrape_full(force_update: bool = Query(False, description="Force la mi
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("bioforce_api_chatbot:app", host="0.0.0.0", port=8000, reload=True)

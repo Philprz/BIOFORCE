@@ -1,0 +1,23 @@
+{
+  "original": {
+    "score": 0.013061325,
+    "payload": {
+      "source_url": "https://www.bioforce.org/question/i-have-applied-online-for-an-open-training-course-what-is-the-next-step/",
+      "title": "I have applied online for an open training course: what is the next step? - Bioforce",
+      "chunk_number": 1,
+      "total_chunks": 5,
+      "content": "A vos agendas ! Je participe Quelle formation pour moi ? Faites le test ! Je trouve ma formation Les formations par géographie Europe Afrique À distance Les formations par profil Bachelier Jeune diplômé Alternant Reconversion Humanitaire en activité Les certifications Bachelor Responsable de l’Environnement de travail et de la Logistique humanitaire Responsable RH et finances Logisticien Responsable Logistique Coordinateur de programme Humanitarian programme manager Responsable de projets Eau, hygiène et assainissement Responsable de projets Protection de l’enfance en situation d’urgence Validation des Acquis de l'Expérience La formation courte continue En présentiel À distance Bioforce Actualités Alumni Recrutement Espace Candidat build offre pour les organisations REACH : Bioforce agit pour renforcer les capacités des sociétés civiles dans l’Océan Indien et au Liban Devant des défis humanitaires immenses causés par des catastrophes comme à Mayotte ou des conflits comme au Moyen-Orien",
+      "category": "formation",
+      "type": "html",
+      "language": "fr",
+      "date_extraction": ""
+    }
+  },
+  "transformed": {
+    "score": 0.013061325,
+    "question": "I have applied online for an open training course: what is the next step? - Bioforce",
+    "answer": "A vos agendas ! Je participe Quelle formation pour moi ? Faites le test ! Je trouve ma formation Les formations par géographie Europe Afrique À distance Les formations par profil Bachelier Jeune diplômé Alternant Reconversion Humanitaire en activité Les certifications Bachelor Responsable de l’Environnement de travail et de la Logistique humanitaire Responsable RH et finances Logisticien Responsable Logistique Coordinateur de programme Humanitarian programme manager Responsable de projets Eau, hygiène et assainissement Responsable de projets Protection de l’enfance en situation d’urgence Validation des Acquis de l'Expérience La formation courte continue En présentiel À distance Bioforce Actualités Alumni Recrutement Espace Candidat build offre pour les organisations REACH : Bioforce agit pour renforcer les capacités des sociétés civiles dans l’Océan Indien et au Liban Devant des défis humanitaires immenses causés par des catastrophes comme à Mayotte ou des conflits comme au Moyen-Orien",
+    "category": "formation",
+    "url": "N/A"
+  }
+}
