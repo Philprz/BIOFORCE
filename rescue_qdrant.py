@@ -6,7 +6,6 @@ une nouvelle collection optimisée.
 """
 import asyncio
 import os
-import json
 import numpy as np
 from dotenv import load_dotenv
 from openai import AsyncOpenAI

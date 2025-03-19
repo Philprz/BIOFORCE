@@ -161,7 +161,7 @@ async def generate_embedding(text: str) -> List[float]:
     try:
         response = await openai_client.embeddings.create(
             input=text,
-            model="text-embedding-3-small"
+            model="text-embedding-ada-002"
         )
         return response.data[0].embedding
     except Exception as e:
