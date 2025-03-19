@@ -518,7 +518,7 @@ class BioforceBot {
             this._addMessage('assistant', "Ouverture de l'interface d'administration...");
             
             // Rediriger vers l'interface d'administration
-            window.open('/bioforce-admin/index.html', '_blank');
+            window.open('https://bioforce.onrender.com/admin', '_blank');
             
             this.isLoading = false;
             return;
