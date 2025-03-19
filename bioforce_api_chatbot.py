@@ -161,7 +161,7 @@ async def generate_embedding(text: str) -> List[float]:
     try:
         response = await openai_client.embeddings.create(
             input=text,
-            model="text-embedding-ada-002"
+            model="text-embedding-3-small"
         )
         return response.data[0].embedding
     except Exception as e:
@@ -169,11 +169,10 @@ async def generate_embedding(text: str) -> List[float]:
         raise
 
 async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
-    """Recherche dans la base de connaissances"""
+    """Recherche dans la base de connaissances vectorielle."""
     try:
-        # Vérifier d'abord que le client est initialisé et que les paramètres de connexion sont valides
-        if not qdrant_client:
-            logger.error("Recherche impossible: client Qdrant non initialisé")
+        if not OPENAI_API_KEY:
+            logger.error("Recherche impossible: clé API OpenAI manquante")
             return []
             
         if not QDRANT_URL or not QDRANT_API_KEY:
@@ -184,14 +183,20 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         vector = await generate_embedding(query)
         
         logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: {limit})")
-        search_result = await qdrant_client.query_points(
+        # Ajout du paramètre score_threshold pour filtrer les résultats très faibles
+        search_result = await qdrant_client.search(
             collection_name=COLLECTION_NAME,
             query_vector=vector,
-            limit=limit
+            limit=20,  # Augmenter la limite pour avoir plus de résultats potentiels
+            score_threshold=0.001  # Filtrer les scores trop faibles
         )
         
+        # Trier les résultats par score et prendre les meilleurs
+        search_result.sort(key=lambda x: x.score, reverse=True)
+        search_result = search_result[:limit]
+        
         results = []
-        for scored_point in search_result.scored_points:
+        for scored_point in search_result:
             results.append({
                 "score": scored_point.score,
                 "question": scored_point.payload.get("title"),  # Utiliser title comme question

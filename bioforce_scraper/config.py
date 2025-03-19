@@ -111,7 +111,7 @@ QDRANT_COLLECTION = "BIOFORCE"  # Collection principale pour la connaissance
 
 # Configuration OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-EMBEDDING_MODEL = "text-embedding-3-small"
+EMBEDDING_MODEL = "text-embedding-ada-002"
 COMPLETION_MODEL = "gpt-3.5-turbo"
 
 # Configuration API FastAPI

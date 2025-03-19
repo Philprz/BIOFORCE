@@ -6,6 +6,7 @@ import json
 import os
 from dotenv import load_dotenv
 from qdrant_client import AsyncQdrantClient
+import numpy as np
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -151,6 +152,116 @@ async def sample_collection_data(client, collection_name, sample_size=5):
     except Exception as e:
         print("Erreur lors de l'analyse de la collection " + collection_name + ": " + str(e))
 
+async def detailed_vector_analysis(client, collection_name, sample_size=2):
+    """Analyse détaillée des vecteurs d'embedding stockés"""
+    print("\n" + "="*80)
+    print("ANALYSE DÉTAILLÉE DES VECTEURS: " + collection_name)
+    print("="*80)
+    
+    try:
+        # Obtenir quelques points avec leurs vecteurs
+        scroll_response = await client.scroll(
+            collection_name=collection_name,
+            limit=sample_size,
+            with_payload=True,
+            with_vectors=True  # Important: récupérer les vecteurs
+        )
+        
+        # Extraire les points
+        if isinstance(scroll_response, tuple) and len(scroll_response) > 0:
+            points = scroll_response[0]
+            print("Récupération de " + str(len(points)) + " points avec vecteurs")
+        else:
+            print("Format de réponse scroll inattendu")
+            return
+        
+        if not points:
+            print("Aucun point trouvé")
+            return
+        
+        # Analyser les vecteurs
+        for i, point in enumerate(points, 1):
+            print("\n--- Point " + str(i) + " ---")
+            
+            # Afficher l'ID
+            point_id = getattr(point, 'id', 'N/A')
+            print("ID: " + str(point_id))
+            
+            # Afficher les informations de payload
+            payload = getattr(point, 'payload', {})
+            print("Payload:")
+            title = payload.get('title', 'Sans titre')
+            print("  Titre: " + str(title[:100]) + "...")
+            
+            # Analyser le vecteur
+            vector = getattr(point, 'vector', None)
+            if vector:
+                print("Vecteur:")
+                print("  Dimension: " + str(len(vector)))
+                print("  Premiers éléments: " + str(vector[:5]) + "...")
+                print("  Derniers éléments: " + str(vector[-5:]) + "...")
+                
+                # Calculer la norme du vecteur (pour vérifier s'il est normalisé)
+                norm = np.linalg.norm(vector)
+                print("  Norme du vecteur: " + str(norm) + "")
+                # Un vecteur normalisé devrait avoir une norme proche de 1.0
+                is_normalized = 0.99 < norm < 1.01
+                print("  Est normalisé? " + str(is_normalized))
+            else:
+                print("Vecteur non disponible")
+                
+    except Exception as e:
+        print("Erreur lors de l'analyse des vecteurs: " + str(e))
+
+async def check_collection_settings(client, collection_name):
+    """Analyse les paramètres de la collection"""
+    print("\n" + "="*80)
+    print("PARAMÈTRES DE LA COLLECTION: " + collection_name)
+    print("="*80)
+    
+    try:
+        collection_info = await client.get_collection(collection_name=collection_name)
+        print("Taille de la collection: " + str(collection_info.vectors_count) + " vecteurs")
+        
+        # Afficher les paramètres de configuration des vecteurs
+        if hasattr(collection_info, 'config'):
+            config = collection_info.config
+            print("\nConfiguration des vecteurs:")
+            for field_name, field_config in config.params.vector_params.items():
+                print("  Champ: " + str(field_name))
+                print("  Dimension: " + str(field_config.size))
+                print("  Distance: " + str(field_config.distance))
+        else:
+            print("Information sur la configuration non disponible")
+            
+    except Exception as e:
+        print("Erreur lors de l'analyse des paramètres: " + str(e))
+
+async def test_custom_query(client, collection_name):
+    """Test avec un vecteur normalisé"""
+    print("\n" + "="*80)
+    print("TEST AVEC VECTEUR NORMALISÉ: " + collection_name)
+    print("="*80)
+    
+    try:
+        # Créer un vecteur aléatoire et le normaliser
+        random_vector = np.random.rand(1536)
+        normalized_vector = random_vector / np.linalg.norm(random_vector)
+        
+        print("Test avec vecteur normalisé...")
+        search_results = await client.search(
+            collection_name=collection_name,
+            query_vector=normalized_vector.tolist(),
+            limit=3
+        )
+        
+        print("Nombre de résultats: " + str(len(search_results)))
+        for i, result in enumerate(search_results, 1):
+            print("  Résultat " + str(i) + ": Score=" + str(result.score) + ", Titre=" + str(result.payload.get('title', 'Sans titre')[:50]) + "...")
+            
+    except Exception as e:
+        print("Erreur lors du test avec vecteur normalisé: " + str(e))
+
 async def main():
     """Fonction principale"""
     print("Connexion à Qdrant: " + QDRANT_URL)
@@ -164,6 +275,16 @@ async def main():
         
         # Analyser chaque collection
         for collection_name in collection_names:
+            # Vérifier les paramètres de la collection
+            await check_collection_settings(client, collection_name)
+            
+            # Analyse détaillée des vecteurs
+            await detailed_vector_analysis(client, collection_name)
+            
+            # Test avec un vecteur normalisé
+            await test_custom_query(client, collection_name)
+            
+            # Échantillonnage de données standard
             await sample_collection_data(client, collection_name)
         
     except Exception as e:

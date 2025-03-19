@@ -41,33 +41,38 @@ async def generate_embedding(text: str, openai_client: AsyncOpenAI) -> list:
         print(f"Erreur d'embedding: {str(e)}")
         raise
 
-async def search_qdrant(client: AsyncQdrantClient, question: str, openai_client: AsyncOpenAI, limit: int = 3):
-    """Recherche dans Qdrant pour une question spécifique"""
+async def search_qdrant(client, query, openai_client, limit=10):
+    """Exécute une recherche sémantique sur Qdrant"""
     try:
-        # Générer l'embedding pour la question
-        vector = await generate_embedding(question, openai_client)
+        # Générer l'embedding pour la requête
+        embedding = await openai_client.embeddings.create(
+            input=query,
+            model="text-embedding-ada-002"
+        )
+        vector = embedding.data[0].embedding
         
-        # Rechercher dans Qdrant
-        results = await client.search(
+        # Utiliser search() qui fonctionne avec query_vector (même si déprécié)
+        search_result = await client.search(
             collection_name=COLLECTION_NAME,
             query_vector=vector,
             limit=limit
         )
         
+        results = []
+        # Adapter au format retourné par search()
+        for point in search_result:
+            results.append({
+                "score": point.score,
+                "title": point.payload.get("title", "Sans titre"),
+                "content": point.payload.get("content", "Contenu non disponible"),
+                "category": point.payload.get("category", ""),
+                "url": point.payload.get("source_url", "")
+            })
+        
         return results
     except Exception as e:
-        print(f"Erreur lors de la recherche pour '{question}': {str(e)}")
+        print(f"Erreur lors de la recherche: {e}")
         return []
-
-def format_result_for_json(result):
-    """Formate un résultat Qdrant pour le stocker en JSON"""
-    return {
-        "score": result.score,
-        "title": result.payload.get("title", "Pas de titre"),
-        "content": result.payload.get("content", "Pas de contenu"),
-        "url": result.payload.get("url", "Pas d'URL"),
-        "category": result.payload.get("category", "Pas de catégorie")
-    }
 
 async def main():
     print(f"Connexion à Qdrant: {QDRANT_URL} | Collection: {COLLECTION_NAME}")
@@ -94,7 +99,8 @@ async def main():
     for i, question in enumerate(TEST_QUESTIONS, 1):
         print(f"\n{i}. QUESTION: {question}")
         
-        results = await search_qdrant(qdrant_client, question, openai_client)
+        # Rechercher dans Qdrant
+        results = await search_qdrant(qdrant_client, question, openai_client, limit=10)
         
         if not results:
             print("Aucun résultat trouvé.")
@@ -104,11 +110,10 @@ async def main():
         print(f"Nombre de résultats: {len(results)}")
         
         # Formater les résultats pour le JSON
-        formatted_results = [format_result_for_json(r) for r in results]
-        all_results[question] = formatted_results
+        all_results[question] = results
         
         # Afficher un aperçu simple
-        for j, result in enumerate(formatted_results, 1):
+        for j, result in enumerate(results, 1):
             print(f"  Résultat {j}: {result['title'][:50]}... (score: {result['score']:.4f})")
     
     # Sauvegarder tous les résultats dans un fichier JSON
