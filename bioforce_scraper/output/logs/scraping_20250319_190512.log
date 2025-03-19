@@ -1,0 +1,22 @@
+2025-03-19 19:05:17,817 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-19 19:05:18,571 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' créée avec succès
+2025-03-19 19:05:19,393 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:19,436 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=6c1ab1222a2b63ff06d14dfc1223eba1
+2025-03-19 19:05:20,162 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:20,189 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=3128969c1e585742170b559a96905f1d
+2025-03-19 19:05:20,420 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:20,446 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=d547703d0e9a4bd74c183d6198eba1d1
+2025-03-19 19:05:20,864 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:20,905 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=774fd92f72480d19a316ad6b51d65825
+2025-03-19 19:05:21,541 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:21,568 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=9f3709d103659b072f3b33d51c5f8af7
+2025-03-19 19:05:22,056 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:22,082 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=252eddb405de2c42916ce24418acbd1c
+2025-03-19 19:05:22,363 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:22,391 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=af5f2b5840a08a057482c4a31d2993b4
+2025-03-19 19:05:22,642 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:22,669 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=7438e9b6d8771189cfc0b11053aa6192
+2025-03-19 19:05:22,912 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:22,938 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=1f288aa4f78a2b95936bd5627e815671
+2025-03-19 19:05:23,269 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-19 19:05:23,306 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=bf590cf0fd627a6f8094007dcf686fc9

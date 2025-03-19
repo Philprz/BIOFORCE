@@ -16,7 +16,6 @@ from datetime import datetime
 # Nettoyage des imports de typing en conservant seulement ceux utilisés
 from urllib.parse import urlparse  # urljoin
 import sys
-import aiohttp
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
@@ -29,20 +28,22 @@ from bioforce_scraper.config import (
     BASE_URL, EXCLUDE_EXTENSIONS, EXCLUDE_PATTERNS,
     LOG_FILE, MAX_PAGES, REQUEST_DELAY, USER_AGENT,
     DATA_DIR, START_URLS, FAQ_URLS, FAQ_PATTERNS, FAQ_INDEX_URLS, FAQ_SITEMAP_URL,
-    PDF_DIR, PRIORITY_PATTERNS  # Requis par le code plus loin
+    PRIORITY_PATTERNS, PDF_DIR,  # PDF_DIR est utilisé dans la fonction download_file
     # API_HOST, COLLECTION_NAME, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR, 
     # RETRY_DELAY, QDRANT_URL, QDRANT_API_KEY, 
 )
 from bioforce_scraper.extractors.html_extractor import extract_metadata, clean_text
+from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
 # from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
 from bioforce_scraper.utils.content_classifier import ContentClassifier
 from bioforce_scraper.utils.logger import setup_logger
 from bioforce_scraper.utils.robots_parser import RobotsParser
 from bioforce_scraper.utils.sitemap_parser import SitemapParser
-# from bioforce_scraper.utils.url_filter import filter_url
-from bioforce_scraper.utils.url_prioritizer import prioritize_url
-from bioforce_scraper.integration.qdrant_connector import QdrantConnector
+from bioforce_scraper.utils.content_tracker import ContentTracker
 from bioforce_scraper.utils.embeddings import generate_embeddings
+from bioforce_scraper.utils.qdrant_connector import QdrantConnector
+from bioforce_scraper.utils.url_prioritizer import prioritize_url
+from bioforce_scraper.integration.gpt_filter_integration import GPTFilterIntegration
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
 
@@ -61,6 +62,8 @@ class BioforceScraperMain:
         self.browser = None
         self.context = None
         self.content_classifier = ContentClassifier()  # Initialisation du classifieur de contenu
+        self.content_tracker = ContentTracker()  # Initialisation du tracker de contenu
+        self.gpt_filter = GPTFilterIntegration()  # Initialisation du filtre GPT
         self.doc_batch = []  # Batch de documents à indexer dans Qdrant
         self.qdrant_connector = QdrantConnector()
         self.pdf_count = 0
@@ -612,59 +615,68 @@ class BioforceScraperMain:
                 content_data["relevance_score"] = max(content_data.get("relevance_score", 0.5), 0.9)
                 logger.info(f"Traitement d'une page FAQ: {url}")
             
-            # Extraire les liens de la page
-            links = []
-            for a_tag in soup.find_all('a', href=True):
-                href = a_tag['href']
-                # Traiter les URLs relatives
-                if href.startswith('/'): 
-                    href = f"{BASE_URL}{href}"
-                elif not href.startswith(('http://', 'https://')):
-                    continue
-                
-                # Vérifier si l'URL appartient au domaine
-                parsed_href = urlparse(href)
-                if not parsed_href.netloc or "bioforce.org" not in parsed_href.netloc:
-                    continue
-                
-                # Vérifier les patterns d'exclusion
-                exclude = False
-                for pattern in EXCLUDE_PATTERNS:
-                    if pattern in href:
-                        exclude = True
-                        break
-                
-                # Vérifier les extensions exclues
-                for ext in EXCLUDE_EXTENSIONS:
-                    if href.endswith(ext):
-                        if ext == '.pdf':
-                            # Ajouter les PDFs à la file pour traitement
-                            links.append({"url": href, "priority": 50, "depth": depth + 1, "is_pdf": True, "is_faq": is_faq})
-                        exclude = True
-                        break
-                
-                if exclude:
-                    continue
-                
-                # Vérifier si c'est une URL de FAQ
-                link_is_faq = any(pattern in href for pattern in FAQ_PATTERNS)
-                
-                # Calculer la priorité de l'URL
-                priority = 10  # Priorité de base
-                if prioritize_url(href, PRIORITY_PATTERNS):
-                    priority = 50  # Priorité élevée pour les URLs importantes
-                
-                # Augmenter significativement la priorité si c'est une URL de FAQ
-                if link_is_faq:
-                    priority = 100  # Priorité maximale pour les FAQs
-                
-                # Augmenter la priorité des liens trouvés dans une page FAQ
-                if is_faq and not link_is_faq:
-                    priority += 20  # Les liens trouvés dans des pages FAQ sont aussi importants
-                
-                links.append({"url": href, "priority": priority, "depth": depth + 1, "is_faq": link_is_faq})
+            # Filtrage intelligent par GPT pour améliorer la qualité des données
+            filtered_content = await self.gpt_filter.process_html_content(content_data)
             
-            return content_data, links
+            # Ne continuer que si le contenu n'a pas été filtré
+            if filtered_content:
+                # Extraire les liens de la page
+                links = []
+                for a_tag in soup.find_all('a', href=True):
+                    href = a_tag['href']
+                    # Traiter les URLs relatives
+                    if href.startswith('/'): 
+                        href = f"{BASE_URL}{href}"
+                    elif not href.startswith(('http://', 'https://')):
+                        continue
+                    
+                    # Vérifier si l'URL appartient au domaine
+                    parsed_href = urlparse(href)
+                    if not parsed_href.netloc or "bioforce.org" not in parsed_href.netloc:
+                        continue
+                    
+                    # Vérifier les patterns d'exclusion
+                    exclude = False
+                    for pattern in EXCLUDE_PATTERNS:
+                        if pattern in href:
+                            exclude = True
+                            break
+                    
+                    # Vérifier les extensions exclues
+                    for ext in EXCLUDE_EXTENSIONS:
+                        if href.endswith(ext):
+                            if ext == '.pdf':
+                                # Ajouter les PDFs à la file pour traitement
+                                links.append({"url": href, "priority": 50, "depth": depth + 1, "is_pdf": True, "is_faq": is_faq})
+                            exclude = True
+                            break
+                    
+                    if exclude:
+                        continue
+                    
+                    # Vérifier si c'est une URL de FAQ
+                    link_is_faq = any(pattern in href for pattern in FAQ_PATTERNS)
+                    
+                    # Calculer la priorité de l'URL
+                    priority = 10  # Priorité de base
+                    if prioritize_url(href, PRIORITY_PATTERNS):
+                        priority = 50  # Priorité élevée pour les URLs importantes
+                    
+                    # Augmenter significativement la priorité si c'est une URL de FAQ
+                    if link_is_faq:
+                        priority = 100  # Priorité maximale pour les FAQs
+                    
+                    # Augmenter la priorité des liens trouvés dans une page FAQ
+                    if is_faq and not link_is_faq:
+                        priority += 20  # Les liens trouvés dans des pages FAQ sont aussi importants
+                    
+                    links.append({"url": href, "priority": priority, "depth": depth + 1, "is_faq": link_is_faq})
+                
+                return filtered_content, links
+            
+            else:
+                logger.info(f"Contenu filtré, ignoré: {url}")
+                return None, []
             
         except Exception as e:
             logger.error(f"Erreur lors du traitement de {url}: {e}")
@@ -687,51 +699,87 @@ class BioforceScraperMain:
         
         try:
             # Télécharger le PDF
-            os.makedirs(PDF_DIR, exist_ok=True)
-            pdf_filename = os.path.basename(url)
-            pdf_path = os.path.join(PDF_DIR, pdf_filename)
+            response = await self.download_file(url)
+            if not response:
+                logger.error(f"Impossible de télécharger le PDF: {url}")
+                return None
+                
+            # Extraire le contenu du PDF
+            pdf_content = await extract_text_from_pdf(response)
             
-            # Utiliser une session HTTP pour télécharger le fichier
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        content = await response.read()
-                        with open(pdf_path, 'wb') as f:
-                            f.write(content)
-                    else:
-                        logger.error(f"Impossible de télécharger le PDF {url}: {response.status}")
-                        return None
+            if not pdf_content:
+                logger.error(f"Impossible d'extraire le contenu du PDF: {url}")
+                return None
+                
+            # Préparer les métadonnées
+            filename = os.path.basename(url)
+            title = os.path.splitext(filename)[0].replace('-', ' ').replace('_', ' ').title()
             
-            # Extraire le texte du PDF
-            pdf_content = ""
-            try:
-                # Utiliser PyPDF2 ou PyMuPDF pour extraire le texte
-                # Implémentation simplifiée pour cet exemple
-                import pypdf
-                with open(pdf_path, 'rb') as f:
-                    reader = pypdf.PdfReader(f)
-                    for page in reader.pages:
-                        pdf_content += page.extract_text() + "\n"
-            except Exception as e:
-                logger.error(f"Erreur lors de l'extraction du texte du PDF {url}: {str(e)}")
-            
-            # Extraire le titre (du nom de fichier s'il n'est pas dans le PDF)
-            title = os.path.splitext(pdf_filename)[0].replace('_', ' ').replace('-', ' ').title()
-            
-            # Créer le document extrait
-            data = {
+            pdf_data = {
                 "url": url,
                 "title": title,
                 "content": pdf_content,
-                "pdf_path": pdf_path,
-                "timestamp": datetime.now().isoformat()
+                "content_type": "pdf",
+                "date_extraction": datetime.now().strftime("%Y-%m-%d"),
+                "source": "bioforce",
+                "relevance_score": 0.8  # Les PDFs sont généralement très pertinents
             }
             
-            return data
+            # Filtrage intelligent par GPT pour améliorer la qualité des données
+            filtered_content, is_useful = await self.gpt_filter.process_pdf_content(pdf_data)
             
+            # Ne continuer que si le contenu est utile
+            if not is_useful:
+                logger.info(f"Contenu PDF filtré, ignoré: {url}")
+                return None
+                
+            # Sauvegarder les données
+            document = await self.save_data(filtered_content)
+            
+            # Incrémenter le compteur de PDFs
+            self.pdf_count += 1
+            
+            return document
+                
         except Exception as e:
-            logger.error(f"Erreur lors du traitement du PDF {url}: {str(e)}")
-            self.failed_urls.append(url)
+            logger.error(f"Erreur lors du traitement du PDF {url}: {e}")
+            return None
+
+    async def download_file(self, url):
+        """
+        Télécharge un fichier depuis une URL
+        
+        Args:
+            url: URL du fichier à télécharger
+            
+        Returns:
+            Le contenu du fichier ou None en cas d'erreur
+        """
+        logger.info(f"Téléchargement du fichier: {url}")
+        
+        try:
+            # Créer le répertoire PDF si nécessaire
+            os.makedirs(PDF_DIR, exist_ok=True)
+            
+            # Configurer une nouvelle page
+            page = await self.context.new_page()
+            try:
+                # Intercepter la réponse
+                response = await page.goto(url, wait_until="domcontentloaded")
+                
+                if response and response.status == 200:
+                    # Récupérer le contenu
+                    content = await response.body()
+                    return content
+                else:
+                    status_code = response.status if response else "inconnu"
+                    logger.error(f"Échec du téléchargement: {url} (Code: {status_code})")
+                    return None
+            finally:
+                await page.close()
+                
+        except Exception as e:
+            logger.error(f"Erreur lors du téléchargement de {url}: {e}")
             return None
 
     async def explore_faq_pages(self):

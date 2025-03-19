@@ -1,0 +1,50 @@
+2025-03-19 18:55:08,109 - __main__ - INFO - Début du processus de reconstruction: 2025-03-19 18:55:08.109374
+2025-03-19 18:55:09,735 - __main__ - INFO - Début de la reconstruction des collections Qdrant...
+2025-03-19 18:55:09,735 - __main__ - INFO - Recréation de la collection BIOFORCE...
+2025-03-19 18:55:09,801 - __main__ - INFO - Suppression de la collection existante BIOFORCE...
+2025-03-19 18:55:10,590 - __main__ - INFO - Collection BIOFORCE créée avec succès.
+2025-03-19 18:55:10,592 - __main__ - INFO - Recréation de la collection BIOFORCE_ALL...
+2025-03-19 18:55:10,681 - __main__ - INFO - Suppression de la collection existante BIOFORCE_ALL...
+2025-03-19 18:55:11,366 - __main__ - INFO - Collection BIOFORCE_ALL créée avec succès.
+2025-03-19 18:55:11,375 - __main__ - INFO - Nombre de fichiers de données trouvés: 2262
+2025-03-19 18:55:11,375 - __main__ - INFO - Mode test activé, traitement de 10 pages...
+2025-03-19 18:55:11,377 - __main__ - INFO - Échantillon équilibré: FAQs: 0, PDFs: 0, Autres: 10
+2025-03-19 18:55:11,379 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\8a8fc830bfcc5d7599fff1050f220dda_2025-03-18T16-35-40.118952.json
+2025-03-19 18:55:14,102 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:14,103 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/inscription-a-la-formation/?formation_id=1262&session=53141
+2025-03-19 18:55:14,116 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\2d78901214371057ec02dcab668613bf_2025-03-18T15-26-21.059549.json
+2025-03-19 18:55:16,956 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:16,956 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-coordinateur-de-programme-humanitaire/
+2025-03-19 18:55:16,960 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\defcb964a40b3a1307b04458f83021bf_2025-03-18T15-43-34.564447.json
+2025-03-19 18:55:19,693 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:19,693 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/en/learn/actualites/3
+2025-03-19 18:55:19,694 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\7e88d0e76af58e2f9a88e24a599ab585_2025-03-18T18-58-04.785455.json
+2025-03-19 18:55:23,047 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:23,049 - __main__ - ERROR - URL du document en erreur: https://bioforce.org/learn/formations-humanitaires/formations-a-votre-rythme/
+2025-03-19 18:55:23,063 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\36148434282c7611f4e70aa25aa7ae3a_2025-03-18T12-58-28.147857.json
+2025-03-19 18:55:24,573 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:24,573 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/formation/profil-experimente-mobilisation-et-gestion-des-ressources-financieres-et-logistiques-dun-programme-humanitaire/
+2025-03-19 18:55:24,586 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\93108dccb0137989cc6511b0b3b275b6_2025-03-18T16-43-12.106608.json
+2025-03-19 18:55:28,433 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:28,433 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/learn/reunions-dinformation/
+2025-03-19 18:55:28,434 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\7907b9bef94eefad56e07a463f3d550f_2025-03-18T16-42-47.396360.json
+2025-03-19 18:55:30,300 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\86f03396466383f00b8b5ca567e5f185_2025-03-18T12-25-34.591400.json
+2025-03-19 18:55:32,836 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:32,836 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/learn/les-engagements-bioforce/votre-premiere-mission/
+2025-03-19 18:55:32,849 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\435b17f4f0fd026674a2b49124c138d0_2025-03-18T16-18-19.242456.json
+2025-03-19 18:55:36,060 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:36,061 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_LogisticienAH.pdf
+2025-03-19 18:55:36,062 - __main__ - INFO - Traitement du document: C:\BIOFORCE\BUILD\bioforce_scraper\output\data\02c0acd8705edf35253300411f05df32_2025-03-18T16-41-31.169978.json
+2025-03-19 18:55:38,796 - __main__ - ERROR - Erreur lors de l'indexation du document: generate_embeddings() got an unexpected keyword argument 'model'
+2025-03-19 18:55:38,797 - __main__ - ERROR - URL du document en erreur: https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284
+2025-03-19 18:55:38,797 - __main__ - INFO - === Statistiques de reconstruction ===
+2025-03-19 18:55:38,798 - __main__ - INFO - Total de documents traités: 10
+2025-03-19 18:55:38,798 - __main__ - INFO - Documents filtrés (conservés après filtrage): 9
+2025-03-19 18:55:38,799 - __main__ - INFO - Documents indexés: 0
+2025-03-19 18:55:38,799 - __main__ - INFO - Éléments FAQ traités: 0
+2025-03-19 18:55:38,800 - __main__ - INFO - Éléments FAQ filtrés (conservés): 0
+2025-03-19 18:55:38,800 - __main__ - INFO - Taux de filtrage: 10.00%
+2025-03-19 18:55:38,800 - __main__ - INFO - =======================================
+2025-03-19 18:55:38,801 - __main__ - INFO - Reconstruction des collections terminée avec succès.
+2025-03-19 18:55:38,801 - __main__ - INFO - Fin du processus de reconstruction: 2025-03-19 18:55:38.801931
+2025-03-19 18:55:38,801 - __main__ - INFO - Durée totale: 30.69 secondes
