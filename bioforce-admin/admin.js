@@ -4,18 +4,19 @@
  */
 
 // Configuration de base
-const API_BASE_URL = "https://bioforce-interface.onrender.com"; // URL de l'API en production
+const API_BASE_URL = "https://bioforce-admin.onrender.com"; // URL de l'API en production
 // Pour le développement local, décommentez la ligne ci-dessous et commentez celle au-dessus
 // const API_BASE_URL = window.location.origin; // URL de base de l'API (même domaine)
 
+// Nouveaux endpoints correspondant à la structure de l'API bioforce-admin
 const API_ENDPOINTS = {
-    systemInfo: '/admin/system-info',
-    qdrantStats: '/admin/qdrant-stats',
-    gitUpdate: '/admin/git-update',
-    scrapeFaq: '/scrape/faq',
-    scrapeFull: '/scrape/full',
-    logs: '/admin/logs',
-    status: '/admin/status'
+    systemInfo: '/api/system/info',
+    qdrantStats: '/api/qdrant/stats',
+    gitUpdate: '/api/system/update',
+    scrapeFaq: '/api/scraper/faq',
+    scrapeFull: '/api/scraper/full',
+    logs: '/api/system/logs',
+    status: '/api/system/status'
 };
 
 // État global

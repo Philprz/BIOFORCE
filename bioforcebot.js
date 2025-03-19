@@ -2,7 +2,7 @@
 
 class BioforceBot {
     constructor(options = {}) {
-        this.apiUrl = options.apiUrl || 'https://bioforce-interface.onrender.com';
+        this.apiUrl = options.apiUrl || 'https://bioforce-admin.onrender.com';
         this.userId = options.userId || this._generateUserId();
         this.container = null;
         this.messages = [];
