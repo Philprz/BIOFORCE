@@ -4,9 +4,9 @@
  */
 
 // Configuration de base
-const API_BASE_URL = "https://bioforce-admin.onrender.com"; // URL de l'API en production
+// const API_BASE_URL = "https://bioforce-admin.onrender.com"; // URL de l'API en production
 // Pour le développement local, décommentez la ligne ci-dessous et commentez celle au-dessus
-// const API_BASE_URL = window.location.origin; // URL de base de l'API (même domaine)
+const API_BASE_URL = window.location.origin; // URL de base de l'API (même domaine)
 
 // Nouveaux endpoints correspondant à la structure de l'API bioforce-admin
 const API_ENDPOINTS = {
