@@ -108,7 +108,10 @@
     <div class="chat-container" id="chatbot-widget">
         <div class="chat-header">
             <h3>BioforceBot</h3>
-            <button id="minimize-chat" class="toggle-btn">−</button>
+            <div class="chat-controls">
+                <button id="admin-btn" class="admin-btn" title="Administration">⚙️</button>
+                <button id="minimize-chat" class="toggle-btn">−</button>
+            </div>
         </div>
         <div id="chat-messages" class="chat-messages">
             <div class="message bot">
@@ -118,6 +121,18 @@
         <div class="chat-input">
             <input type="text" id="user-input" placeholder="Tapez votre message...">
             <button id="send-message">Envoyer</button>
+        </div>
+    </div>
+
+    <!-- Overlay et boîte de dialogue d'admin -->
+    <div id="admin-overlay" class="overlay"></div>
+    <div id="admin-dialog" class="admin-dialog">
+        <h3>Accès Administration</h3>
+        <p>Veuillez saisir le mot de passe pour accéder à l'interface d'administration.</p>
+        <input type="password" id="admin-password" placeholder="Mot de passe">
+        <div class="buttons">
+            <button class="cancel-btn" id="cancel-admin">Annuler</button>
+            <button class="login-btn" id="login-admin">Connexion</button>
         </div>
     </div>
 

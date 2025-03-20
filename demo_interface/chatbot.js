@@ -6,6 +6,9 @@ const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); // D
 const API_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
 const USE_SIMULATION_FALLBACK = true; // Mode simulation toujours activé comme plan B
 
+// Configuration de l'administration
+const ADMIN_PASSWORD = "bioforce2025"; // Mot de passe pour l'accès admin
+
 // Mots-clés associés aux questions de candidature/admission
 const FORMATION_KEYWORDS = [
     "formation", "étudier", "apprendre", "cours", "programme", 
@@ -24,6 +27,14 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-message');
 const minimizeButton = document.getElementById('minimize-chat');
+const adminButton = document.getElementById('admin-btn');
+
+// Éléments de la boîte de dialogue admin
+const adminOverlay = document.getElementById('admin-overlay');
+const adminDialog = document.getElementById('admin-dialog');
+const adminPassword = document.getElementById('admin-password');
+const cancelAdminBtn = document.getElementById('cancel-admin');
+const loginAdminBtn = document.getElementById('login-admin');
 
 // Variables globales
 let isDragging = false;
@@ -51,6 +62,12 @@ document.addEventListener('touchend', handleTouchEnd);
 
 // Fonction pour commencer le déplacement
 function startDrag(e) {
+    // Ne pas commencer le déplacement si on clique sur un bouton
+    if (e.target === minimizeButton || e.target === adminButton || 
+        e.target.closest('#minimize-chat') || e.target.closest('#admin-btn')) {
+        return;
+    }
+
     isDragging = true;
     chatWidget.classList.add('dragging');
     
@@ -119,8 +136,9 @@ function stopDrag() {
 
 // Gestionnaires d'événements tactiles
 function handleTouchStart(e) {
-    // Ne pas déclencher le déplacement si on touche le bouton de minimisation
-    if (e.target === minimizeButton || e.target.closest('#minimize-chat')) {
+    // Ne pas déclencher le déplacement si on touche les boutons
+    if (e.target === minimizeButton || e.target === adminButton || 
+        e.target.closest('#minimize-chat') || e.target.closest('#admin-btn')) {
         return;
     }
     startDrag(e);
@@ -216,12 +234,11 @@ window.addEventListener('DOMContentLoaded', async () => {
  * @returns {boolean} - True si une commande a été traitée
  */
 function handleSpecialCommands(message) {
-    // Commande d'administration
+    // Commande d'administration via message
     if (message.trim() === '*Admin*') {
-        // Rediriger vers l'interface d'administration
-        const adminUrl = `${API_URL}/admin`;
-        window.open(adminUrl, '_blank');
-        addMessageToChat("Ouverture de l'interface d'administration...", 'bot');
+        // Ouvrir la boîte de dialogue d'authentification
+        showAdminDialog();
+        addMessageToChat("Veuillez vous authentifier pour accéder à l'interface d'administration.", 'bot');
         return true;
     }
     return false;
@@ -483,34 +500,90 @@ sendButton.addEventListener('click', () => {
     const message = userInput.value.trim();
     
     if (message) {
-        // Ajouter le message de l'utilisateur à l'interface
+        // Ajouter le message de l'utilisateur au chat
         addMessageToChat(message, 'user');
-        
-        // Vider l'input
         userInput.value = '';
-        
-        // Utiliser l'API réelle au lieu de la simulation
-        sendMessageToAPI(message);
+
+        // Vérifier s'il s'agit d'une commande spéciale
+        if (!handleSpecialCommands(message)) {
+            // Envoyer le message à l'API
+            sendMessageToAPI(message);
+        }
     }
 });
 
+// Écouteur d'événement pour la touche Entrée
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         sendButton.click();
     }
 });
 
+// Écouteur d'événement pour le bouton de minimisation
 minimizeButton.addEventListener('click', () => {
-    const chatbotBody = document.querySelector('.chatbot-body');
+    // Basculer la visibilité du chatbot (minimiser/agrandir)
+    const isMinimized = chatWidget.classList.toggle('minimized');
     
-    if (chatbotBody.style.display === 'none') {
-        chatbotBody.style.display = 'flex';
-        minimizeButton.textContent = '−';
+    // Mettre à jour le texte du bouton
+    minimizeButton.textContent = isMinimized ? '+' : '−';
+    
+    // Sauvegarder l'état dans localStorage
+    localStorage.setItem('chatbotMinimized', isMinimized);
+});
+
+// Fonctions pour l'administration
+function showAdminDialog() {
+    adminOverlay.style.display = 'block';
+    adminDialog.style.display = 'block';
+    adminPassword.value = '';
+    adminPassword.focus();
+}
+
+function hideAdminDialog() {
+    adminOverlay.style.display = 'none';
+    adminDialog.style.display = 'none';
+    adminPassword.value = '';
+}
+
+function checkAdminPassword() {
+    const password = adminPassword.value.trim();
+    
+    if (password === ADMIN_PASSWORD) {
+        hideAdminDialog();
+        
+        // Rediriger vers l'interface d'administration
+        const adminUrl = `${API_URL}/admin`;
+        window.open(adminUrl, '_blank');
+        
+        addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
     } else {
-        chatbotBody.style.display = 'none';
-        minimizeButton.textContent = '+';
+        adminPassword.value = '';
+        adminPassword.placeholder = 'Mot de passe incorrect';
+        adminPassword.classList.add('error');
+        
+        setTimeout(() => {
+            adminPassword.placeholder = 'Mot de passe';
+            adminPassword.classList.remove('error');
+        }, 2000);
+    }
+}
+
+// Écouteurs d'événements pour l'administration
+adminButton.addEventListener('click', showAdminDialog);
+cancelAdminBtn.addEventListener('click', hideAdminDialog);
+loginAdminBtn.addEventListener('click', checkAdminPassword);
+adminPassword.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        checkAdminPassword();
     }
 });
+adminOverlay.addEventListener('click', hideAdminDialog);
+
+// Restaurer l'état minimisé du chatbot (si sauvegardé)
+if (localStorage.getItem('chatbotMinimized') === 'true') {
+    chatWidget.classList.add('minimized');
+    minimizeButton.textContent = '+';
+}
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
