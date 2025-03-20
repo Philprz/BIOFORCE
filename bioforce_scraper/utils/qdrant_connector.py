@@ -42,24 +42,8 @@ class QdrantConnector:
             self.logger.error("URL Qdrant non définie. Veuillez définir QDRANT_URL ou QDRANT_HOST dans l'environnement.")
             raise ValueError("URL Qdrant manquante")
         
-        try:
-            self.logger.info(f"Initialisation de la connexion Qdrant: {self.url} (collection: {self.collection_name})")
-            
-            # Création du client avec timeout plus élevé pour être robuste aux latences réseau
-            self.client = QdrantClient(
-                url=self.url,
-                api_key=self.api_key,
-                timeout=30.0  # Timeout augmenté pour éviter les déconnexions prématurées
-            )
-            
-            # Test de connexion
-            self._test_connection()
-            
-            self.logger.info(f"Connexion à Qdrant établie avec succès: {self.url}")
-        except Exception as e:
-            self.logger.error(f"Échec d'initialisation du client Qdrant: {str(e)}")
-            # On laisse remonter l'exception pour que l'appelant puisse la gérer
-            raise
+        # Initialisation de la variable client sans le créer pour le moment
+        self.client = None
         
         # Détermine quelle collection utiliser
         if collection_name:
@@ -67,12 +51,64 @@ class QdrantConnector:
         else:
             self.collection_name = QDRANT_COLLECTION_ALL if is_full_site else QDRANT_COLLECTION
         
+        # Initialiser la connexion immédiatement
+        self._initialize_client()
+    
+    def _initialize_client(self, max_retries=3):
+        """
+        Initialise le client Qdrant avec des mécanismes de retry
+        """
+        retry_count = 0
+        last_exception = None
+        
+        while retry_count < max_retries:
+            try:
+                self.logger.info(f"Tentative de connexion à Qdrant ({retry_count+1}/{max_retries}): {self.url}")
+                
+                # Création du client avec timeout plus élevé
+                self.client = QdrantClient(
+                    url=self.url,
+                    api_key=self.api_key,
+                    timeout=30.0  # Timeout augmenté pour éviter les déconnexions prématurées
+                )
+                
+                # Test de connexion léger
+                self.client.get_collections()
+                
+                self.logger.info(f"Connexion à Qdrant établie avec succès: {self.url}")
+                return True
+            
+            except Exception as e:
+                retry_count += 1
+                last_exception = e
+                self.logger.warning(f"Échec de connexion à Qdrant (tentative {retry_count}/{max_retries}): {str(e)}")
+                
+                if retry_count < max_retries:
+                    # Attente exponentielle entre les tentatives
+                    wait_time = 2 ** retry_count
+                    self.logger.info(f"Nouvelle tentative dans {wait_time} secondes...")
+                    time.sleep(wait_time)
+                else:
+                    self.logger.error(f"Échec d'initialisation du client Qdrant après {max_retries} tentatives: {str(last_exception)}")
+                    # On ne lève pas d'exception pour permettre un fonctionnement dégradé
+        
+        return False
+    
     def _test_connection(self):
+        """Test simple de connexion à Qdrant"""
+        if not self.client:
+            self._initialize_client()
+            
+        if not self.client:
+            self.logger.error("Impossible de tester la connexion: client non initialisé")
+            return False
+            
         try:
             self.client.get_collections()
-        except UnexpectedResponse as e:
+            return True
+        except Exception as e:
             self.logger.error(f"Erreur de connexion à Qdrant: {e}")
-            raise
+            return False
     
     def ensure_collection(self, vector_size: int = VECTOR_SIZE) -> bool:
         """
@@ -85,8 +121,11 @@ class QdrantConnector:
             True si la collection existe ou a été créée, False sinon
         """
         if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return False
+            logger.error("Client Qdrant non initialisé, tentative de réinitialisation...")
+            success = self._initialize_client()
+            if not success:
+                logger.error("Échec de réinitialisation du client Qdrant")
+                return False
         
         try:
             # Vérifier si la collection existe
@@ -95,6 +134,7 @@ class QdrantConnector:
             
             if self.collection_name not in collection_names:
                 # Créer la collection
+                logger.info(f"Création de la collection {self.collection_name}...")
                 self.client.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=models.VectorParams(
@@ -104,41 +144,42 @@ class QdrantConnector:
                 )
                 
                 # Créer les index pour la recherche par payload
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="source_url",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
+                try:
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name="source_url",
+                        field_schema=models.PayloadSchemaType.KEYWORD
+                    )
+                    
+                    # Ajouter d'autres index utiles pour le filtrage
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name="language",
+                        field_schema=models.PayloadSchemaType.KEYWORD
+                    )
+                    
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name="category",
+                        field_schema=models.PayloadSchemaType.KEYWORD
+                    )
+                    
+                    logger.info(f"Collection {self.collection_name} créée avec succès")
+                except Exception as e:
+                    logger.warning(f"Erreur lors de la création des index pour {self.collection_name}: {str(e)}")
+                    # Ne pas échouer complètement si les index ne peuvent pas être créés
                 
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="type",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="category",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="language",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                logger.info(f"Collection '{self.collection_name}' créée avec succès")
+                return True
             else:
-                logger.info(f"Collection '{self.collection_name}' existe déjà")
-            
-            return True
-            
+                logger.info(f"Collection {self.collection_name} existe déjà")
+                return True
+                
         except Exception as e:
-            logger.error(f"Erreur lors de la création de la collection: {e}")
+            logger.error(f"Erreur lors de la vérification/création de la collection {self.collection_name}: {str(e)}")
             return False
     
-    def search(self, query_vector: List[float], limit: int = 10, filter_conditions: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def search(self, query_vector: List[float], limit: int = 10, filter_conditions: Optional[Dict[str, Any]] = None,
+               min_score_threshold: float = 0.01) -> List[Dict[str, Any]]:
         """
         Effectue une recherche dans Qdrant
         
@@ -146,19 +187,26 @@ class QdrantConnector:
             query_vector: Vecteur de requête (embedding)
             limit: Nombre de résultats maximum
             filter_conditions: Filtres à appliquer
+            min_score_threshold: Score minimal de similarité pour filtrer les résultats
             
         Returns:
             Liste des résultats correspondants
         """
         if not self.client:
-            self.logger.error("Client Qdrant non disponible")
-            return []
+            self.logger.error("Client Qdrant non disponible, tentative de réinitialisation...")
+            success = self._initialize_client()
+            if not success:
+                self.logger.error("Échec de réinitialisation du client Qdrant")
+                return []
             
         if not filter_conditions:
             filter_conditions = {}
+
+        # Augmenter le nombre de résultats pour avoir plus de choix avant filtrage par score
+        search_limit = max(limit * 3, 30)
             
         try:
-            self.logger.debug(f"Recherche dans Qdrant: collection={self.collection_name}, limit={limit}")
+            self.logger.debug(f"Recherche dans Qdrant: collection={self.collection_name}, limit={search_limit}, min_score={min_score_threshold}")
             
             # Vérification que la collection existe
             collections = self.client.get_collections().collections
@@ -205,7 +253,7 @@ class QdrantConnector:
             search_results = self.client.search(
                 collection_name=self.collection_name,
                 query_vector=query_vector,
-                limit=limit,
+                limit=search_limit,
                 query_filter=search_filter,
                 with_payload=True,
                 with_vectors=False,
@@ -215,9 +263,15 @@ class QdrantConnector:
             # Log des performances
             self.logger.info(f"Recherche terminée en {search_time:.4f}s, {len(search_results)} résultats trouvés")
             
+            # Filtrer les résultats par score
+            filtered_results = [res for res in search_results if res.score >= min_score_threshold]
+            
+            # Limiter les résultats au nombre demandé
+            limited_results = filtered_results[:limit]
+            
             # Transformation des résultats en format dict
             results = []
-            for res in search_results:
+            for res in limited_results:
                 result = {
                     "id": res.id,
                     "score": res.score,
