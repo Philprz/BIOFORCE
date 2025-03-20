@@ -4,9 +4,10 @@
  */
 
 // Configuration de base
-const API_BASE_URL = "https://bioforce-interface.onrender.com"; // URL de l'API en production
-// Pour le développement local, décommentez la ligne ci-dessous et commentez celle au-dessus
-// const API_BASE_URL = window.location.origin; // URL de base de l'API (même domaine)
+const API_LOCAL = 'http://localhost:8000';
+const API_PRODUCTION = 'https://bioforce-interface.onrender.com';
+const USE_PRODUCTION_API = window.location.hostname.includes('render.com');
+const API_BASE_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
 
 const API_ENDPOINTS = {
     systemInfo: '/api/admin/system-info',
@@ -15,7 +16,8 @@ const API_ENDPOINTS = {
     scrapeFaq: '/api/scrape/faq',
     scrapeFull: '/api/scrape/full',
     logs: '/api/admin/logs',
-    status: '/api/admin/status'
+    status: '/api/admin/status',
+    emailTemplate: '/api/admin/email-template'
 };
 
 // État global
@@ -395,4 +397,151 @@ function setupEventListeners() {
                 });
         });
     }
+    
+    // Gestion des templates d'email
+    const emailTemplateSelect = document.getElementById('emailTemplateSelect');
+    if (emailTemplateSelect) {
+        // Chargement du template au changement de sélection
+        emailTemplateSelect.addEventListener('change', loadEmailTemplate);
+        
+        // Chargement initial du template sélectionné
+        loadEmailTemplate();
+        
+        // Enregistrement des modifications du template
+        document.getElementById('saveEmailTemplate').addEventListener('click', saveEmailTemplate);
+        
+        // Prévisualisation du template
+        document.getElementById('previewEmailTemplate').addEventListener('click', previewEmailTemplate);
+    }
+}
+
+/**
+ * Charge un template d'email depuis l'API
+ */
+async function loadEmailTemplate() {
+    const templateType = document.getElementById('emailTemplateSelect').value;
+    
+    try {
+        addLogMessage('systemLogs', `Chargement du template d'email: ${templateType}...`, 'info');
+        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.emailTemplate}?type=${templateType}`);
+        
+        if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+        
+        const data = await response.json();
+        
+        // Remplissage des champs du formulaire
+        document.getElementById('emailSubject').value = data.subject || '';
+        document.getElementById('emailContent').value = data.content || '';
+        
+        addLogMessage('systemLogs', `Template d'email ${templateType} chargé avec succès`, 'success');
+    } catch (error) {
+        console.error(`Erreur lors du chargement du template d'email:`, error);
+        addLogMessage('systemLogs', `Erreur de chargement du template: ${error.message}`, 'error');
+    }
+}
+
+/**
+ * Enregistre les modifications d'un template d'email
+ */
+async function saveEmailTemplate() {
+    const templateType = document.getElementById('emailTemplateSelect').value;
+    const subject = document.getElementById('emailSubject').value.trim();
+    const content = document.getElementById('emailContent').value.trim();
+    
+    if (!subject || !content) {
+        addLogMessage('systemLogs', 'Le sujet et le contenu du template sont obligatoires.', 'error');
+        return;
+    }
+    
+    try {
+        addLogMessage('systemLogs', `Enregistrement du template d'email: ${templateType}...`, 'info');
+        
+        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.emailTemplate}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: templateType,
+                subject: subject,
+                content: content
+            })
+        });
+        
+        if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+        
+        const data = await response.json();
+        
+        addLogMessage('systemLogs', `Template d'email ${templateType} enregistré avec succès`, 'success');
+    } catch (error) {
+        console.error(`Erreur lors de l'enregistrement du template d'email:`, error);
+        addLogMessage('systemLogs', `Erreur d'enregistrement: ${error.message}`, 'error');
+    }
+}
+
+/**
+ * Prévisualise un template d'email avec des données de test
+ */
+function previewEmailTemplate() {
+    const subject = document.getElementById('emailSubject').value.trim();
+    const content = document.getElementById('emailContent').value.trim();
+    
+    if (!subject || !content) {
+        addLogMessage('systemLogs', 'Le sujet et le contenu du template sont obligatoires pour prévisualiser.', 'error');
+        return;
+    }
+    
+    // Substitution des variables de test
+    const testData = {
+        nom: 'Dupont',
+        prenom: 'Jean',
+        email: 'jean.dupont@example.com',
+        date: new Date().toLocaleDateString('fr-FR'),
+        lien_confirmation: 'https://bioforce.org/confirmation/exemple'
+    };
+    
+    let previewContent = content;
+    for (const [key, value] of Object.entries(testData)) {
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        previewContent = previewContent.replace(regex, value);
+    }
+    
+    // Création d'une fenêtre de prévisualisation
+    const previewWindow = window.open('', '_blank', 'width=800,height=600');
+    previewWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Prévisualisation - ${subject}</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+                .email-container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+                .email-header { background-color: #f5f5f5; padding: 10px; border-radius: 5px 5px 0 0; margin-bottom: 20px; }
+                .email-subject { font-weight: bold; }
+                .email-body { padding: 10px 0; }
+                .email-footer { margin-top: 20px; font-size: 12px; color: #777; border-top: 1px solid #ddd; padding-top: 10px; }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="email-header">
+                    <div class="email-subject">Sujet: ${subject}</div>
+                    <div>À: ${testData.prenom} ${testData.nom} &lt;${testData.email}&gt;</div>
+                    <div>De: Bioforce &lt;contact@bioforce.org&gt;</div>
+                    <div>Date: ${testData.date}</div>
+                </div>
+                <div class="email-body">
+                    ${previewContent}
+                </div>
+                <div class="email-footer">
+                    <p>Ceci est une prévisualisation avec des données de test.</p>
+                    <p>© ${new Date().getFullYear()} Bioforce - Tous droits réservés.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+    previewWindow.document.close();
 }

@@ -150,11 +150,36 @@
                 <div class="sidebar">
                     <h5 class="text-center mb-4">Navigation</h5>
                     <ul class="sidebar-nav">
-                        <li class="active"><a href="#dashboard"><i class="bi bi-speedometer2"></i> Tableau de bord</a></li>
-                        <li><a href="#scraping"><i class="bi bi-cloud-download"></i> Scraping</a></li>
-                        <li><a href="#qdrant"><i class="bi bi-database"></i> Qdrant</a></li>
-                        <li><a href="#github"><i class="bi bi-github"></i> GitHub</a></li>
-                        <li><a href="#logs"><i class="bi bi-journal-text"></i> Logs</a></li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#dashboard">
+                                <i class="bi bi-speedometer2"></i> Tableau de bord
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#scraping">
+                                <i class="bi bi-cloud-download"></i> Scraping
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#qdrant">
+                                <i class="bi bi-database"></i> Qdrant
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#email-templates">
+                                <i class="bi bi-envelope"></i> Templates Email
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="https://github.com/Philprz/BIOFORCE" target="_blank">
+                                <i class="bi bi-github"></i> GitHub
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#logs">
+                                <i class="bi bi-journal-text"></i> Logs
+                            </a>
+                        </li>
                     </ul>
 
                     <hr>
@@ -308,6 +333,59 @@
                                     <button class="list-group-item list-group-item-action action-card" id="optimizeQdrantBtn">
                                         <i class="bi bi-gear"></i> Optimiser les collections
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Templates Section -->
+                <div class="card mb-4" id="email-templates">
+                    <div class="card-header">
+                        Templates Email
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <h5>Configuration des modèles d'email</h5>
+                                <p>Personnalisez les templates d'email utilisés par l'application Bioforce.</p>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="emailTemplateSelect" class="form-label">Sélectionner un template :</label>
+                                    <select class="form-select" id="emailTemplateSelect">
+                                        <option value="contact">Email de contact</option>
+                                        <option value="registration">Email d'inscription</option>
+                                        <option value="welcome">Email de bienvenue</option>
+                                        <option value="newsletter">Newsletter</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="emailSubject" class="form-label">Sujet de l'email :</label>
+                                    <input type="text" class="form-control" id="emailSubject" placeholder="Entrez le sujet">
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="emailContent" class="form-label">Contenu de l'email :</label>
+                                    <textarea class="form-control" id="emailContent" rows="12" placeholder="Entrez le contenu de l'email. Vous pouvez utiliser HTML et des variables comme {{nom}}, {{email}}, etc."></textarea>
+                                    <small class="text-muted">Variables disponibles: {{nom}}, {{prenom}}, {{email}}, {{date}}, {{lien_confirmation}}</small>
+                                </div>
+                                
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-info-circle"></i> Les modifications seront appliquées immédiatement à tous les nouveaux emails envoyés par le système.
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-primary" id="saveEmailTemplate">
+                                            <i class="bi bi-save"></i> Enregistrer les modifications
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <button class="btn btn-secondary" id="previewEmailTemplate">
+                                            <i class="bi bi-eye"></i> Prévisualiser
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

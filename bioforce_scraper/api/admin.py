@@ -6,10 +6,11 @@ import sys
 import platform
 import datetime
 import asyncio
+import json
 from typing import Dict, Any, List, Optional
-from fastapi import APIRouter, Request, BackgroundTasks, Form
+from fastapi import APIRouter, Request, BackgroundTasks, Form, Query
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 import logging
 
@@ -53,6 +54,13 @@ class GitHubUpdateResult(BaseModel):
     success: bool
     message: str
     details: Optional[str] = None
+
+class EmailTemplate(BaseModel):
+    """Modèle de template d'email"""
+    type: str
+    subject: str
+    content: str
+    last_updated: Optional[str] = None
 
 def get_system_info() -> SystemInfo:
     """Obtient les informations système"""
@@ -354,3 +362,141 @@ async def get_qdrant_stats_route():
                 "collection": getattr(qdrant, "collection_name", "Non disponible")
             }
         }
+
+# Chemin du fichier de stockage des templates d'email
+EMAIL_TEMPLATES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'email_templates.json')
+
+# Templates d'email par défaut
+DEFAULT_EMAIL_TEMPLATES = {
+    "contact": {
+        "type": "contact",
+        "subject": "Bioforce - Accusé de réception de votre message",
+        "content": """<p>Bonjour {{prenom}} {{nom}},</p>
+<p>Nous avons bien reçu votre message et vous remercions de nous avoir contactés.</p>
+<p>Un membre de notre équipe vous répondra dans les plus brefs délais.</p>
+<p>Cordialement,</p>
+<p>L'équipe Bioforce</p>""",
+        "last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    },
+    "registration": {
+        "type": "registration",
+        "subject": "Bioforce - Confirmation de votre inscription",
+        "content": """<p>Bonjour {{prenom}} {{nom}},</p>
+<p>Nous vous confirmons votre inscription sur notre plateforme.</p>
+<p>Pour activer votre compte, veuillez cliquer sur le lien suivant : <a href="{{lien_confirmation}}">Confirmer mon compte</a></p>
+<p>Cordialement,</p>
+<p>L'équipe Bioforce</p>""",
+        "last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    },
+    "welcome": {
+        "type": "welcome",
+        "subject": "Bioforce - Bienvenue !",
+        "content": """<p>Bonjour {{prenom}} {{nom}},</p>
+<p>Nous sommes ravis de vous accueillir sur notre plateforme.</p>
+<p>N'hésitez pas à explorer les différentes fonctionnalités disponibles et à nous contacter si vous avez des questions.</p>
+<p>Cordialement,</p>
+<p>L'équipe Bioforce</p>""",
+        "last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    },
+    "newsletter": {
+        "type": "newsletter",
+        "subject": "Bioforce - Newsletter du {{date}}",
+        "content": """<p>Bonjour {{prenom}} {{nom}},</p>
+<p>Voici les dernières actualités de Bioforce :</p>
+<ul>
+  <li>Nouvelle fonctionnalité : chatbot amélioré</li>
+  <li>Mises à jour de notre base de connaissances</li>
+  <li>Événements à venir</li>
+</ul>
+<p>Cordialement,</p>
+<p>L'équipe Bioforce</p>""",
+        "last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+}
+
+def get_email_templates() -> Dict[str, EmailTemplate]:
+    """
+    Récupère tous les templates d'email depuis le fichier de stockage.
+    Si le fichier n'existe pas, utilise les templates par défaut.
+    """
+    try:
+        if not os.path.exists(EMAIL_TEMPLATES_FILE):
+            # Créer le fichier avec les templates par défaut
+            with open(EMAIL_TEMPLATES_FILE, 'w', encoding='utf-8') as f:
+                json.dump(DEFAULT_EMAIL_TEMPLATES, f, ensure_ascii=False, indent=4)
+            return DEFAULT_EMAIL_TEMPLATES
+        
+        with open(EMAIL_TEMPLATES_FILE, 'r', encoding='utf-8') as f:
+            templates = json.load(f)
+            return templates
+    except Exception as e:
+        logger.error(f"Erreur lors de la lecture des templates d'email: {str(e)}")
+        return DEFAULT_EMAIL_TEMPLATES
+
+def save_email_template(template: EmailTemplate) -> bool:
+    """
+    Enregistre un template d'email dans le fichier de stockage.
+    """
+    try:
+        templates = get_email_templates()
+        template_dict = template.dict()
+        template_dict["last_updated"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        templates[template.type] = template_dict
+        
+        with open(EMAIL_TEMPLATES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(templates, f, ensure_ascii=False, indent=4)
+        
+        return True
+    except Exception as e:
+        logger.error(f"Erreur lors de l'enregistrement du template d'email: {str(e)}")
+        return False
+
+@router.get("/email-template")
+async def get_email_template_route(type: str = Query(..., description="Type de template à récupérer")):
+    """
+    Récupère un template d'email spécifique
+    """
+    try:
+        templates = get_email_templates()
+        
+        if type not in templates:
+            return JSONResponse(
+                status_code=404,
+                content={"success": False, "message": f"Template de type '{type}' non trouvé"}
+            )
+        
+        return JSONResponse(
+            status_code=200,
+            content=templates[type]
+        )
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération du template d'email: {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "message": f"Erreur serveur: {str(e)}"}
+        )
+
+@router.post("/email-template")
+async def save_email_template_route(template: EmailTemplate):
+    """
+    Enregistre ou met à jour un template d'email
+    """
+    try:
+        success = save_email_template(template)
+        
+        if not success:
+            return JSONResponse(
+                status_code=500,
+                content={"success": False, "message": "Erreur lors de l'enregistrement du template"}
+            )
+        
+        return JSONResponse(
+            status_code=200,
+            content={"success": True, "message": f"Template '{template.type}' enregistré avec succès"}
+        )
+    except Exception as e:
+        logger.error(f"Erreur lors de l'enregistrement du template d'email: {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "message": f"Erreur serveur: {str(e)}"}
+        )
