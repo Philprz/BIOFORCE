@@ -1,18 +1,16 @@
 from fastapi import FastAPI, HTTPException, Body
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Dict, Any
 from datetime import datetime
 import os
-import asyncio
 import json
 import logging
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from dotenv import load_dotenv
 import uvicorn
-import uuid
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -272,9 +270,7 @@ async def chat(request: ChatRequest):
     Point d'entrée principal pour le chat
     """
     try:
-        user_id = request.user_id
         messages = request.messages
-        context_info = request.context
         
         # Récupérer le dernier message utilisateur
         last_message = None
@@ -291,7 +287,7 @@ async def chat(request: ChatRequest):
         try:
             qdrant_results = await search_knowledge_base(last_message)
             if qdrant_results:
-                context = "\n\n".join([f"Q: {item.question}\nR: {item.answer}" for item in qdrant_results])
+                context = "\n\n".join([f"Q: {item['question']}\nR: {item['answer']}" for item in qdrant_results])
         except Exception as e:
             logger.error(f"Erreur lors de la requête Qdrant: {e}")
             # On continue sans contexte

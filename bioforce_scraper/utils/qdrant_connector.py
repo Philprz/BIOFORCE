@@ -1,14 +1,10 @@
 """
 Module de connexion à Qdrant pour stocker les embeddings
 """
-import logging
-import os
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional
 
-import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
-from qdrant_client.http.exceptions import UnexpectedResponse
 
 from bioforce_scraper.config import (QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, 
                    VECTOR_SIZE, LOG_FILE)

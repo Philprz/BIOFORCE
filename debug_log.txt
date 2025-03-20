@@ -1,0 +1,50 @@
+2025-03-20 22:22:10,701 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+INFO:     Will watch for changes in these directories: ['C:\\BIOFORCE\\BUILD']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [32916] using StatReload
+2025-03-20 22:22:21,804 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:25:02,720 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_scraper\api\admin.py'. Reloading...
+2025-03-20 22:27:30,027 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\PhilippePEREZ\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PhilippePEREZ\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 131, in _main
+    prepare(preparation_data)
+  File "C:\Users\PhilippePEREZ\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 246, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "C:\Users\PhilippePEREZ\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 297, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 286, in run_path
+  File "<frozen runpy>", line 259, in _get_code_from_file
+  File "C:\BIOFORCE\BUILD\bioforce_api_chatbot.py", line 2
+    <<<<<<< HEAD
+    ^^
+SyntaxError: invalid syntax
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:28:06,876 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:28:34,410 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:33:39,748 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:34:26,474 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:34:57,915 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_api_chatbot.py'. Reloading...
+2025-03-20 22:35:22,982 - INFO - HTTP Request: GET https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io:6333 "HTTP/1.1 200 OK"
+ERROR:    Error loading ASGI app. Could not import module "app".
+WARNING:  StatReload detected changes in 'bioforce_scraper\utils\qdrant_connector.py'. Reloading...
