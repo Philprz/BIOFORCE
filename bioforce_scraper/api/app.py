@@ -441,7 +441,7 @@ async def chat(request: dict):
             for result in combined_results[:3]:  # Limiter à 3 références
                 if result["score"] > 0.6:  # Seuil de pertinence pour les références
                     references.append({
-                        "question": result.get("title", ""),
+                        "title": result.get("title", ""),
                         "url": result.get("source_url", ""),
                         "score": result["score"]
                     })
@@ -460,7 +460,7 @@ async def chat(request: dict):
                 
                 # Ajouter la référence
                 references.append({
-                    "question": best_result.get("title", ""),
+                    "title": best_result.get("title", ""),
                     "url": best_result.get("source_url", ""),
                     "score": best_result["score"]
                 })
