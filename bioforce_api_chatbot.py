@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException, Body
-from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Dict, Any
+from fastapi.responses import RedirectResponse
+from pydantic import BaseModel, Field
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 import os
 import asyncio
@@ -121,7 +121,7 @@ async def generate_embedding(text: str) -> List[float]:
         logger.error(f"Erreur d'embedding: {str(e)}")
         raise
 
-async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
+async def search_knowledge_base(query: str, limit: int = 20) -> List[Dict[str, Any]]:
     """Recherche dans la base de connaissances"""
     try:
         vector = await generate_embedding(query)
@@ -133,14 +133,28 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         )
         
         results = []
+        min_score_threshold = 0.001  # Seuil minimum pour les résultats pertinents
+        
         for scored_point in search_result:
-            results.append({
-                "score": scored_point.score,
-                "question": scored_point.payload.get("question"),
-                "answer": scored_point.payload.get("answer"),
-                "category": scored_point.payload.get("category"),
-                "url": scored_point.payload.get("url")
-            })
+            # Ne garder que les résultats avec un score supérieur au seuil
+            if scored_point.score >= min_score_threshold:
+                results.append({
+                    "score": scored_point.score,
+                    "question": scored_point.payload.get("question"),
+                    "answer": scored_point.payload.get("answer"),
+                    "category": scored_point.payload.get("category"),
+                    "url": scored_point.payload.get("url")
+                })
+        
+        # Tri explicite des résultats par score (du plus élevé au plus bas)
+        results.sort(key=lambda x: x["score"], reverse=True)
+        
+        # Logging pour le débogage
+        if results:
+            logger.info(f"Recherche pour '{query}': {len(results)} résultats pertinents trouvés. "
+                       f"Meilleur score: {results[0]['score']}")
+        else:
+            logger.warning(f"Aucun résultat pertinent trouvé pour '{query}'")
         
         return results
     
@@ -204,61 +218,53 @@ async def get_llm_response(messages, context=""):
 
 # Routes API
 @app.get("/")
-async def redirect_to_admin():
+async def root():
     """Redirige la racine vers l'interface d'administration"""
     return RedirectResponse(url="/admin/index.html")
 
 @app.get("/admin/status")
 async def admin_status():
-    """
-    Vérifie l'état du serveur et des services connectés de manière détaillée
-    """
-    server_status = "running"
-    server_message = "Serveur en cours d'exécution"
-    
-    # Initialiser les statuts par défaut
-    qdrant_status = "unknown"
-    qdrant_message = "État inconnu"
-    
+    """Vérifie l'état des services de manière détaillée"""
     try:
-        # Vérifier si le client Qdrant est initialisé
-        if qdrant_client is None:
-            qdrant_status = "not_initialized"
-            qdrant_message = "Client non initialisé. Vérifiez les variables d'environnement."
-        else:
-            # Vérifier la connexion à Qdrant
-            try:
-                collections = await qdrant_client.get_collections()
-                
-                # Vérifier si la collection existe
-                collection_names = [c.name for c in collections.collections]
-                if COLLECTION_NAME in collection_names:
-                    qdrant_status = "connected"
-                    qdrant_message = f"Connexion établie, collection {COLLECTION_NAME} disponible"
-                else:
-                    qdrant_status = "warning"
-                    qdrant_message = f"Connexion établie, mais collection {COLLECTION_NAME} non trouvée"
-            except Exception as e:
-                qdrant_status = "error"
-                qdrant_message = f"Erreur lors du test: {str(e)}"
+        # Détermination de l'état du serveur
+        server_status = "ok"
+        server_message = "Serveur en cours d'exécution"
+        
+        # Vérification de l'état du scraping (pas de service réel)
+        scraping_status = "ready"
+        scraping_message = "Prêt à exécuter"
+        
+        # Vérification de la connexion à Qdrant
+        qdrant_status = "unknown"
+        qdrant_message = "État inconnu"
+        
+        try:
+            # Test simple à Qdrant
+            collections = await qdrant_client.get_collections()
+            collection_names = [c.name for c in collections.collections]
+            
+            if COLLECTION_NAME in collection_names:
+                qdrant_status = "connected"
+                qdrant_message = f"Collection {COLLECTION_NAME} accessible"
+            else:
+                qdrant_status = "warning"
+                qdrant_message = f"Connexion établie, mais collection {COLLECTION_NAME} non trouvée"
+        except Exception as e:
+            logger.error(f"Erreur Qdrant: {str(e)}")
+            qdrant_status = "error"
+            qdrant_message = f"Erreur: {str(e)}"
+        
+        return {
+            "server_status": server_status,
+            "server_message": server_message,
+            "qdrant_status": qdrant_status,
+            "qdrant_message": qdrant_message,
+            "scraping_status": scraping_status,
+            "scraping_message": scraping_message
+        }
     except Exception as e:
-        logger.error(f"Erreur lors de la vérification du statut: {str(e)}")
-        qdrant_status = "error"
-        qdrant_message = f"Erreur interne: {str(e)}"
-    
-    # Vérifier l'état du scraping (pas de service réel, juste pour l'interface)
-    scraping_status = "ready"
-    scraping_message = "Prêt à exécuter"
-    
-    # Utiliser JSONResponse pour un meilleur contrôle des en-têtes et du cache
-    return JSONResponse(content={
-        "server_status": server_status,
-        "server_message": server_message,
-        "qdrant_status": qdrant_status,
-        "qdrant_message": qdrant_message,
-        "scraping_status": scraping_status,
-        "scraping_message": scraping_message
-    }, headers={"Cache-Control": "no-store"})
+        logger.error(f"Erreur de vérification du statut: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
