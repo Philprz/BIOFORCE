@@ -1,15 +1,21 @@
 """
 Module de connexion à Qdrant pour stocker les embeddings
 """
-import os
 import logging
-from typing import Dict, List, Optional, Any
-from qdrant_client import QdrantClient, models
-from bioforce_scraper.config import (
-    QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, VECTOR_SIZE
-)
+import os
+from typing import Dict, List, Any, Optional, Union
 
-logger = logging.getLogger(__name__)
+import numpy as np
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
+from qdrant_client.http.exceptions import UnexpectedResponse
+
+from bioforce_scraper.config import (QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, 
+                   VECTOR_SIZE, LOG_FILE)
+from bioforce_scraper.utils.logger import setup_logger
+
+# Configuration du logger
+logger = setup_logger(__name__, LOG_FILE)
 
 class QdrantConnector:
     """
@@ -27,11 +33,8 @@ class QdrantConnector:
             collection_name: Nom de la collection (utilisera QDRANT_COLLECTION de config.py si None)
             is_full_site: Si True, utilise la collection pour le site complet (QDRANT_COLLECTION_ALL)
         """
-        self.logger = logging.getLogger(self.__class__.__name__)
-        
-        # Utilisation des variables d'environnement si non spécifiées
-        self.url = url or os.getenv("QDRANT_URL") or os.getenv("QDRANT_HOST")
-        self.api_key = api_key or os.getenv("QDRANT_API_KEY")
+        self.url = url or QDRANT_URL
+        self.api_key = api_key or QDRANT_API_KEY
         
         # Détermine quelle collection utiliser
         if collection_name:
@@ -39,26 +42,13 @@ class QdrantConnector:
         else:
             self.collection_name = QDRANT_COLLECTION_ALL if is_full_site else QDRANT_COLLECTION
         
-        # Tenter de se connecter à Qdrant avec une approche simple
+        # Tenter de se connecter à Qdrant
         try:
             self.client = QdrantClient(url=self.url, api_key=self.api_key)
-            self.logger.info(f"Connecté à Qdrant: {self.url}, collection: {self.collection_name}")
+            logger.info(f"Connecté à Qdrant: {self.url}, collection: {self.collection_name}")
         except Exception as e:
-            self.logger.error(f"Erreur de connexion à Qdrant: {e}")
+            logger.error(f"Erreur de connexion à Qdrant: {e}")
             self.client = None
-    
-    def _test_connection(self):
-        """Test simple de connexion à Qdrant"""
-        if not self.client:
-            self.logger.error("Impossible de tester la connexion: client non initialisé")
-            return False
-            
-        try:
-            self.client.get_collections()
-            return True
-        except Exception as e:
-            self.logger.error(f"Erreur de connexion à Qdrant: {e}")
-            return False
     
     def ensure_collection(self, vector_size: int = VECTOR_SIZE) -> bool:
         """
@@ -81,7 +71,6 @@ class QdrantConnector:
             
             if self.collection_name not in collection_names:
                 # Créer la collection
-                logger.info(f"Création de la collection {self.collection_name}...")
                 self.client.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=models.VectorParams(
@@ -91,42 +80,42 @@ class QdrantConnector:
                 )
                 
                 # Créer les index pour la recherche par payload
-                try:
-                    self.client.create_payload_index(
-                        collection_name=self.collection_name,
-                        field_name="source_url",
-                        field_schema=models.PayloadSchemaType.KEYWORD
-                    )
-                    
-                    # Ajouter d'autres index utiles pour le filtrage
-                    self.client.create_payload_index(
-                        collection_name=self.collection_name,
-                        field_name="language",
-                        field_schema=models.PayloadSchemaType.KEYWORD
-                    )
-                    
-                    self.client.create_payload_index(
-                        collection_name=self.collection_name,
-                        field_name="category",
-                        field_schema=models.PayloadSchemaType.KEYWORD
-                    )
-                    
-                    logger.info(f"Collection {self.collection_name} créée avec succès")
-                except Exception as e:
-                    logger.warning(f"Erreur lors de la création des index pour {self.collection_name}: {str(e)}")
-                    # Ne pas échouer complètement si les index ne peuvent pas être créés
+                self.client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name="source_url",
+                    field_schema=models.PayloadSchemaType.KEYWORD
+                )
                 
-                return True
+                self.client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name="type",
+                    field_schema=models.PayloadSchemaType.KEYWORD
+                )
+                
+                self.client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name="category",
+                    field_schema=models.PayloadSchemaType.KEYWORD
+                )
+                
+                self.client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name="language",
+                    field_schema=models.PayloadSchemaType.KEYWORD
+                )
+                
+                logger.info(f"Collection '{self.collection_name}' créée avec succès")
             else:
-                logger.info(f"Collection {self.collection_name} existe déjà")
-                return True
-                
+                logger.info(f"Collection '{self.collection_name}' existe déjà")
+            
+            return True
+            
         except Exception as e:
-            logger.error(f"Erreur lors de la vérification/création de la collection {self.collection_name}: {str(e)}")
+            logger.error(f"Erreur lors de la création de la collection: {e}")
             return False
     
     def search(self, query_vector: List[float], limit: int = 5, 
-              filter_conditions: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+              filter_conditions: Optional[Dict] = None) -> List[Dict]:
         """
         Recherche les documents les plus similaires au vecteur de requête
         
@@ -139,7 +128,7 @@ class QdrantConnector:
             Liste des documents trouvés avec leurs scores de similarité
         """
         if not self.client:
-            self.logger.error("Client Qdrant non disponible")
+            logger.error("Client Qdrant non initialisé")
             return []
         
         try:
@@ -167,38 +156,29 @@ class QdrantConnector:
                 
                 search_filter = models.Filter(must=filter_must)
             
-            # On récupère un peu plus de résultats pour pouvoir filtrer par score ensuite
-            search_limit = max(20, limit * 2)
-            
             # Effectuer la recherche
             search_result = self.client.search(
                 collection_name=self.collection_name,
                 query_vector=query_vector,
-                limit=search_limit,
+                limit=limit,
                 query_filter=search_filter,
                 with_payload=True,
                 with_vectors=False
             )
             
-            # Formater les résultats et filtrer par score
+            # Formater les résultats
             results = []
-            min_score_threshold = 0.001  # Seuil minimal de score
-            
             for scoring_point in search_result:
-                if scoring_point.score >= min_score_threshold:
-                    results.append({
-                        "id": scoring_point.id,
-                        "score": scoring_point.score,
-                        "payload": scoring_point.payload
-                    })
-            
-            # Trier par score et limiter aux "limit" premiers résultats
-            results = sorted(results, key=lambda x: x["score"], reverse=True)[:limit]
+                results.append({
+                    "id": scoring_point.id,
+                    "score": scoring_point.score,
+                    "payload": scoring_point.payload
+                })
             
             return results
             
         except Exception as e:
-            self.logger.error(f"Erreur lors de la recherche: {e}")
+            logger.error(f"Erreur lors de la recherche: {e}")
             return []
     
     def upsert_document(self, id: str, vector: List[float], payload: Dict[str, Any]) -> bool:
@@ -269,26 +249,6 @@ class QdrantConnector:
         except Exception as e:
             logger.error(f"Erreur lors de la suppression du document: {e}")
             return False
-    
-    def upsert_document_chunks(self, payload: Dict[str, Any], generate_id: bool = False) -> bool:
-        """
-        Insère ou met à jour un document dans Qdrant via des chunks.
-        Force la création du doc_id en utilisant un UUID en hexadécimal.
-
-        Args:
-            payload (Dict[str, Any]): Données à indexer contenant "source_url", "title", "content", etc.
-            generate_id (bool): Ce paramètre est ignoré car le doc_id est toujours généré.
-
-        Returns:
-            bool: True si l'opération a réussi, False sinon.
-        """
-        from uuid import uuid4
-
-        # Forcer la création d'un identifiant en UUID (hexadécimal de 32 caractères)
-        doc_id = uuid4().hex
-
-        vector = payload.get("vector")
-        return self.upsert_document(doc_id, vector, payload)
     
     def get_document_by_url(self, url: str) -> List[Dict]:
         """

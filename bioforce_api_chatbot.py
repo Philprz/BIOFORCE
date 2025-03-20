@@ -1,42 +1,21 @@
-# Imports standards
+from fastapi import FastAPI, HTTPException, Body
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Dict, Any
+from datetime import datetime
 import os
-import sys
+import asyncio
 import json
 import logging
-from datetime import datetime
-from typing import List, Dict, Any
-from pathlib import Path
-
-# Modification du sys.path pour inclure le répertoire parent
-# Ceci permet d'importer des modules internes sans spécifier le chemin complet
-parent_dir = str(Path(__file__).parent)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
-# Imports externes
-# Ces imports proviennent de bibliothèques externes installées via pip
-import uvicorn  # noqa: E402
-from dotenv import load_dotenv  # noqa: E402
-from fastapi import FastAPI, HTTPException, Query, Body, Request  # noqa: E402
-from fastapi.responses import JSONResponse, RedirectResponse  # noqa: E402
-from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
-from fastapi.staticfiles import StaticFiles  # noqa: E402
-from pydantic import BaseModel  # noqa: E402
-from openai import AsyncOpenAI  # noqa: E402
-
-# Imports internes
-# Ces imports proviennent de modules internes au projet
-from bioforce_scraper.utils.qdrant_connector import QdrantConnector  # noqa: E402
-from bioforce_scraper.utils.embedding_generator import generate_embeddings  # noqa: E402
+from openai import AsyncOpenAI
+from qdrant_client import AsyncQdrantClient
+from dotenv import load_dotenv
+import uvicorn
+import uuid
 
 # Chargement des variables d'environnement
 load_dotenv()
-
-# Configuration de l'API
-API_HOST = os.getenv("API_HOST", "0.0.0.0")
-API_PORT = int(os.getenv("API_PORT", "8000"))
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "BIOFORCE")
-COLLECTION_NAME_ALL = os.getenv("QDRANT_COLLECTION_ALL", "BIOFORCE_ALL")
 
 # Configuration du logging
 logging.basicConfig(
@@ -49,62 +28,40 @@ logger = logging.getLogger(__name__)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 QDRANT_URL = os.getenv('QDRANT_URL')
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
+COLLECTION_NAME = "BIOFORCE"
 
 # Initialisation des clients
-openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)  # Sera initialisé pendant l'événement de démarrage
-qdrant_connector = None  # Sera initialisé pendant l'événement de démarrage
-
-# Journalisation des paramètres de connexion (sans les valeurs sensibles)
-logger.info(f"Configuration Qdrant - URL: {QDRANT_URL} | Collection: {COLLECTION_NAME}")
-if not QDRANT_URL or not QDRANT_API_KEY:
-    logger.error("⚠️ Variables d'environnement Qdrant manquantes ou invalides")
-
-# Fonction pour initialiser le client Qdrant avec retry
-async def initialize_qdrant_client():
-    """Initialise le client Qdrant"""
-    global qdrant_connector
-    
-    logger.info(f"Initialisation du client Qdrant: {QDRANT_URL}")
-    
-    # Vérifier si les variables d'environnement sont définies
-    if not QDRANT_URL:
-        logger.error("URL Qdrant non définie. Vérifiez la variable d'environnement QDRANT_URL.")
-        return False
-    
-    # Utiliser directement la nouvelle implémentation simplifiée de QdrantConnector
-    qdrant_connector = QdrantConnector(
-        url=QDRANT_URL, 
-        api_key=QDRANT_API_KEY, 
-        collection_name=COLLECTION_NAME
-    )
-    
-    # Si l'initialisation du client a réussi
-    if qdrant_connector.client:
-        logger.info("✅ Connexion à Qdrant établie avec succès")
-        return True
-    else:
-        logger.error("❌ Échec de la connexion à Qdrant")
-        return False
+openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+qdrant_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
 
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
-    """Initialise la collection Qdrant si elle n'existe pas encore"""
+    """Crée la collection bioforce_faq si elle n'existe pas déjà"""
     try:
-        if not qdrant_connector or not qdrant_connector.client:
-            logger.error("Client Qdrant non initialisé, impossible de créer la collection")
-            return False
+        # Vérifier si la collection existe
+        collections = await qdrant_client.get_collections()
+        collection_names = [collection.name for collection in collections.collections]
+        
+        if COLLECTION_NAME not in collection_names:
+            logger.info(f"Création de la collection {COLLECTION_NAME}")
             
-        # S'assurer que la collection existe, sinon la créer
-        success = qdrant_connector.ensure_collection()
-        if success:
-            logger.info(f"Collection {COLLECTION_NAME} vérifiée/créée avec succès")
-            return True
+            # Créer la collection avec la dimension d'embedding d'OpenAI (1536 pour ada-002)
+            await qdrant_client.create_collection(
+                collection_name=COLLECTION_NAME,
+                vectors_config={
+                    "size": 1536,
+                    "distance": "Cosine"
+                }
+            )
+            
+            logger.info(f"Collection {COLLECTION_NAME} créée avec succès")
         else:
-            logger.error(f"Échec de la création/vérification de la collection {COLLECTION_NAME}")
-            return False
+            logger.info(f"Collection {COLLECTION_NAME} existe déjà")
+            
     except Exception as e:
-        logger.error(f"Erreur lors de l'initialisation de la collection Qdrant: {str(e)}")
-        return False
+        logger.error(f"Erreur lors de l'initialisation de Qdrant: {str(e)}")
+        # Ne pas faire échouer le démarrage de l'application
+        pass
 
 # Initialisation de l'application FastAPI
 app = FastAPI(
@@ -124,21 +81,10 @@ app.add_middleware(
     max_age=86400,        # Cache les résultats preflight pour 24h
 )
 
-# Monter les fichiers statiques
-app.mount("/demo", StaticFiles(directory="demo_interface", html=True), name="demo")
-app.mount("/admin", StaticFiles(directory="bioforce-admin", html=True), name="admin")
-
-# Événement de démarrage pour initialiser le client et la collection
+# Événement de démarrage pour initialiser la collection
 @app.on_event("startup")
 async def startup_event():
-    # Initialiser le client Qdrant d'abord
-    connected = await initialize_qdrant_client()
-    
-    if connected:
-        # Seulement si la connexion est réussie, initialiser la collection
-        await initialize_qdrant_collection()
-    else:
-        logger.warning("⚠️ L'application démarre sans connexion à Qdrant. Certaines fonctionnalités seront limitées.")
+    await initialize_qdrant_collection()
 
 # Modèles de données
 class ChatMessage(BaseModel):
@@ -146,6 +92,7 @@ class ChatMessage(BaseModel):
     content: str
 
 class ChatRequest(BaseModel):
+    user_id: str
     messages: List[ChatMessage]
     context: Dict[str, Any] = {}
 
@@ -165,170 +112,41 @@ class SearchResponse(BaseModel):
 async def generate_embedding(text: str) -> List[float]:
     """Génère un embedding pour le texte donné"""
     try:
-        return await generate_embeddings([text])
+        response = await openai_client.embeddings.create(
+            input=text,
+            model="text-embedding-ada-002"
+        )
+        return response.data[0].embedding
     except Exception as e:
         logger.error(f"Erreur d'embedding: {str(e)}")
         raise
 
 async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
-    """
-    Recherche dans la base de connaissances Qdrant
-    
-    Args:
-        query: La requête utilisateur
-        limit: Nombre maximum de résultats à retourner
-        
-    Returns:
-        Liste des résultats trouvés
-    """
+    """Recherche dans la base de connaissances"""
     try:
-        logger.info(f"Recherche pour '{query}' (limite: {limit})")
-        
-        # Vérification que le client Qdrant est initialisé
-        if not qdrant_connector:
-            logger.error("Client Qdrant non initialisé")
-            raise Exception("Base de connaissances non disponible")
-        
-        # Génération de l'embedding pour la requête
         vector = await generate_embedding(query)
-        if not vector:
-            logger.error("Échec de génération de l'embedding")
-            return []
         
-        # Log du modèle d'embedding utilisé pour débogage
-        logger.info(f"Recherche avec le modèle d'embedding: {os.getenv('EMBEDDING_MODEL', 'text-embedding-ada-002')}")
+        search_result = await qdrant_client.search(
+            collection_name=COLLECTION_NAME,
+            query_vector=vector,
+            limit=limit
+        )
         
-        # Résultats combinés des deux collections
-        all_results = []
-        
-        # Paramètres optimisés pour améliorer la pertinence
-        search_limit = 30  # Augmenté pour avoir plus de choix avant filtrage
-        min_score_threshold = 0.005  # Seuil minimal plus élevé pour la pertinence
-        
-        # Filtres de pertinence pour la langue
-        filter_conditions = {
-            "language": ["fr", "en", None]  # Inclure les documents sans langue spécifiée
-        }
-        
-        # Recherche dans la collection principale (BIOFORCE - FAQ)
-        try:
-            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: {search_limit})")
-            original_collection = qdrant_connector.collection_name
-            qdrant_connector.collection_name = COLLECTION_NAME
-            
-            search_results_faq = qdrant_connector.search(
-                query_vector=vector,
-                limit=search_limit,
-                filter_conditions=filter_conditions
-            )
-            
-            # Log des scores pour débogage
-            if search_results_faq:
-                top_score = search_results_faq[0]["score"] if search_results_faq else 0
-                logger.info(f"Top score dans {COLLECTION_NAME}: {top_score}")
-                scores_log = [f"{i+1}: {r['score']:.6f}" for i, r in enumerate(search_results_faq[:5])]
-                logger.info(f"Top 5 scores: {', '.join(scores_log)}")
-            
-            # Ajouter une source pour identifier la collection
-            for result in search_results_faq:
-                result["collection"] = COLLECTION_NAME
-            
-            all_results.extend(search_results_faq)
-            logger.info(f"Trouvé {len(search_results_faq)} résultats dans {COLLECTION_NAME}")
-        except Exception as e:
-            logger.error(f"Erreur lors de la recherche dans {COLLECTION_NAME}: {str(e)}")
-        
-        # Recherche dans la collection secondaire (BIOFORCE_ALL - Site complet)
-        try:
-            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME_ALL}, limit: {search_limit})")
-            qdrant_connector.collection_name = COLLECTION_NAME_ALL
-            
-            search_results_all = qdrant_connector.search(
-                query_vector=vector,
-                limit=search_limit,
-                filter_conditions=filter_conditions
-            )
-            
-            # Log des scores pour débogage
-            if search_results_all:
-                top_score = search_results_all[0]["score"] if search_results_all else 0
-                logger.info(f"Top score dans {COLLECTION_NAME_ALL}: {top_score}")
-                scores_log = [f"{i+1}: {r['score']:.6f}" for i, r in enumerate(search_results_all[:5])]
-                logger.info(f"Top 5 scores: {', '.join(scores_log)}")
-            
-            # Ajouter une source pour identifier la collection
-            for result in search_results_all:
-                result["collection"] = COLLECTION_NAME_ALL
-            
-            all_results.extend(search_results_all)
-            logger.info(f"Trouvé {len(search_results_all)} résultats dans {COLLECTION_NAME_ALL}")
-        except Exception as e:
-            logger.error(f"Erreur lors de la recherche dans {COLLECTION_NAME_ALL}: {str(e)}")
-        
-        # Restaurer la collection d'origine
-        qdrant_connector.collection_name = original_collection
-        
-        if not all_results:
-            logger.warning("Aucun résultat trouvé dans les deux collections")
-            return []
-        
-        # Dédupliquer les résultats par URL
-        url_seen = set()
-        unique_results = []
-        
-        for result in all_results:
-            payload = result.get("payload", {})
-            url = payload.get("url") or payload.get("source_url")
-            
-            # Si pas d'URL ou URL pas encore vue, ajout aux résultats uniques
-            if not url or url not in url_seen:
-                if url:
-                    url_seen.add(url)
-                unique_results.append(result)
-        
-        # Filtrer et trier les résultats par score
-        filtered_results = [r for r in unique_results if r["score"] > min_score_threshold]  # Filtrer les scores trop faibles
-        sorted_results = sorted(filtered_results, key=lambda x: x["score"], reverse=True)
-        
-        # Limiter au nombre demandé
-        results = sorted_results[:limit]
-        
-        # Log des scores finaux
-        if results:
-            top_score = results[0]["score"] if results else 0
-            logger.info(f"Score final maximal après filtrage: {top_score}")
-            scores_log = [f"{i+1}: {r['score']:.6f}" for i, r in enumerate(results)]
-            logger.info(f"Scores finaux: {', '.join(scores_log)}")
-        
-        # Transformer les résultats pour l'API
-        formatted_results = []
-        for result in results:
-            payload = result.get("payload", {})
-            collection = result.get("collection", "inconnue")
-            
-            formatted_results.append({
-                "score": result["score"],
-                "question": payload.get("title"),  # Utiliser title comme question
-                "answer": payload.get("content"),  # Utiliser content comme answer
-                "category": payload.get("category"),
-                "url": payload.get("url") or payload.get("source_url"),
-                "collection": collection  # Ajouter la source de la collection
+        results = []
+        for scored_point in search_result:
+            results.append({
+                "score": scored_point.score,
+                "question": scored_point.payload.get("question"),
+                "answer": scored_point.payload.get("answer"),
+                "category": scored_point.payload.get("category"),
+                "url": scored_point.payload.get("url")
             })
         
-        logger.info(f"Recherche réussie: {len(results)} résultats trouvés après fusion et déduplication")
-        return formatted_results
+        return results
     
     except Exception as e:
-        error_msg = str(e)
-        logger.error(f"Erreur lors de la recherche dans Qdrant: {error_msg}")
-        # Ajouter plus de détails sur l'erreur
-        if "Connection refused" in error_msg or "ConnectionError" in error_msg:
-            logger.error("Problème de connexion à Qdrant - vérifier l'URL et l'accessibilité du serveur")
-        elif "Unauthorized" in error_msg or "forbidden" in error_msg:
-            logger.error("Problème d'authentification - vérifier la clé API Qdrant")
-        elif "collection not found" in error_msg.lower():
-            logger.error("Collection introuvable - vérifier que les collections existent")
-        return []
+        logger.error(f"Erreur lors de la recherche: {str(e)}")
+        raise
 
 async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     """Formate les résultats de recherche en contexte pour le LLM"""
@@ -386,160 +204,14 @@ async def get_llm_response(messages, context=""):
 
 # Routes API
 @app.get("/")
-async def redirect_to_admin(request: Request):
+async def redirect_to_admin():
     """Redirige la racine vers l'interface d'administration"""
-    
-    # Utilisation de RedirectResponse pour une redirection correcte
     return RedirectResponse(url="/admin/index.html")
 
-@app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    """
-    Point d'entrée principal pour le chat
-    """
-    try:
-        # Récupération des messages de l'utilisateur
-        messages = request.messages
-        
-        # Récupération du contexte utilisateur (peut contenir des infos sur le dossier, etc.)
-        context = request.context
-        
-        # Récupération du dernier message de l'utilisateur
-        last_message = messages[-1].content if messages else ""
-        
-        # Recherche dans la base de connaissances
-        search_results = await search_knowledge_base(last_message)
-        
-        # Formatage du contexte pour le LLM
-        context_from_kb = await format_context_from_results(search_results)
-        
-        # Obtention de la réponse du LLM
-        llm_response, references = await get_llm_response(messages, context_from_kb)
-        
-        # Construction des références pour l'interface
-        formatted_references = []
-        for result in search_results[:3]:  # Limiter à 3 références
-            if result["score"] > 0.7:  # Seuil de pertinence
-                formatted_references.append({
-                    "question": result["question"],
-                    "url": result["url"] if result.get("url") else "#"
-                })
-        
-        # Construction de la réponse
-        response = ChatResponse(
-            message=ChatMessage(role="assistant", content=llm_response),
-            context=context,  # Renvoyer le contexte tel quel
-            references=formatted_references
-        )
-        
-        return response
-        
-    except Exception as e:
-        logger.error(f"Erreur de chat: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Version v1 de l'API (pour assurer la compatibilité avec le frontend)
-@app.post("/api/v1/chat", response_model=ChatResponse)
-async def chat_v1(request: ChatRequest):
-    """
-    Point d'entrée pour le chat (API v1) - pour compatibilité
-    Redirige vers la fonction chat standard
-    """
-    return await chat(request)
-
-@app.post("/search", response_model=SearchResponse)
-async def search(request: SearchRequest):
-    """Endpoint de recherche dans la base de connaissances"""
-    try:
-        results = await search_knowledge_base(request.query, request.limit)
-        return SearchResponse(results=results)
-    
-    except Exception as e:
-        logger.error(f"Erreur lors de la recherche: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Version v1 de l'API de recherche pour compatibilité
-@app.post("/api/v1/search", response_model=SearchResponse)
-async def search_v1(request: SearchRequest):
-    """
-    Endpoint de recherche (API v1) - pour compatibilité
-    Redirige vers la fonction search standard
-    """
-    return await search(request)
-
-@app.get("/health")
-async def health_check():
-    """Vérifie l'état de l'API"""
-    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
-
-@app.get("/api/health")
-async def api_health_check():
-    """Route de santé additionnelle pour compatibilité"""
-    return await health_check()
-
-@app.post("/debug")
-async def debug_api(request: dict = Body(...)):
-    """Endpoint de débogage pour tester les appels API sans logique métier"""
-    try:
-        # Affichage détaillé des informations reçues
-        logger.info(f"Request data: {json.dumps(request, default=str)}")
-        
-        # Vérification de la connexion à OpenAI
-        openai_status = "unknown"
-        try:
-            # Test simple à OpenAI
-            response = await openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": "Hello"}],
-                max_tokens=10
-            )
-            openai_status = "connected"
-            openai_response = response.choices[0].message.content
-        except Exception as e:
-            openai_status = f"error: {str(e)}"
-            openai_response = None
-        
-        # Vérification de la connexion à Qdrant
-        qdrant_status = "unknown"
-        try:
-            # Test simple à Qdrant
-            qdrant_connector.client.get_collections()
-            qdrant_status = "connected"
-        except Exception as e:
-            qdrant_status = f"error: {str(e)}"
-        
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "request_received": True,
-            "openai_status": openai_status,
-            "openai_response": openai_response,
-            "qdrant_status": qdrant_status
-        }
-    except Exception as e:
-        logger.error(f"Erreur de débogage: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Routes d'administration
-@app.get("/admin/system-info")
-async def system_info():
-    """
-    Retourne les informations système pour l'interface d'administration
-    """
-    import platform
-    from datetime import datetime
-    
-    return {
-        "version": "1.0.0",
-        "python_version": f"{platform.python_version()}",
-        "platform": platform.platform(),
-        "current_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "github_repo": "https://github.com/Philprz/BIOFORCE"
-    }
-
 @app.get("/admin/status")
-async def status():
+async def admin_status():
     """
-    Vérifie l'état du serveur et des services connectés
+    Vérifie l'état du serveur et des services connectés de manière détaillée
     """
     server_status = "running"
     server_message = "Serveur en cours d'exécution"
@@ -549,37 +221,14 @@ async def status():
     qdrant_message = "État inconnu"
     
     try:
-        if not qdrant_connector:
+        # Vérifier si le client Qdrant est initialisé
+        if qdrant_client is None:
             qdrant_status = "not_initialized"
             qdrant_message = "Client non initialisé. Vérifiez les variables d'environnement."
-            
-            # Tentative de réinitialisation
-            logger.info("Tentative d'initialisation du client Qdrant...")
-            success = await initialize_qdrant_client()
-            
-            if success:
-                qdrant_status = "connected"
-                qdrant_message = "Connexion établie avec succès"
-            else:
-                qdrant_status = "failed"
-                qdrant_message = "Échec de l'initialisation. Vérifiez la configuration."
         else:
-            # Vérifier si le client est disponible
-            if not qdrant_connector.client:
-                qdrant_status = "disconnected"
-                qdrant_message = "Client initialisé mais non connecté"
-                return JSONResponse(content={
-                    "server_status": server_status,
-                    "server_message": server_message,
-                    "qdrant_status": qdrant_status,
-                    "qdrant_message": qdrant_message,
-                    "scraping_status": "unknown",
-                    "scraping_message": "État inconnu"
-                })
-            
-            # Tester la connexion
+            # Vérifier la connexion à Qdrant
             try:
-                collections = qdrant_connector.client.get_collections()
+                collections = await qdrant_client.get_collections()
                 
                 # Vérifier si la collection existe
                 collection_names = [c.name for c in collections.collections]
@@ -611,137 +260,111 @@ async def status():
         "scraping_message": scraping_message
     }, headers={"Cache-Control": "no-store"})
 
-@app.get("/admin/qdrant-stats")
-async def qdrant_stats():
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest):
     """
-    Retourne les statistiques des collections Qdrant
-    """
-    try:
-        # Vérifier si le client Qdrant est initialisé
-        if not qdrant_connector:
-            logger.error("Impossible de récupérer les statistiques: client Qdrant non initialisé")
-            raise HTTPException(status_code=500, detail="Client Qdrant non initialisé")
-            
-        # Obtenir les collections
-        collections = qdrant_connector.client.get_collections()
-        collection_names = [collection.name for collection in collections.collections]
-        
-        stats = {}
-        
-        # Pour chaque collection, obtenir ses statistiques
-        for name in collection_names:
-            try:
-                collection_info = qdrant_connector.client.get_collection(name)
-                
-                # Obtenir d'autres informations sur la collection
-                collection_stats = {
-                    "vectors_count": collection_info.vectors_count,
-                    "segments_count": collection_info.segments_count,
-                    "ram_usage": getattr(collection_info, "ram_usage", 0)
-                }
-                
-                stats[name] = collection_stats
-            except Exception as e:
-                logger.error(f"Erreur lors de la récupération des stats pour {name}: {str(e)}")
-                stats[name] = {"error": str(e)}
-        
-        return stats
-    
-    except Exception as e:
-        logger.error(f"Erreur lors de la récupération des statistiques Qdrant: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
-
-@app.post("/admin/git-update")
-async def git_update():
-    """
-    Effectue une mise à jour du code source depuis GitHub
+    Point d'entrée principal pour le chat
     """
     try:
-        import subprocess
+        user_id = request.user_id
+        messages = request.messages
+        context_info = request.context
         
-        # Exécuter la commande git pull
-        process = subprocess.Popen(
-            ["git", "pull"], 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        stdout, stderr = process.communicate()
+        # Récupérer le dernier message utilisateur
+        last_message = None
+        for msg in reversed(messages):
+            if msg.role == "user":
+                last_message = msg.content
+                break
         
-        output = []
+        if not last_message:
+            raise HTTPException(status_code=400, detail="Aucun message utilisateur trouvé")
         
-        if stdout:
-            output.extend(stdout.splitlines())
+        # Obtenir le contexte pertinent depuis Qdrant
+        context = ""
+        try:
+            qdrant_results = await search_knowledge_base(last_message)
+            if qdrant_results:
+                context = "\n\n".join([f"Q: {item.question}\nR: {item.answer}" for item in qdrant_results])
+        except Exception as e:
+            logger.error(f"Erreur lors de la requête Qdrant: {e}")
+            # On continue sans contexte
         
-        if stderr:
-            output.extend(stderr.splitlines())
+        # Construire et envoyer la requête à OpenAI
+        response_content, references = await get_llm_response(messages, context)
         
+        # Formater et renvoyer la réponse
         return {
-            "success": process.returncode == 0,
-            "output": output
+            "message": {
+                "role": "assistant",
+                "content": response_content
+            },
+            "references": references
         }
     except Exception as e:
-        logger.error(f"Erreur lors de la mise à jour Git: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+        logger.error(f"Erreur dans /chat: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/admin/logs")
-async def get_logs(lines: int = Query(50, description="Nombre de lignes à récupérer")):
-    """
-    Récupère les dernières lignes des logs du système
-    """
+@app.post("/search", response_model=SearchResponse)
+async def search(request: SearchRequest):
+    """Endpoint de recherche dans la base de connaissances"""
     try:
-        # Simulation de logs (dans un projet réel, on utiliserait un vrai fichier de log)
-        logs = [
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - Démarrage du serveur",
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - Connexion à Qdrant établie",
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - API prête"
-        ]
-        
-        return {
-            "logs": logs
-        }
+        results = await search_knowledge_base(request.query, request.limit)
+        return SearchResponse(results=results)
     
     except Exception as e:
-        logger.error(f"Erreur lors de la récupération des logs: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+        logger.error(f"Erreur lors de la recherche: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/scrape/faq")
-async def scrape_faq(force_update: bool = Query(False, description="Force la mise à jour, ignorant le cache")):
-    """
-    Lance un scraping des FAQs du site Bioforce
-    """
+@app.get("/health")
+async def health_check():
+    """Vérifie l'état de l'API"""
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
+@app.post("/debug")
+async def debug_api(request: dict = Body(...)):
+    """Endpoint de débogage pour tester les appels API sans logique métier"""
     try:
-        # Ici, on simulerait le démarrage d'un job de scraping
-        # Pour l'instant, on renvoie juste un succès simulé
+        # Affichage détaillé des informations reçues
+        logger.info(f"Request data: {json.dumps(request, default=str)}")
+        
+        # Vérification de la connexion à OpenAI
+        openai_status = "unknown"
+        try:
+            # Test simple à OpenAI
+            response = await openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": "Hello"}],
+                max_tokens=10
+            )
+            openai_status = "connected"
+            openai_response = response.choices[0].message.content
+        except Exception as e:
+            openai_status = f"error: {str(e)}"
+            openai_response = None
+        
+        # Vérification de la connexion à Qdrant
+        qdrant_status = "unknown"
+        try:
+            # Test simple à Qdrant
+            collections = await qdrant_client.get_collections()
+            qdrant_status = "connected"
+            qdrant_response = collections.collections
+        except Exception as e:
+            qdrant_status = f"error: {str(e)}"
+            qdrant_response = None
         
         return {
-            "success": True,
-            "message": "Scraping FAQ démarré",
-            "force_update": force_update
+            "timestamp": datetime.now().isoformat(),
+            "request_received": True,
+            "openai_status": openai_status,
+            "openai_response": openai_response,
+            "qdrant_status": qdrant_status,
+            "qdrant_response": qdrant_response
         }
-    
     except Exception as e:
-        logger.error(f"Erreur lors du démarrage du scraping FAQ: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
-
-@app.post("/scrape/full")
-async def scrape_full(force_update: bool = Query(False, description="Force la mise à jour, ignorant le cache")):
-    """
-    Lance un scraping complet du site Bioforce
-    """
-    try:
-        # Ici, on simulerait le démarrage d'un job de scraping complet
-        # Pour l'instant, on renvoie juste un succès simulé
-        
-        return {
-            "success": True,
-            "message": "Scraping complet démarré",
-            "force_update": force_update
-        }
-    
-    except Exception as e:
-        logger.error(f"Erreur lors du démarrage du scraping complet: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+        logger.error(f"Erreur de débogage: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("bioforce_api_chatbot:app", host=API_HOST, port=API_PORT, reload=True)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
