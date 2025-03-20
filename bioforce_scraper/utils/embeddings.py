@@ -1,13 +1,9 @@
 """
 Module de gestion des embeddings pour la base de connaissances
 """
-import asyncio
-import logging
-import os
-from typing import List, Dict, Any, Optional, Union
-
-import aiohttp
 import numpy as np
+from typing import List, Optional
+
 import openai
 from openai import AsyncOpenAI
 
@@ -36,6 +32,19 @@ async def generate_embeddings(text: str) -> Optional[List[float]]:
         return generate_random_embedding()
     
     try:
+        # Vérifier si le texte est fourni
+        if not text or not isinstance(text, str):
+            logger.error(f"Texte invalide fourni pour la génération d'embedding: {type(text)}")
+            return None
+            
+        # S'assurer que le texte n'est pas trop long (max 8191 tokens pour OpenAI)
+        if len(text) > 25000:  # Estimation grossière, à ajuster
+            text = text[:25000]
+            logger.warning("Texte tronqué à 25000 caractères pour l'embedding")
+            
+        # Normaliser le texte (retirer les espaces multiples, etc.)
+        text = " ".join(text.split())
+        
         # Limiter la taille du texte pour éviter des coûts excessifs
         truncated_text = text[:8000]
         
@@ -47,6 +56,13 @@ async def generate_embeddings(text: str) -> Optional[List[float]]:
         
         # Récupérer le vecteur d'embedding
         embedding = response.data[0].embedding
+        
+        # Normaliser explicitement le vecteur pour garantir la compatibilité avec la recherche cosinus
+        embedding_np = np.array(embedding)
+        norm = np.linalg.norm(embedding_np)
+        if norm > 0:
+            normalized_embedding = (embedding_np / norm).tolist()
+            return normalized_embedding
         
         return embedding
         

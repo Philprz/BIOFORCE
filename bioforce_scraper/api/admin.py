@@ -275,13 +275,79 @@ async def run_full_scraper_route(background_tasks: BackgroundTasks, force_update
 async def get_qdrant_stats_route():
     """Route pour obtenir les statistiques Qdrant"""
     try:
+        # Vérification explicite de la connexion Qdrant avant de tenter d'obtenir les statistiques
+        if not qdrant.client:
+            logger.error("Client Qdrant non initialisé - Tentative de reconnexion...")
+            # Tentative de reconnexion
+            try:
+                qdrant.client = QdrantConnector().client
+                if not qdrant.client:
+                    return {
+                        "status": "error",
+                        "message": "Impossible de se connecter à Qdrant",
+                        "details": {
+                            "url": qdrant.url,
+                            "collection": qdrant.collection_name
+                        }
+                    }
+            except Exception as reconnect_error:
+                logger.error(f"Erreur lors de la tentative de reconnexion à Qdrant: {reconnect_error}")
+                return {
+                    "status": "error",
+                    "message": f"Erreur de reconnexion à Qdrant: {str(reconnect_error)}",
+                    "details": {
+                        "url": qdrant.url,
+                        "collection": qdrant.collection_name
+                    }
+                }
+        
+        # Test de connexion avec une opération simple
+        try:
+            # Vérifier que la collection existe
+            collection_exists = await asyncio.create_task(qdrant.ensure_collection())
+            if not collection_exists:
+                return {
+                    "status": "error",
+                    "message": f"La collection {qdrant.collection_name} n'existe pas ou ne peut pas être créée",
+                    "details": {
+                        "url": qdrant.url,
+                        "collection": qdrant.collection_name
+                    }
+                }
+        except Exception as collection_error:
+            logger.error(f"Erreur lors de la vérification de la collection: {collection_error}")
+            return {
+                "status": "error",
+                "message": f"Erreur d'accès à la collection: {str(collection_error)}",
+                "details": {
+                    "url": qdrant.url,
+                    "collection": qdrant.collection_name
+                }
+            }
+        
+        # Récupération des statistiques
         stats = await qdrant.get_stats()
+        
+        # Ajout d'informations sur la connexion
+        connection_info = {
+            "url": qdrant.url,
+            "collection": qdrant.collection_name,
+            "is_connected": qdrant.client is not None,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+        
         return {
             "status": "success",
+            "connection": connection_info,
             "data": stats
         }
     except Exception as e:
+        logger.error(f"Erreur lors de la récupération des statistiques Qdrant: {e}")
         return {
             "status": "error",
-            "message": str(e)
+            "message": str(e),
+            "details": {
+                "url": getattr(qdrant, "url", "Non disponible"),
+                "collection": getattr(qdrant, "collection_name", "Non disponible")
+            }
         }

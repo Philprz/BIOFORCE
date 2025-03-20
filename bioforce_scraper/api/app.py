@@ -130,16 +130,24 @@ async def query(request: QueryRequest):
         if search_type == "faq":
             search_results = qdrant_faq.search(
                 query_vector=query_embedding,
-                limit=request.max_results,
+                limit=max(20, request.max_results),  
                 filter_conditions=filters
             )
+            # Filtrer les résultats avec un score trop faible
+            search_results = [r for r in search_results if r["score"] > 0.001]
+            # Trier explicitement par score
+            search_results = sorted(search_results, key=lambda x: x["score"], reverse=True)
             collection_used = "FAQ (BIOFORCE)"
         else:  # "site"
             search_results = qdrant_full.search(
                 query_vector=query_embedding,
-                limit=request.max_results,
+                limit=max(20, request.max_results),  
                 filter_conditions=filters
             )
+            # Filtrer les résultats avec un score trop faible
+            search_results = [r for r in search_results if r["score"] > 0.001]
+            # Trier explicitement par score
+            search_results = sorted(search_results, key=lambda x: x["score"], reverse=True)
             collection_used = "Site complet (BIOFORCE_ALL)"
             
             # Si on ne trouve pas de résultats pertinents dans le site complet, 
@@ -147,9 +155,14 @@ async def query(request: QueryRequest):
             if not search_results or search_results[0]["score"] < 0.7:
                 backup_results = qdrant_faq.search(
                     query_vector=query_embedding,
-                    limit=request.max_results,
+                    limit=max(20, request.max_results),  
                     filter_conditions=filters
                 )
+                
+                # Filtrer les résultats avec un score trop faible
+                backup_results = [r for r in backup_results if r["score"] > 0.001]
+                # Trier explicitement par score
+                backup_results = sorted(backup_results, key=lambda x: x["score"], reverse=True)
                 
                 # Ajouter des résultats de la FAQ s'ils sont pertinents
                 if backup_results and backup_results[0]["score"] > 0.7:
