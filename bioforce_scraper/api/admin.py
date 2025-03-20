@@ -13,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 import logging
+import traceback
 
 # Ajout du répertoire parent au path pour les importations
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
@@ -205,35 +206,94 @@ async def get_system_info_route():
 
 @router.get("/status")
 async def get_status_route():
-    """Récupère l'état des services"""
+    """Récupère l'état des services avec informations détaillées"""
     try:
-        # Vérification de l'état du serveur
-        server_status = "ok"
-        
-        # Vérification de l'état du scraping (simple vérification d'existence)
-        # Dans une implémentation réelle, vérifiez l'état effectif du service
-        scraping_status = "ready"
-        
-        # Vérification de la connexion Qdrant
-        try:
-            # Test simple de connexion à Qdrant en listant les collections
-            collections = await asyncio.to_thread(lambda: qdrant.client.get_collections())
-            qdrant_status = "connected" if collections else "not_connected"
-        except Exception as e:
-            qdrant_status = "error"
-            logger.error(f"Erreur de vérification Qdrant: {str(e)}")
-        
-        return {
-            "server_status": server_status,
-            "scraping_status": scraping_status,
-            "qdrant_status": qdrant_status
+        # Structure pour les résultats avec un format uniforme
+        results = {
+            "server": {
+                "status": "ok",
+                "message": "Serveur opérationnel",
+                "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            },
+            "scraping": {
+                "status": "ok",
+                "message": "Service de scraping prêt"
+            },
+            "qdrant": {
+                "status": "unknown",
+                "message": "Statut de Qdrant inconnu",
+                "details": {}
+            }
         }
+        
+        # Vérification détaillée de la connexion Qdrant
+        try:
+            # Capture des informations détaillées de connexion
+            qdrant_details = {
+                "host": getattr(qdrant.client, "_host", "Non disponible"),
+                "port": getattr(qdrant.client, "_port", "Non disponible"),
+                "collection": getattr(qdrant, "collection_name", "Non disponible"),
+                "timeout": getattr(qdrant.client, "_timeout", "Non disponible"),
+                "api_key_provided": bool(getattr(qdrant.client, "_api_key", None)),
+                "connection_attempt_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+            
+            # Test de connexion à Qdrant en listant les collections
+            try:
+                # Vérification simple d'abord (liste des collections)
+                collections_list = await asyncio.to_thread(lambda: qdrant.client.get_collections())
+                qdrant_details["collections_found"] = len(collections_list.collections)
+                qdrant_details["collections_list"] = [c.name for c in collections_list.collections]
+                
+                # Vérification spécifique de la collection BIOFORCE
+                collection_info = await asyncio.to_thread(lambda: qdrant.client.get_collection(qdrant.collection_name))
+                qdrant_details["collection_info"] = {
+                    "vectors_count": collection_info.vectors_count,
+                    "points_count": collection_info.points_count,
+                    "segments_count": collection_info.segments_count,
+                    "status": collection_info.status
+                }
+                
+                # Tout va bien
+                results["qdrant"]["status"] = "ok"
+                results["qdrant"]["message"] = "Connexion à Qdrant établie avec succès"
+                
+            except Exception as collection_error:
+                # La connexion fonctionne mais problème avec les collections
+                logger.warning(f"Erreur lors de la vérification des collections Qdrant: {str(collection_error)}")
+                qdrant_details["collection_error"] = str(collection_error)
+                results["qdrant"]["status"] = "warning"
+                results["qdrant"]["message"] = f"Connexion à Qdrant établie mais erreur lors de l'accès aux collections: {str(collection_error)}"
+            
+            # Ajout des détails à la réponse
+            results["qdrant"]["details"] = qdrant_details
+            
+        except Exception as e:
+            # Erreur de connexion à Qdrant
+            logger.error(f"Erreur de connexion à Qdrant: {str(e)}")
+            results["qdrant"]["status"] = "error"
+            results["qdrant"]["message"] = f"Erreur de connexion à Qdrant: {str(e)}"
+            results["qdrant"]["details"] = {
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "host": getattr(qdrant.client, "_host", "Non disponible"),
+                "port": getattr(qdrant.client, "_port", "Non disponible"),
+                "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        
+        return results
+        
     except Exception as e:
+        # Erreur générale du serveur
+        logger.error(f"Erreur lors de la vérification de l'état des services: {str(e)}")
         return {
-            "server_status": "error",
-            "scraping_status": "error",
-            "qdrant_status": "error",
-            "error": str(e)
+            "server": {
+                "status": "error",
+                "message": f"Erreur serveur: {str(e)}",
+                "error_type": type(e).__name__
+            },
+            "scraping": {"status": "unknown", "message": "Statut inconnu en raison d'une erreur serveur"},
+            "qdrant": {"status": "unknown", "message": "Statut inconnu en raison d'une erreur serveur"}
         }
 
 @router.get("/", response_class=HTMLResponse)
@@ -284,80 +344,229 @@ async def run_full_scraper_route(background_tasks: BackgroundTasks, force_update
 
 @router.get("/qdrant-stats")
 async def get_qdrant_stats_route():
-    """Route pour obtenir les statistiques Qdrant"""
+    """Route pour obtenir les statistiques détaillées de Qdrant avec diagnostics avancés"""
     try:
-        # Vérification explicite de la connexion Qdrant avant de tenter d'obtenir les statistiques
+        # Structure initiale de la réponse
+        response = {
+            "status": "pending",
+            "message": "Analyse de la connexion Qdrant en cours",
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "connection": {
+                "url": getattr(qdrant, "url", "Non disponible"),
+                "collection": getattr(qdrant, "collection_name", "Non disponible"),
+                "client_initialized": qdrant.client is not None,
+                "diagnostics": {}
+            },
+            "data": None,
+            "debug_logs": []
+        }
+        
+        # Fonction pour ajouter des logs de debug
+        def add_debug_log(message, level="info", data=None):
+            log_entry = {
+                "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3],
+                "level": level,
+                "message": message
+            }
+            if data:
+                log_entry["data"] = data
+                
+            response["debug_logs"].append(log_entry)
+            
+            # Log aussi dans les logs système selon le niveau
+            if level == "error":
+                logger.error(message)
+            elif level == "warning":
+                logger.warning(message)
+            else:
+                logger.info(message)
+                
+            return log_entry
+            
+        # Phase 1: Vérification de l'initialisation du client
+        add_debug_log("Vérification de l'initialisation du client Qdrant")
+        
         if not qdrant.client:
-            logger.error("Client Qdrant non initialisé - Tentative de reconnexion...")
+            add_debug_log("Client Qdrant non initialisé - Tentative de reconnexion", "warning")
+            
             # Tentative de reconnexion
             try:
+                # Capture l'état avant la reconnexion
+                response["connection"]["diagnostics"]["pre_reconnect"] = {
+                    "client_initialized": qdrant.client is not None,
+                    "url": getattr(qdrant, "url", "Non disponible"),
+                    "client_attributes": {
+                        attr: getattr(qdrant, attr, "Non disponible") 
+                        for attr in ["collection_name", "dim", "metric", "distance"]
+                    }
+                }
+                
+                # Tentative de reconnexion
+                add_debug_log("Initialisation d'un nouveau connecteur Qdrant")
                 qdrant.client = QdrantConnector().client
+                
+                # Vérifie si la reconnexion a réussi
                 if not qdrant.client:
-                    return {
-                        "status": "error",
-                        "message": "Impossible de se connecter à Qdrant",
-                        "details": {
-                            "url": qdrant.url,
-                            "collection": qdrant.collection_name
+                    add_debug_log("Échec de reconnexion à Qdrant - client toujours None", "error")
+                    response["status"] = "error"
+                    response["message"] = "Impossible de se connecter à Qdrant - client non initialisé après reconnexion"
+                    return response
+                    
+                add_debug_log("Reconnexion à Qdrant réussie", "info", {
+                    "host": getattr(qdrant.client, "_host", "Non disponible"),
+                    "port": getattr(qdrant.client, "_port", "Non disponible")
+                })
+                
+                # Mise à jour des informations de connexion
+                response["connection"]["client_initialized"] = True
+                
+            except Exception as reconnect_error:
+                error_info = {
+                    "error_type": type(reconnect_error).__name__,
+                    "error_message": str(reconnect_error),
+                    "traceback": traceback.format_exc()
+                }
+                
+                add_debug_log(f"Erreur lors de la tentative de reconnexion à Qdrant: {reconnect_error}", "error", error_info)
+                
+                response["status"] = "error"
+                response["message"] = f"Erreur de reconnexion à Qdrant: {str(reconnect_error)}"
+                response["connection"]["diagnostics"]["reconnect_error"] = error_info
+                return response
+        else:
+            add_debug_log("Client Qdrant déjà initialisé", "info", {
+                "host": getattr(qdrant.client, "_host", "Non disponible"),
+                "port": getattr(qdrant.client, "_port", "Non disponible"),
+                "api_key_present": bool(getattr(qdrant.client, "_api_key", None))
+            })
+        
+        # Phase 2: Vérification de la collection
+        add_debug_log(f"Vérification de la collection '{qdrant.collection_name}'")
+        
+        try:
+            # Test basique de connexion - récupération des collections
+            add_debug_log("Récupération de la liste des collections")
+            
+            collections_list = await asyncio.to_thread(lambda: qdrant.client.get_collections())
+            collections_names = [c.name for c in collections_list.collections]
+            
+            add_debug_log(f"Liste des collections récupérée avec succès: {len(collections_names)} collections", "info", {
+                "collections": collections_names
+            })
+            
+            # Vérifier si notre collection est dans la liste
+            if qdrant.collection_name in collections_names:
+                add_debug_log(f"Collection '{qdrant.collection_name}' trouvée dans la liste")
+            else:
+                add_debug_log(f"Collection '{qdrant.collection_name}' NON trouvée dans la liste - vérification si elle peut être créée", "warning")
+            
+            # Vérification complète que la collection existe ou peut être créée
+            add_debug_log("Vérification de l'existence/création de la collection via ensure_collection()")
+            collection_exists = await asyncio.create_task(qdrant.ensure_collection())
+            
+            if not collection_exists:
+                add_debug_log(f"La collection {qdrant.collection_name} n'existe pas et n'a pas pu être créée", "error")
+                response["status"] = "error"
+                response["message"] = f"La collection {qdrant.collection_name} n'existe pas ou ne peut pas être créée"
+                return response
+                
+            add_debug_log(f"Collection '{qdrant.collection_name}' vérifiée et disponible")
+            
+            # Récupération des infos sur la collection
+            add_debug_log(f"Récupération des informations sur la collection '{qdrant.collection_name}'")
+            collection_info = await asyncio.to_thread(lambda: qdrant.client.get_collection(qdrant.collection_name))
+            
+            response["connection"]["diagnostics"]["collection_info"] = {
+                "vectors_count": collection_info.vectors_count,
+                "points_count": collection_info.points_count,
+                "segments_count": collection_info.segments_count,
+                "status": collection_info.status,
+                "config": {
+                    "params": {
+                        "vectors": {
+                            "size": collection_info.config.params.vectors.size,
+                            "distance": str(collection_info.config.params.vectors.distance),
                         }
                     }
-            except Exception as reconnect_error:
-                logger.error(f"Erreur lors de la tentative de reconnexion à Qdrant: {reconnect_error}")
-                return {
-                    "status": "error",
-                    "message": f"Erreur de reconnexion à Qdrant: {str(reconnect_error)}",
-                    "details": {
-                        "url": qdrant.url,
-                        "collection": qdrant.collection_name
-                    }
-                }
-        
-        # Test de connexion avec une opération simple
-        try:
-            # Vérifier que la collection existe
-            collection_exists = await asyncio.create_task(qdrant.ensure_collection())
-            if not collection_exists:
-                return {
-                    "status": "error",
-                    "message": f"La collection {qdrant.collection_name} n'existe pas ou ne peut pas être créée",
-                    "details": {
-                        "url": qdrant.url,
-                        "collection": qdrant.collection_name
-                    }
-                }
-        except Exception as collection_error:
-            logger.error(f"Erreur lors de la vérification de la collection: {collection_error}")
-            return {
-                "status": "error",
-                "message": f"Erreur d'accès à la collection: {str(collection_error)}",
-                "details": {
-                    "url": qdrant.url,
-                    "collection": qdrant.collection_name
                 }
             }
+            
+            add_debug_log(f"Informations de collection récupérées: {collection_info.points_count} points", "info", 
+                          response["connection"]["diagnostics"]["collection_info"])
+                
+        except Exception as collection_error:
+            error_info = {
+                "error_type": type(collection_error).__name__,
+                "error_message": str(collection_error),
+                "traceback": traceback.format_exc()
+            }
+            
+            add_debug_log(f"Erreur lors de la vérification de la collection: {collection_error}", "error", error_info)
+            
+            response["status"] = "error"
+            response["message"] = f"Erreur d'accès à la collection: {str(collection_error)}"
+            response["connection"]["diagnostics"]["collection_error"] = error_info
+            return response
         
-        # Récupération des statistiques
-        stats = await qdrant.get_stats()
+        # Phase 3: Récupération des statistiques
+        add_debug_log("Récupération des statistiques via qdrant.get_stats()")
         
-        # Ajout d'informations sur la connexion
-        connection_info = {
-            "url": qdrant.url,
-            "collection": qdrant.collection_name,
-            "is_connected": qdrant.client is not None,
-            "timestamp": datetime.datetime.now().isoformat()
-        }
-        
-        return {
-            "status": "success",
-            "connection": connection_info,
-            "data": stats
-        }
+        try:
+            # Test de recherche simple pour vérifier la disponibilité réelle
+            add_debug_log("Test de recherche simple pour vérifier la disponibilité complète")
+            
+            # Requête de recherche simple
+            test_query_vector = [0.0] * qdrant.dim  # Vecteur de test (tous zéros)
+            test_search = await qdrant.search_points(test_query_vector, limit=1)
+            
+            add_debug_log(f"Test de recherche réussi - {len(test_search)} résultats retournés", "info", {
+                "results_count": len(test_search),
+                "has_valid_results": bool(test_search)
+            })
+            
+            # Récupération des statistiques complètes
+            stats = await qdrant.get_stats()
+            add_debug_log("Statistiques récupérées avec succès")
+            
+            # Mise à jour de la réponse
+            response["status"] = "success"
+            response["message"] = "Connexion à Qdrant établie et fonctionnelle"
+            response["data"] = stats
+            
+            # Infos de connexion détaillées
+            response["connection"].update({
+                "is_connected": True,
+                "url": qdrant.url,
+                "collection": qdrant.collection_name,
+                "timestamp": datetime.datetime.now().isoformat()
+            })
+            
+            return response
+            
+        except Exception as stats_error:
+            error_info = {
+                "error_type": type(stats_error).__name__,
+                "error_message": str(stats_error),
+                "traceback": traceback.format_exc()
+            }
+            
+            add_debug_log(f"Erreur lors de la récupération des statistiques: {stats_error}", "error", error_info)
+            
+            response["status"] = "error"
+            response["message"] = f"Erreur lors de la récupération des statistiques: {str(stats_error)}"
+            response["connection"]["diagnostics"]["stats_error"] = error_info
+            return response
+            
     except Exception as e:
-        logger.error(f"Erreur lors de la récupération des statistiques Qdrant: {e}")
+        # Erreur générale non gérée
+        logger.error(f"Erreur générale lors de la récupération des statistiques Qdrant: {e}")
         return {
             "status": "error",
-            "message": str(e),
+            "message": f"Erreur générale: {str(e)}",
+            "error_type": type(e).__name__,
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "details": {
+                "traceback": traceback.format_exc(),
                 "url": getattr(qdrant, "url", "Non disponible"),
                 "collection": getattr(qdrant, "collection_name", "Non disponible")
             }

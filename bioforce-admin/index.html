@@ -257,6 +257,38 @@
                     </div>
                 </div>
 
+                <!-- Qdrant Stats Section -->
+                <div class="card mb-4" id="qdrant-section">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-hdd-network"></i> Qdrant - Diagnostic de connexion</span>
+                        <button class="btn btn-sm btn-primary" id="refreshQdrantBtn">
+                            <i class="bi bi-arrow-repeat"></i> Actualiser
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i> Cette section affiche les informations détaillées de la connexion à Qdrant et permet de diagnostiquer les problèmes potentiels.
+                                </div>
+                                
+                                <!-- Détails de connexion Qdrant - Sera rempli par le JavaScript -->
+                                <div id="qdrantConnectionDetails"></div>
+                                
+                                <!-- Statistiques Qdrant - Sera rempli par le JavaScript -->
+                                <div id="qdrantStats">
+                                    <div class="text-center p-4">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Chargement...</span>
+                                        </div>
+                                        <p class="mt-2">Chargement des statistiques Qdrant...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Scraping Section -->
                 <div class="card mb-4" id="scraping">
                     <div class="card-header">
