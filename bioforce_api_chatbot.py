@@ -2,7 +2,6 @@
 import os
 import sys
 import json
-import asyncio
 import logging
 from datetime import datetime
 from typing import List, Dict, Any
@@ -18,7 +17,7 @@ if parent_dir not in sys.path:
 # Ces imports proviennent de bibliothèques externes installées via pip
 import uvicorn  # noqa: E402
 from dotenv import load_dotenv  # noqa: E402
-from fastapi import FastAPI, HTTPException, Query, Body, Request, RedirectResponse, JSONResponse  # noqa: E402
+from fastapi import FastAPI, HTTPException, Query, Body, Request, JSONResponse  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
@@ -61,7 +60,7 @@ if not QDRANT_URL or not QDRANT_API_KEY:
 
 # Fonction pour initialiser le client Qdrant avec retry
 async def initialize_qdrant_client():
-    """Initialise le client Qdrant avec plusieurs tentatives en cas d'échec"""
+    """Initialise le client Qdrant"""
     global qdrant_connector
     
     logger.info(f"Initialisation du client Qdrant: {QDRANT_URL}")
@@ -71,56 +70,40 @@ async def initialize_qdrant_client():
         logger.error("URL Qdrant non définie. Vérifiez la variable d'environnement QDRANT_URL.")
         return False
     
-    try:
-        # Utiliser directement la nouvelle implémentation robuste de QdrantConnector
-        qdrant_connector = QdrantConnector(
-            url=QDRANT_URL, 
-            api_key=QDRANT_API_KEY, 
-            collection_name=COLLECTION_NAME
-        )
-        
-        # Si la connexion est établie, qdrant_connector.client existe
-        if qdrant_connector.client:
-            logger.info("✅ Connexion à Qdrant établie avec succès")
-            return True
-        else:
-            logger.error("Impossible d'initialiser la connexion à Qdrant")
-            return False
-            
-    except Exception as e:
-        logger.error(f"Erreur lors de l'initialisation du client Qdrant: {str(e)}")
+    # Utiliser directement la nouvelle implémentation simplifiée de QdrantConnector
+    qdrant_connector = QdrantConnector(
+        url=QDRANT_URL, 
+        api_key=QDRANT_API_KEY, 
+        collection_name=COLLECTION_NAME
+    )
+    
+    # Si l'initialisation du client a réussi
+    if qdrant_connector.client:
+        logger.info("✅ Connexion à Qdrant établie avec succès")
+        return True
+    else:
+        logger.error("❌ Échec de la connexion à Qdrant")
         return False
 
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
     """Initialise la collection Qdrant si elle n'existe pas encore"""
     try:
-        # Vérifier si le client Qdrant est initialisé
-        if not qdrant_connector:
+        if not qdrant_connector or not qdrant_connector.client:
             logger.error("Client Qdrant non initialisé, impossible de créer la collection")
-            return
+            return False
             
-        # Vérifier si la collection existe déjà
-        collections = qdrant_connector.client.get_collections()
-        collection_names = [collection.name for collection in collections.collections]
-        
-        if COLLECTION_NAME not in collection_names:
-            logger.info(f"Création de la collection {COLLECTION_NAME}...")
-            
-            # Créer la collection avec la dimension d'embedding d'OpenAI (1536 pour ada-002)
-            qdrant_connector.client.create_collection(
-                collection_name=COLLECTION_NAME,
-                vectors_config={
-                    "size": 1536,
-                    "distance": "Cosine"
-                }
-            )
-            logger.info(f"Collection {COLLECTION_NAME} créée avec succès")
+        # S'assurer que la collection existe, sinon la créer
+        success = qdrant_connector.ensure_collection()
+        if success:
+            logger.info(f"Collection {COLLECTION_NAME} vérifiée/créée avec succès")
+            return True
         else:
-            logger.info(f"Collection {COLLECTION_NAME} existe déjà")
-            
+            logger.error(f"Échec de la création/vérification de la collection {COLLECTION_NAME}")
+            return False
     except Exception as e:
-        logger.error(f"Erreur lors de l'initialisation de la collection: {e}")
+        logger.error(f"Erreur lors de l'initialisation de la collection Qdrant: {str(e)}")
+        return False
 
 # Initialisation de l'application FastAPI
 app = FastAPI(
@@ -405,8 +388,12 @@ async def get_llm_response(messages, context=""):
 async def redirect_to_admin(request: Request):
     """Redirige la racine vers l'interface d'administration"""
     
-    # Utilisation de RedirectResponse pour rediriger vers admin dans le même onglet
-    return RedirectResponse(url="/admin/index.html")
+    # Utilisation de JSONResponse avec en-tête Location pour rediriger
+    return JSONResponse(
+        content={"message": "Redirection vers l'interface admin"},
+        headers={"Location": "/admin/index.html"},
+        status_code=302
+    )
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
@@ -555,7 +542,7 @@ async def system_info():
 @app.get("/admin/status")
 async def status():
     """
-    Vérifie l'état des différents services
+    Vérifie l'état du serveur et des services connectés
     """
     server_status = "running"
     server_message = "Serveur en cours d'exécution"
@@ -569,40 +556,45 @@ async def status():
             qdrant_status = "not_initialized"
             qdrant_message = "Client non initialisé. Vérifiez les variables d'environnement."
             
-            # Tentative de réinitialisation automatique
-            logger.info("Tentative de réinitialisation du client Qdrant...")
+            # Tentative de réinitialisation
+            logger.info("Tentative d'initialisation du client Qdrant...")
             success = await initialize_qdrant_client()
             
             if success:
                 qdrant_status = "connected"
-                qdrant_message = "Connexion rétablie avec succès"
+                qdrant_message = "Connexion établie avec succès"
             else:
                 qdrant_status = "failed"
-                qdrant_message = "Échec de la réinitialisation. Vérifiez la configuration."
+                qdrant_message = "Échec de l'initialisation. Vérifiez la configuration."
         else:
-            # Tester la connexion avec un timeout
+            # Vérifier si le client est disponible
+            if not qdrant_connector.client:
+                qdrant_status = "disconnected"
+                qdrant_message = "Client initialisé mais non connecté"
+                return JSONResponse(content={
+                    "server_status": server_status,
+                    "server_message": server_message,
+                    "qdrant_status": qdrant_status,
+                    "qdrant_message": qdrant_message,
+                    "scraping_status": "unknown",
+                    "scraping_message": "État inconnu"
+                })
+            
+            # Tester la connexion
             try:
-                # Définir un timeout court pour éviter de bloquer l'interface
-                async def test_qdrant():
-                    if not qdrant_connector.client:
-                        await initialize_qdrant_client()
-                        if not qdrant_connector.client:
-                            return False
-                    return qdrant_connector._test_connection()
+                collections = qdrant_connector.client.get_collections()
                 
-                result = await asyncio.wait_for(test_qdrant(), timeout=3.0)
-                if result:
+                # Vérifier si la collection existe
+                collection_names = [c.name for c in collections.collections]
+                if COLLECTION_NAME in collection_names:
                     qdrant_status = "connected"
-                    qdrant_message = "Connexion établie"
+                    qdrant_message = f"Connexion établie, collection {COLLECTION_NAME} disponible"
                 else:
-                    qdrant_status = "disconnected"
-                    qdrant_message = "Test de connexion échoué"
-            except asyncio.TimeoutError:
-                qdrant_status = "timeout"
-                qdrant_message = "Délai de connexion dépassé (3s)"
+                    qdrant_status = "warning"
+                    qdrant_message = f"Connexion établie, mais collection {COLLECTION_NAME} non trouvée"
             except Exception as e:
                 qdrant_status = "error"
-                qdrant_message = f"Erreur: {str(e)}"
+                qdrant_message = f"Erreur lors du test: {str(e)}"
     except Exception as e:
         logger.error(f"Erreur lors de la vérification du statut: {str(e)}")
         qdrant_status = "error"
@@ -691,7 +683,6 @@ async def git_update():
             "success": process.returncode == 0,
             "output": output
         }
-    
     except Exception as e:
         logger.error(f"Erreur lors de la mise à jour Git: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
