@@ -165,7 +165,7 @@ def generate_duplicate_report(exact_duplicates, title_duplicates, documents):
             
             report.append(f"\n{i+1}. Titre: {title}")
             report.append(f"   Nombre d'instances: {len(ids)}")
-            report.append(f"   Exemples d'URLs:")
+            report.append("   Exemples d'URLs:")
             for j, url in enumerate(urls):
                 report.append(f"     {j+1}. {url}")
     else:

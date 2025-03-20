@@ -5,11 +5,9 @@ Ce script permet de lancer l'application FastAPI avec l'interface d'administrati
 import os
 import sys
 import argparse
-import asyncio
 import subprocess
 import webbrowser
 import time
-from pathlib import Path
 import requests
 
 # Ajouter le répertoire courant au path pour les imports
@@ -155,8 +153,8 @@ def main():
             try:
                 api_process.terminate()
                 print("API arrêtée.")
-            except:
-                pass
+            except Exception as e:
+                print(f"Erreur lors de l'arrêt de l'API: {e}")
 
 if __name__ == "__main__":
     main()

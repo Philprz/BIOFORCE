@@ -1,0 +1,90 @@
+2025-03-20 14:36:40,355 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 14:36:40,487 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 14:36:40,955 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 14:36:42,465 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 14:36:42,523 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 14:36:42,952 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 14:36:43,603 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-20 14:36:43,615 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-20 14:36:43,671 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-20 14:36:43,682 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-20 14:36:43,682 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 14:36:43,754 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-20 14:36:43,754 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-20 14:36:43,768 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 14:36:43,768 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-20 14:36:43,770 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-20 14:36:43,772 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-20 14:36:43,774 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-20 14:36:43,841 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-20 14:36:43,843 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-20 14:36:43,843 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-20 14:36:43,845 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-20 14:36:43,849 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-20 14:36:43,849 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-20 14:36:44,028 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-20 14:36:44,039 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-20 14:36:44,105 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 14:36:44,161 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-20 14:36:44,161 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-20 14:36:44,161 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-20 14:36:44,173 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-20 14:36:44,176 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-20 14:36:44,176 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-20 14:41:43,779 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:41:43,779 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:41:43,779 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:41:43,864 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:41:43,864 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:41:43,864 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:41:44,185 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:41:44,185 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:41:44,187 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:46:43,781 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:46:43,783 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:46:43,783 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:46:43,855 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:46:43,855 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:46:43,860 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:46:44,185 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:46:44,185 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:46:44,187 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:51:43,783 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:51:43,784 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:51:43,784 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:51:43,859 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:51:43,860 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:51:43,861 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:51:44,184 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:51:44,184 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:51:44,186 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:56:43,785 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:56:43,785 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:56:43,785 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:56:43,861 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:56:43,861 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:56:43,861 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 14:56:44,188 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 14:56:44,188 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 14:56:44,190 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 15:01:43,773 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 15:01:43,773 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 15:01:43,773 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 15:01:43,859 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 15:01:43,860 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 15:01:43,860 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 15:01:44,187 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-20 15:01:44,187 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-20 15:01:44,187 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-20 15:04:58,517 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-20 15:04:58,518 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-20 15:04:58,519 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-20 15:04:58,519 - bioforce_scraper.api.app - INFO - Planificateur arrêté
+2025-03-20 15:05:00,356 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-20 15:05:00,356 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-20 15:05:00,356 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-20 15:05:00,356 - bioforce_scraper.api.app - INFO - Planificateur arrêté
+2025-03-20 15:05:03,373 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-20 15:05:03,373 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-20 15:05:03,374 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-20 15:05:03,374 - bioforce_scraper.api.app - INFO - Planificateur arrêté

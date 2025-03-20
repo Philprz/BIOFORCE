@@ -1,9 +1,9 @@
 === RAPPORT DE DÉTECTION DE DOUBLONS ===
 
-Nombre total de documents: 2394
+Nombre total de documents: 2396
 
 === DOUBLONS EXACTS (MÊME URL): 417 URLS ===
-Nombre total de documents en doublon exact: 1614
+Nombre total de documents en doublon exact: 1616
 
 Échantillon de 10 doublons exacts:
 
@@ -48,7 +48,7 @@ Nombre total de documents en doublon exact: 1614
    IDs: 0150887d-042d-46a6-ad90-7b9ea3eef0e0, 98c0836c-d698-4a67-9ec9-404bc76ed079, 9b9f212b-a24f-4696-bc83-a6873f5fb984, bff3bc6f-e3dd-458b-86b2-2b52fe9dbe47
 
 === DOUBLONS POTENTIELS (MÊME TITRE): 267 TITRES ===
-Nombre total de documents avec titre identique: 1954
+Nombre total de documents avec titre identique: 1956
 
 Échantillon de 10 titres dupliqués:
 
