@@ -31,6 +31,8 @@ from bioforce_scraper.config import (
     PRIORITY_PATTERNS, PDF_DIR,  # PDF_DIR est utilisé dans la fonction download_file
     # API_HOST, COLLECTION_NAME, MAX_RETRIES, MAX_TIMEOUT, OUTPUT_DIR, 
     # RETRY_DELAY, QDRANT_URL, QDRANT_API_KEY, 
+    CONCURRENT_REQUESTS,  # Nombre maximal de requêtes concurrentes
+    PROCESSED_URLS_FILE  # Fichier pour stocker les URLs précédemment traitées
 )
 from bioforce_scraper.extractors.html_extractor import extract_metadata, clean_text
 from bioforce_scraper.extractors.pdf_extractor import extract_text_from_pdf
@@ -208,13 +210,21 @@ class BioforceScraperMain:
                         try:
                             # Convertir lastmod en datetime
                             if 'T' in lastmod:
-                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%dT%H:%M:%S')
+                                # Gérer les cas avec timezone +00:00
+                                if '+' in lastmod:
+                                    lastmod_dt = datetime.strptime(lastmod.split('+')[0], '%Y-%m-%dT%H:%M:%S')
+                                else:
+                                    lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%dT%H:%M:%S')
                             else:
                                 lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%d')
                             
                             # Convertir stored_timestamp en datetime
                             if 'T' in stored_timestamp:
-                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%dT%H:%M:%S.%f')
+                                # Gérer les cas avec timezone +00:00
+                                if '+' in stored_timestamp:
+                                    stored_dt = datetime.strptime(stored_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S')
+                                else:
+                                    stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%dT%H:%M:%S.%f')
                             else:
                                 stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%d')
                             
@@ -231,97 +241,189 @@ class BioforceScraperMain:
                 
                 logger.info(f"{faq_added} URLs FAQ ajoutées à la file d'attente pour traitement")
             
+            # Initialiser la file d'attente avec les URLs de départ
+            if not self.queue:
+                self.queue = [
+                    {"url": BASE_URL, "priority": 100, "depth": 0}
+                ]
+                
+                # Charger les URLs FAQ en priorité (si applicable)
+                await self.explore_faq_pages()
+            
+            # Charger les documents précédemment traités (pour le mode incrémental)
+            processed_doc_timestamps = {}
+            if self.incremental and os.path.exists(PROCESSED_URLS_FILE):
+                try:
+                    with open(PROCESSED_URLS_FILE, 'r') as f:
+                        processed_doc_timestamps = json.load(f)
+                    logger.info(f"Chargement de {len(processed_doc_timestamps)} URLs précédemment traitées")
+                except Exception as e:
+                    logger.error(f"Erreur lors du chargement des URLs précédemment traitées: {e}")
+            
+            # Stocker les URLs déjà visitées avant cette exécution 
+            # pour ne pas les compter dans la limite MAX_PAGES
+            previously_visited_urls = set()
+            if self.incremental:
+                previously_visited_urls = set(processed_doc_timestamps.keys())
+                logger.info(f"{len(previously_visited_urls)} URLs précédemment visitées ne seront pas comptées dans la limite MAX_PAGES")
+            
             # Traiter la file d'attente jusqu'à ce qu'elle soit vide ou qu'on atteigne la limite
-            while self.queue and len(self.visited_urls) < MAX_PAGES:
+            while self.queue and processed_count < MAX_PAGES:
                 # Trier la file d'attente par priorité
                 self.queue.sort(key=lambda x: x.get('priority', 0), reverse=True)
                 
-                # Récupérer l'URL avec la priorité la plus élevée
-                url_info = self.queue.pop(0)
-                url = url_info.get("url")
-                depth = url_info.get("depth", 0)
-                _is_faq = url_info.get("is_faq", False)  # Préfixé avec _ car non utilisé
-                lastmod = url_info.get("lastmod", None)
+                # Déterminer combien d'URLs traiter en parallèle
+                # Limiter le nombre en fonction des URLs restantes et de la limite MAX_PAGES
+                batch_size = min(
+                    CONCURRENT_REQUESTS,  # Nombre maximal de requêtes concurrentes
+                    len(self.queue),      # Nombre d'URLs dans la file d'attente
+                    MAX_PAGES - processed_count  # Nombre de pages restantes avant d'atteindre la limite
+                )
                 
-                # Vérifier si l'URL doit être scrapée (mode incrémental)
-                if self.incremental and url in processed_doc_timestamps and lastmod:
-                    stored_timestamp = processed_doc_timestamps[url]
-                    
-                    # Comparer les dates
-                    try:
-                        # Convertir lastmod en datetime
-                        if lastmod:
-                            if 'T' in lastmod:
-                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%dT%H:%M:%S')
-                            else:
-                                lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%d')
-                            
-                            # Convertir stored_timestamp en datetime
-                            if 'T' in stored_timestamp:
-                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%dT%H:%M:%S.%f')
-                            else:
-                                stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%d')
-                            
-                            # Si la date stockée est plus récente, pas besoin de mettre à jour
-                            if stored_dt >= lastmod_dt:
-                                logger.info(f"URL déjà à jour, ignorée: {url}")
-                                self.skipped_count += 1
-                                continue
-                            else:
-                                logger.info(f"URL modifiée, re-scraping: {url}")
-                    except Exception as e:
-                        logger.warning(f"Erreur lors de la comparaison des dates pour {url}: {e}")
+                if batch_size <= 0:
+                    break
                 
-                # Vérifier si l'URL est déjà dans les URLs visitées
-                if url in self.visited_urls:
-                    continue
+                # Extraire un lot d'URLs à traiter en parallèle
+                batch_urls = []
+                batch_info = []
                 
-                # Vérifier le robots.txt
-                if not self.robots_parser.is_allowed(url):
-                    logger.info(f"URL {url} non autorisée par robots.txt, ignorée")
-                    continue
-                
-                # Incrémenter le compteur de pages traitées
-                processed_count += 1
-                logger.info(f"Traitement de l'URL {processed_count}/{MAX_PAGES}: {url}")
-                
-                # Traiter l'URL en fonction de son type
-                if url.endswith('.pdf'):
-                    # Traiter un fichier PDF
-                    data = await self.process_pdf(url)
-                    
-                    if data:
-                        self.pdf_count += 1
-                        # Sauvegarder le document PDF
-                        data_to_index = self.save_data(data)
-                        if data_to_index:
-                            self.doc_batch.append(data_to_index)
-                            batch_count += 1
-                else:
-                    # Traiter une page HTML
-                    data, new_urls = await self.process_html(url, depth)
-                    
-                    if data:
-                        self.html_count += 1
-                        # Sauvegarder le document HTML (incluant le filtrage par pertinence)
-                        data_to_index = self.save_data(data)
-                        if data_to_index:
-                            self.doc_batch.append(data_to_index)
-                            batch_count += 1
+                for _ in range(batch_size):
+                    if not self.queue:
+                        break
                         
-                        # Ajouter les nouvelles URLs à la file d'attente
-                        for new_url_info in new_urls:
-                            if new_url_info.get("url") not in self.visited_urls:
-                                self.queue.append(new_url_info)
+                    url_info = self.queue.pop(0)
+                    url = url_info.get("url")
+                    
+                    # Vérifier si l'URL est déjà dans les URLs visitées
+                    if url in self.visited_urls:
+                        continue
+                        
+                    # Vérifier le robots.txt
+                    if not self.robots_parser.is_allowed(url):
+                        logger.info(f"URL {url} non autorisée par robots.txt, ignorée")
+                        continue
+                        
+                    # Vérification du mode incrémental
+                    if self.incremental and url in processed_doc_timestamps:
+                        lastmod = url_info.get("lastmod", None)
+                        if lastmod:
+                            stored_timestamp = processed_doc_timestamps[url]
+                            
+                            # Comparer les dates
+                            try:
+                                # Convertir lastmod en datetime
+                                if 'T' in lastmod:
+                                    # Gérer les cas avec timezone +00:00
+                                    if '+' in lastmod:
+                                        lastmod_dt = datetime.strptime(lastmod.split('+')[0], '%Y-%m-%dT%H:%M:%S')
+                                    else:
+                                        lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%dT%H:%M:%S')
+                                else:
+                                    lastmod_dt = datetime.strptime(lastmod, '%Y-%m-%d')
+                                
+                                # Convertir stored_timestamp en datetime
+                                if 'T' in stored_timestamp:
+                                    # Gérer les cas avec timezone +00:00
+                                    if '+' in stored_timestamp:
+                                        stored_dt = datetime.strptime(stored_timestamp.split('+')[0], '%Y-%m-%dT%H:%M:%S')
+                                    else:
+                                        stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%dT%H:%M:%S.%f')
+                                else:
+                                    stored_dt = datetime.strptime(stored_timestamp, '%Y-%m-%d')
+                                
+                                # Si la date stockée est plus récente, pas besoin de mettre à jour
+                                if stored_dt >= lastmod_dt:
+                                    logger.info(f"URL déjà à jour, ignorée: {url}")
+                                    self.skipped_count += 1
+                                    continue
+                                else:
+                                    logger.info(f"URL modifiée, re-scraping: {url}")
+                            except Exception as e:
+                                logger.warning(f"Erreur lors de la comparaison des dates pour {url}: {e}")
+                    
+                    # Ajouter l'URL au lot à traiter
+                    batch_urls.append(url)
+                    batch_info.append(url_info)
                 
-                # Indexer les documents par lots dans Qdrant (toutes les 20 pages)
+                if not batch_urls:
+                    continue
+                
+                logger.info(f"Traitement parallèle de {len(batch_urls)} URLs")
+                
+                # Marquer les URLs comme visitées avant traitement pour éviter les doublons
+                for url in batch_urls:
+                    self.visited_urls.add(url)
+                    # N'incrémenter le compteur que pour les nouvelles URLs (non visitées précédemment)
+                    if url not in previously_visited_urls:
+                        processed_count += 1
+                    else:
+                        logger.debug(f"URL déjà visitée dans une exécution précédente, non comptée: {url}")
+                
+                # Créer les tâches pour le traitement asynchrone
+                tasks = []
+                for i, url_info in enumerate(batch_info):
+                    url = batch_urls[i]
+                    depth = url_info.get("depth", 0)
+                    
+                    if url.endswith('.pdf'):
+                        tasks.append(self.process_pdf(url))
+                    else:
+                        tasks.append(self.process_html(url, depth))
+                
+                # Exécuter les tâches en parallèle
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                
+                # Traiter les résultats
+                new_batch_count = 0
+                for i, result in enumerate(results):
+                    url = batch_urls[i]
+                    
+                    # Vérifier si une exception s'est produite
+                    if isinstance(result, Exception):
+                        logger.error(f"Erreur lors du traitement de {url}: {result}")
+                        continue
+                    
+                    # Traiter le résultat en fonction du type d'URL
+                    if url.endswith('.pdf'):
+                        data = result
+                        if data:
+                            self.pdf_count += 1
+                            # Sauvegarder le document PDF
+                            data_to_index = self.save_data(data)
+                            if data_to_index:
+                                self.doc_batch.append(data_to_index)
+                                new_batch_count += 1
+                    else:
+                        data, new_urls = result
+                        if data:
+                            self.html_count += 1
+                            # Sauvegarder le document HTML
+                            data_to_index = self.save_data(data)
+                            if data_to_index:
+                                self.doc_batch.append(data_to_index)
+                                new_batch_count += 1
+                            
+                            # Ajouter les nouvelles URLs à la file d'attente
+                            for new_url_info in new_urls:
+                                if new_url_info.get("url") not in self.visited_urls:
+                                    self.queue.append(new_url_info)
+                
+                # Mettre à jour le compteur de batch
+                batch_count += new_batch_count
+                
+                # Afficher des statistiques intermédiaires tous les 100 URLs visitées
+                if len(self.visited_urls) % 100 == 0:
+                    acceptance_rate = (self.html_count + self.pdf_count) / len(self.visited_urls) * 100 if self.visited_urls else 0
+                    logger.info(f"Progression: {len(self.visited_urls)} URLs visitées, {self.html_count + self.pdf_count} indexées ({acceptance_rate:.1f}% d'acceptation)")
+                
+                # Indexer si le lot est suffisamment grand
                 if batch_count >= self.batch_size:
                     logger.info(f"Indexation d'un lot de {batch_count} documents dans Qdrant...")
                     await self.batch_index_to_qdrant()
                     batch_count = 0
                 
-                # Attendre entre chaque requête
-                await asyncio.sleep(REQUEST_DELAY)
+                # Pause courte entre les lots pour éviter de surcharger le serveur
+                await asyncio.sleep(REQUEST_DELAY / 2)
             
             # Indexer les documents restants dans Qdrant
             if self.doc_batch:
@@ -485,6 +587,7 @@ class BioforceScraperMain:
         # Vérifier si le contenu est pertinent pour l'indexation
         if not self.content_classifier.should_index_content(url_data):
             logger.info(f"Contenu non pertinent, ignoré pour l'indexation: {url}")
+            self.skipped_count += 1  # Incrémenter le compteur de pages ignorées
             return None
 
         # Si nous arrivons ici, le contenu est pertinent

@@ -1,19 +1,41 @@
-from fastapi import FastAPI, HTTPException, Query, Body
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Dict, Any
-from datetime import datetime
+# Imports standards
 import os
-import logging
-from openai import AsyncOpenAI
-from qdrant_client import AsyncQdrantClient
-from dotenv import load_dotenv
-import uvicorn
+import sys
 import json
 import asyncio
+import logging
+from datetime import datetime
+from typing import List, Dict, Any
+from pathlib import Path
+
+# Modification du sys.path pour inclure le répertoire parent
+# Ceci permet d'importer des modules internes sans spécifier le chemin complet
+parent_dir = str(Path(__file__).parent)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
+# Imports externes
+# Ces imports proviennent de bibliothèques externes installées via pip
+import uvicorn  # noqa: E402
+from dotenv import load_dotenv  # noqa: E402
+from fastapi import FastAPI, HTTPException, Query, Body  # noqa: E402
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from pydantic import BaseModel  # noqa: E402
+from openai import AsyncOpenAI  # noqa: E402
+
+# Imports internes
+# Ces imports proviennent de modules internes au projet
+from bioforce_scraper.utils.qdrant_connector import QdrantConnector  # noqa: E402
+from bioforce_scraper.utils.embedding_generator import generate_embeddings  # noqa: E402
 
 # Chargement des variables d'environnement
 load_dotenv()
+
+# Configuration de l'API
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("API_PORT", "8000"))
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "BIOFORCE")
+COLLECTION_NAME_ALL = os.getenv("QDRANT_COLLECTION_ALL", "BIOFORCE_ALL")
 
 # Configuration du logging
 logging.basicConfig(
@@ -26,11 +48,10 @@ logger = logging.getLogger(__name__)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 QDRANT_URL = os.getenv('QDRANT_URL')
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
-COLLECTION_NAME = os.getenv('QDRANT_COLLECTION', 'BIOFORCE')
 
 # Initialisation des clients
-openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-qdrant_client = None  # Sera initialisé pendant l'événement de démarrage
+openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)  # Sera initialisé pendant l'événement de démarrage
+qdrant_connector = None  # Sera initialisé pendant l'événement de démarrage
 
 # Journalisation des paramètres de connexion (sans les valeurs sensibles)
 logger.info(f"Configuration Qdrant - URL: {QDRANT_URL} | Collection: {COLLECTION_NAME}")
@@ -40,69 +61,65 @@ if not QDRANT_URL or not QDRANT_API_KEY:
 # Fonction pour initialiser le client Qdrant avec retry
 async def initialize_qdrant_client():
     """Initialise le client Qdrant avec plusieurs tentatives en cas d'échec"""
-    global qdrant_client
+    global qdrant_connector
+    
     max_retries = 3
     retry_count = 0
     
     while retry_count < max_retries:
         try:
             logger.info(f"Tentative de connexion à Qdrant: {QDRANT_URL}")
-            temp_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+            qdrant_connector = QdrantConnector(url=QDRANT_URL, api_key=QDRANT_API_KEY, collection_name=COLLECTION_NAME)
             
-            # Tester la connexion explicitement
-            await temp_client.get_collections()
+            # Tester la connexion explicitement en s'assurant que la collection existe
+            qdrant_connector.ensure_collection()
             
             # Si on arrive ici, la connexion est réussie
-            qdrant_client = temp_client
             logger.info("✅ Connexion à Qdrant établie avec succès")
             return True
         except Exception as e:
             retry_count += 1
-            error_msg = str(e)
-            logger.error(f"❌ Échec de connexion à Qdrant (tentative {retry_count}/{max_retries}): {error_msg}")
+            logger.error(f"Erreur de connexion à Qdrant (tentative {retry_count}/{max_retries}): {e}")
             
-            if retry_count >= max_retries:
-                logger.error("❌ Nombre maximum de tentatives atteint. Impossible de se connecter à Qdrant.")
+            if retry_count < max_retries:
+                # Attendre avant de réessayer (backoff exponentiel)
+                wait_time = 2 ** retry_count
+                logger.info(f"Nouvelle tentative dans {wait_time} secondes...")
+                await asyncio.sleep(wait_time)
+            else:
+                logger.error("Échec de la connexion à Qdrant après plusieurs tentatives")
                 return False
-            
-            # Attendre avant de réessayer
-            await asyncio.sleep(2)
-            
-    return False
 
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
-    """Crée la collection bioforce_faq si elle n'existe pas déjà"""
+    """Initialise la collection Qdrant si elle n'existe pas encore"""
     try:
         # Vérifier si le client Qdrant est initialisé
-        if not qdrant_client:
+        if not qdrant_connector:
             logger.error("Client Qdrant non initialisé, impossible de créer la collection")
             return
             
-        # Vérifier si la collection existe
-        collections = await qdrant_client.get_collections()
+        # Vérifier si la collection existe déjà
+        collections = qdrant_connector.client.get_collections()
         collection_names = [collection.name for collection in collections.collections]
         
         if COLLECTION_NAME not in collection_names:
-            logger.info(f"Création de la collection {COLLECTION_NAME}")
+            logger.info(f"Création de la collection {COLLECTION_NAME}...")
             
             # Créer la collection avec la dimension d'embedding d'OpenAI (1536 pour ada-002)
-            await qdrant_client.create_collection(
+            qdrant_connector.client.create_collection(
                 collection_name=COLLECTION_NAME,
                 vectors_config={
                     "size": 1536,
                     "distance": "Cosine"
                 }
             )
-            
             logger.info(f"Collection {COLLECTION_NAME} créée avec succès")
         else:
             logger.info(f"Collection {COLLECTION_NAME} existe déjà")
             
     except Exception as e:
-        logger.error(f"Erreur lors de l'initialisation de Qdrant: {str(e)}")
-        # Ne pas faire échouer le démarrage de l'application
-        pass
+        logger.error(f"Erreur lors de l'initialisation de la collection: {e}")
 
 # Initialisation de l'application FastAPI
 app = FastAPI(
@@ -159,54 +176,125 @@ class SearchResponse(BaseModel):
 async def generate_embedding(text: str) -> List[float]:
     """Génère un embedding pour le texte donné"""
     try:
-        response = await openai_client.embeddings.create(
-            input=text,
-            model="text-embedding-ada-002"
-        )
-        return response.data[0].embedding
+        return await generate_embeddings([text])
     except Exception as e:
         logger.error(f"Erreur d'embedding: {str(e)}")
         raise
 
 async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
-    """Recherche dans la base de connaissances vectorielle."""
+    """
+    Recherche dans la base de connaissances Qdrant
+    
+    Args:
+        query: La requête utilisateur
+        limit: Nombre maximum de résultats à retourner
+        
+    Returns:
+        Liste des résultats trouvés
+    """
     try:
-        if not OPENAI_API_KEY:
-            logger.error("Recherche impossible: clé API OpenAI manquante")
-            return []
-            
-        if not QDRANT_URL or not QDRANT_API_KEY:
-            logger.error("Recherche impossible: paramètres de connexion Qdrant manquants")
-            return []
-            
-        logger.info(f"Génération d'embedding pour la requête: {query[:50]}...")
+        logger.info(f"Recherche pour '{query}' (limite: {limit})")
+        
+        # Vérification que le client Qdrant est initialisé
+        if not qdrant_connector:
+            logger.error("Client Qdrant non initialisé")
+            raise Exception("Base de connaissances non disponible")
+        
+        # Génération de l'embedding pour la requête
         vector = await generate_embedding(query)
+        if not vector:
+            logger.error("Échec de génération de l'embedding")
+            return []
         
-        logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: {limit})")
-        # Ajout du paramètre score_threshold pour filtrer les résultats très faibles
-        search_result = await qdrant_client.search(
-            collection_name=COLLECTION_NAME,
-            query_vector=vector,
-            limit=20,  # Augmenter la limite pour avoir plus de résultats potentiels
-            score_threshold=0.001  # Filtrer les scores trop faibles
-        )
+        # Résultats combinés des deux collections
+        all_results = []
         
-        # Trier les résultats par score et prendre les meilleurs
-        search_result.sort(key=lambda x: x.score, reverse=True)
-        search_result = search_result[:limit]
+        # Recherche dans la collection principale (BIOFORCE - FAQ)
+        try:
+            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: 20)")
+            original_collection = qdrant_connector.collection_name
+            qdrant_connector.collection_name = COLLECTION_NAME
+            
+            search_results_faq = qdrant_connector.search(
+                query_vector=vector,
+                limit=20,  # Augmenter la limite pour avoir plus de résultats potentiels
+                filter_conditions={}
+            )
+            
+            # Ajouter une source pour identifier la collection
+            for result in search_results_faq:
+                result["collection"] = COLLECTION_NAME
+            
+            all_results.extend(search_results_faq)
+            logger.info(f"Trouvé {len(search_results_faq)} résultats dans {COLLECTION_NAME}")
+        except Exception as e:
+            logger.error(f"Erreur lors de la recherche dans {COLLECTION_NAME}: {str(e)}")
         
-        results = []
-        for scored_point in search_result:
-            results.append({
-                "score": scored_point.score,
-                "question": scored_point.payload.get("title"),  # Utiliser title comme question
-                "answer": scored_point.payload.get("content"),  # Utiliser content comme answer
-                "category": scored_point.payload.get("category"),
-                "url": scored_point.payload.get("url")
+        # Recherche dans la collection secondaire (BIOFORCE_ALL - Site complet)
+        try:
+            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME_ALL}, limit: 20)")
+            qdrant_connector.collection_name = COLLECTION_NAME_ALL
+            
+            search_results_all = qdrant_connector.search(
+                query_vector=vector,
+                limit=20,  # Augmenter la limite pour avoir plus de résultats potentiels
+                filter_conditions={}
+            )
+            
+            # Ajouter une source pour identifier la collection
+            for result in search_results_all:
+                result["collection"] = COLLECTION_NAME_ALL
+            
+            all_results.extend(search_results_all)
+            logger.info(f"Trouvé {len(search_results_all)} résultats dans {COLLECTION_NAME_ALL}")
+        except Exception as e:
+            logger.error(f"Erreur lors de la recherche dans {COLLECTION_NAME_ALL}: {str(e)}")
+        
+        # Restaurer la collection d'origine
+        qdrant_connector.collection_name = original_collection
+        
+        if not all_results:
+            logger.warning("Aucun résultat trouvé dans les deux collections")
+            return []
+        
+        # Dédupliquer les résultats par URL
+        url_seen = set()
+        unique_results = []
+        
+        for result in all_results:
+            payload = result.get("payload", {})
+            url = payload.get("url") or payload.get("source_url")
+            
+            # Si pas d'URL ou URL pas encore vue, ajout aux résultats uniques
+            if not url or url not in url_seen:
+                if url:
+                    url_seen.add(url)
+                unique_results.append(result)
+        
+        # Filtrer et trier les résultats par score
+        filtered_results = [r for r in unique_results if r["score"] > 0.001]  # Filtrer les scores trop faibles
+        sorted_results = sorted(filtered_results, key=lambda x: x["score"], reverse=True)
+        
+        # Limiter au nombre demandé
+        results = sorted_results[:limit]
+        
+        # Transformer les résultats pour l'API
+        formatted_results = []
+        for result in results:
+            payload = result.get("payload", {})
+            collection = result.get("collection", "inconnue")
+            
+            formatted_results.append({
+                "score": result["score"],
+                "question": payload.get("title"),  # Utiliser title comme question
+                "answer": payload.get("content"),  # Utiliser content comme answer
+                "category": payload.get("category"),
+                "url": payload.get("url") or payload.get("source_url"),
+                "collection": collection  # Ajouter la source de la collection
             })
         
-        logger.info(f"Recherche réussie: {len(results)} résultats trouvés")
-        return results
+        logger.info(f"Recherche réussie: {len(results)} résultats trouvés après fusion et déduplication")
+        return formatted_results
     
     except Exception as e:
         error_msg = str(e)
@@ -217,7 +305,7 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         elif "Unauthorized" in error_msg or "forbidden" in error_msg:
             logger.error("Problème d'authentification - vérifier la clé API Qdrant")
         elif "collection not found" in error_msg.lower():
-            logger.error(f"Collection '{COLLECTION_NAME}' introuvable - vérifier que la collection existe")
+            logger.error("Collection introuvable - vérifier que les collections existent")
         return []
 
 async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
@@ -373,7 +461,7 @@ async def debug_api(request: dict = Body(...)):
         qdrant_status = "unknown"
         try:
             # Test simple à Qdrant
-            await qdrant_client.get_collections()
+            qdrant_connector.client.get_collections()
             qdrant_status = "connected"
         except Exception as e:
             qdrant_status = f"error: {str(e)}"
@@ -416,10 +504,10 @@ async def status():
     # Vérifier l'état de Qdrant
     qdrant_status = "unknown"
     try:
-        if not qdrant_client:
+        if not qdrant_connector:
             qdrant_status = "not_initialized"
         else:
-            await qdrant_client.get_collections()
+            qdrant_connector.client.get_collections()
             qdrant_status = "connected"
     except Exception as e:
         logger.error(f"Erreur de connexion à Qdrant: {str(e)}")
@@ -441,12 +529,12 @@ async def qdrant_stats():
     """
     try:
         # Vérifier si le client Qdrant est initialisé
-        if not qdrant_client:
+        if not qdrant_connector:
             logger.error("Impossible de récupérer les statistiques: client Qdrant non initialisé")
             raise HTTPException(status_code=500, detail="Client Qdrant non initialisé")
             
         # Obtenir les collections
-        collections = await qdrant_client.get_collections()
+        collections = qdrant_connector.client.get_collections()
         collection_names = [collection.name for collection in collections.collections]
         
         stats = {}
@@ -454,7 +542,7 @@ async def qdrant_stats():
         # Pour chaque collection, obtenir ses statistiques
         for name in collection_names:
             try:
-                collection_info = await qdrant_client.get_collection(name)
+                collection_info = qdrant_connector.client.get_collection(name)
                 
                 # Obtenir d'autres informations sur la collection
                 collection_stats = {
@@ -568,4 +656,4 @@ async def scrape_full(force_update: bool = Query(False, description="Force la mi
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
 if __name__ == "__main__":
-    uvicorn.run("bioforce_api_chatbot:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("bioforce_api_chatbot:app", host=API_HOST, port=API_PORT, reload=True)

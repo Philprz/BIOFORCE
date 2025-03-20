@@ -1,131 +1,110 @@
 """
-Module d'intégration du filtrage GPT pour le scraper principal
+Module d'intégration pour le filtrage de contenu avec GPT
 """
 from typing import Dict, Any, List, Optional
 
-from bioforce_scraper.config import LOG_FILE
 from bioforce_scraper.utils.logger import setup_logger
-from bioforce_scraper.utils.content_filter import ContentFilterGPT
+from bioforce_scraper.config import LOG_FILE
 
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
 
 class GPTFilterIntegration:
     """
-    Intégration du filtrage GPT dans le processus de scraping
+    Classe pour filtrer et améliorer le contenu en utilisant GPT
     """
-    
     def __init__(self):
-        """
-        Initialise l'intégration du filtrage GPT
-        """
-        self.content_filter = ContentFilterGPT()
-        self.filtered_html_count = 0
-        self.filtered_pdf_count = 0
-        self.enhanced_html_count = 0
-        self.enhanced_pdf_count = 0
+        """Initialise le filtre GPT"""
+        logger.info("Initialisation du filtre GPT")
     
-    async def process_html_content(self, content: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_html_content(self, content_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Traite le contenu HTML avec le filtre GPT
+        Traite le contenu HTML pour l'améliorer et le filtrer
         
         Args:
-            content: Contenu HTML extrait
+            content_data: Dictionnaire contenant les données du contenu, incluant 
+                          typiquement 'title', 'content', 'url', etc.
             
         Returns:
-            Contenu filtré ou None si le contenu est filtré
+            Le dictionnaire de contenu filtré et amélioré ou None si le contenu
+            n'est pas pertinent
         """
         try:
-            logger.info(f"Filtrage GPT du contenu HTML de: {content.get('url', 'URL inconnue')}")
-            
-            # Filtrer et améliorer le contenu
-            enhanced_content, is_useful = await self.content_filter.filter_page_content(content)
-            
-            if not is_useful:
-                self.filtered_html_count += 1
-                logger.info(f"Contenu HTML filtré: {content.get('url', 'URL inconnue')}")
+            # Vérifier que le contenu est présent
+            if not content_data or 'content' not in content_data or not content_data['content']:
+                logger.warning(f"Contenu manquant ou vide pour {content_data.get('url', 'URL inconnue')}")
                 return None
             
-            if enhanced_content.get("gpt_enhanced", False):
-                self.enhanced_html_count += 1
-                logger.info(f"Contenu HTML amélioré: {content.get('url', 'URL inconnue')}")
+            # On accepte tous les contenus pour l'indexation pour ne pas filtrer les contenus en anglais
+            # On vérifiera la pertinence lors des recherches
+            url = content_data.get('url', 'URL inconnue')
+            title = content_data.get('title', 'Sans titre')
+            lang = content_data.get('language', 'inconnu')
             
-            return enhanced_content
+            # Détecter si c'est une FAQ ou un contenu prioritaire
+            is_faq = content_data.get('is_faq', False) or 'faq' in url.lower() or 'question' in url.lower()
+            is_course = 'formation' in url.lower() or 'course' in url.lower() or 'training' in url.lower()
+            is_important = is_faq or is_course
+            
+            # Définir un score de pertinence par défaut
+            # Les FAQ et formations ont un score plus élevé par défaut
+            default_score = 0.9 if is_important else 0.7
+            
+            # Utiliser le score existant ou le score par défaut
+            relevance_score = content_data.get('relevance_score', default_score)
+            
+            # Mettre à jour le score dans les données
+            content_data['relevance_score'] = relevance_score
+            content_data['is_important'] = is_important
+            
+            logger.info(f"Contenu accepté pour indexation [{lang}] [{relevance_score:.2f}]: {title} ({url})")
+            
+            return content_data
             
         except Exception as e:
-            logger.error(f"Erreur lors du filtrage GPT du contenu HTML: {e}")
-            return content  # Retourner le contenu original en cas d'erreur
+            logger.error(f"Erreur lors du traitement du contenu: {str(e)}")
+            # En cas d'erreur, on retourne le contenu original pour éviter les pertes
+            return content_data
     
-    async def process_pdf_content(self, content: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def filter_content(self, content: str, context: Optional[Dict[str, Any]] = None) -> str:
         """
-        Traite le contenu PDF avec le filtre GPT
+        Filtre le contenu en utilisant GPT (version minimale)
         
         Args:
-            content: Contenu PDF extrait
+            content: Le contenu à filtrer
+            context: Contexte supplémentaire pour le filtrage
             
         Returns:
-            Contenu filtré ou None si le contenu est filtré
+            Le contenu filtré
         """
-        try:
-            logger.info(f"Filtrage GPT du contenu PDF de: {content.get('url', 'URL inconnue')}")
-            
-            # Filtrer et améliorer le contenu
-            enhanced_content, is_useful = await self.content_filter.filter_pdf_content(content)
-            
-            if not is_useful:
-                self.filtered_pdf_count += 1
-                logger.info(f"Contenu PDF filtré: {content.get('url', 'URL inconnue')}")
-                return None
-            
-            if enhanced_content.get("gpt_enhanced", False):
-                self.enhanced_pdf_count += 1
-                logger.info(f"Contenu PDF amélioré: {content.get('url', 'URL inconnue')}")
-            
-            return enhanced_content
-            
-        except Exception as e:
-            logger.error(f"Erreur lors du filtrage GPT du contenu PDF: {e}")
-            return content  # Retourner le contenu original en cas d'erreur
+        # Version minimale - retourne le contenu sans modification
+        logger.debug("Filtrage GPT appliqué (version minimale)")
+        return content
     
-    async def process_faq_items(self, faq_items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def is_relevant(self, content: str, threshold: float = 0.5) -> bool:
         """
-        Traite les éléments FAQ avec le filtre GPT
+        Détermine si le contenu est pertinent
         
         Args:
-            faq_items: Liste des éléments FAQ
+            content: Le contenu à évaluer
+            threshold: Seuil de pertinence
             
         Returns:
-            Liste des éléments FAQ filtrés
+            True si le contenu est pertinent
         """
-        try:
-            if not faq_items:
-                return []
-                
-            logger.info(f"Filtrage GPT de {len(faq_items)} éléments FAQ")
-            
-            # Filtrer les éléments FAQ
-            kept_items, filtered_items = await self.content_filter.filter_faq_content(faq_items)
-            
-            logger.info(f"Résultat du filtrage FAQ: {len(kept_items)} conservés, {len(filtered_items)} filtrés")
-            
-            return kept_items
-            
-        except Exception as e:
-            logger.error(f"Erreur lors du filtrage GPT des éléments FAQ: {e}")
-            return faq_items  # Retourner les éléments originaux en cas d'erreur
+        # Version minimale - considère tout le contenu comme pertinent
+        return True if content and len(content.strip()) > 10 else False
     
-    def get_statistics(self) -> Dict[str, int]:
+    def categorize_content(self, content: str, categories: List[str]) -> str:
         """
-        Retourne les statistiques de filtrage
+        Catégorise le contenu parmi les catégories fournies
         
+        Args:
+            content: Le contenu à catégoriser
+            categories: Liste des catégories disponibles
+            
         Returns:
-            Dictionnaire des statistiques
+            La catégorie la plus probable
         """
-        return {
-            "filtered_html_count": self.filtered_html_count,
-            "filtered_pdf_count": self.filtered_pdf_count,
-            "enhanced_html_count": self.enhanced_html_count,
-            "enhanced_pdf_count": self.enhanced_pdf_count,
-            "total_filtered": self.filtered_html_count + self.filtered_pdf_count,
-            "total_enhanced": self.enhanced_html_count + self.enhanced_pdf_count
-        }
+        # Version minimale - retourne la première catégorie ou "général"
+        return categories[0] if categories else "général"

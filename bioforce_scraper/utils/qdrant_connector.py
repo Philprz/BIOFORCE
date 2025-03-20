@@ -250,6 +250,26 @@ class QdrantConnector:
             logger.error(f"Erreur lors de la suppression du document: {e}")
             return False
     
+    def upsert_document_chunks(self, payload: Dict[str, Any], generate_id: bool = False) -> bool:
+        """
+        Insère ou met à jour un document dans Qdrant via des chunks.
+        Force la création du doc_id en utilisant un UUID en hexadécimal.
+
+        Args:
+            payload (Dict[str, Any]): Données à indexer contenant "source_url", "title", "content", etc.
+            generate_id (bool): Ce paramètre est ignoré car le doc_id est toujours généré.
+
+        Returns:
+            bool: True si l'opération a réussi, False sinon.
+        """
+        from uuid import uuid4
+
+        # Forcer la création d'un identifiant en UUID (hexadécimal de 32 caractères)
+        doc_id = uuid4().hex
+
+        vector = payload.get("vector")
+        return self.upsert_document(doc_id, vector, payload)
+    
     def get_document_by_url(self, url: str) -> List[Dict]:
         """
         Récupère les documents associés à une URL

@@ -3,15 +3,13 @@ Module spécialisé pour le scraping de la FAQ Bioforce
 """
 import asyncio
 import json
-import logging
 import os
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 from playwright.async_api import async_playwright, Page
 
-from bioforce_scraper.config import (BASE_URL, DATA_DIR, FAQ_URL, LOG_FILE, REPORTS_DIR, 
-                   REQUEST_DELAY, USER_AGENT)
+from bioforce_scraper.config import (DATA_DIR, FAQ_URLS, LOG_FILE, REPORTS_DIR, USER_AGENT)
 from bioforce_scraper.utils.content_tracker import ContentTracker
 from bioforce_scraper.utils.language_detector import detect_language
 from bioforce_scraper.utils.logger import setup_logger
@@ -141,7 +139,7 @@ class FAQScraper:
                         "question": item["question"],
                         "answer": item["answer"],
                         "answer_html": item["answer_html"],
-                        "url": FAQ_URL + "#" + self._generate_anchor(item["question"]),
+                        "url": FAQ_URLS[0] + "#" + self._generate_anchor(item["question"]),
                         "language": detect_language(item["answer"]),
                         "date_extraction": datetime.now().strftime("%Y-%m-%d")
                     })
@@ -315,7 +313,7 @@ class FAQScraper:
         Returns:
             Résultats du scraping
         """
-        logger.info(f"Démarrage du scraping de la FAQ: {FAQ_URL}")
+        logger.info(f"Démarrage du scraping de la FAQ: {FAQ_URLS[0]}")
         
         try:
             # Initialiser le scraper
@@ -323,7 +321,7 @@ class FAQScraper:
                 return {"error": "Échec de l'initialisation"}
             
             # Visiter la page de FAQ
-            await self.page.goto(FAQ_URL, wait_until="networkidle")
+            await self.page.goto(FAQ_URLS[0], wait_until="networkidle")
             logger.info("Page de FAQ chargée")
             
             # Attendre que le contenu soit chargé

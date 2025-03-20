@@ -1,0 +1,83 @@
+2025-03-20 11:19:17,389 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 11:19:17,401 - upsert_data - INFO - Nombre de fichiers JSON trouvés: 2335
+2025-03-20 11:19:17,402 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/question/comment-financer-ma-formation-2/: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:18,256 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:18,324 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=4b77e4edba974f349f5ba6765d90f513
+2025-03-20 11:19:18,324 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/question/comment-financer-ma-formation-2/
+2025-03-20 11:19:18,325 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:18,968 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:19,011 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=eff8d9d13fde47039a2e5b620c4133a5
+2025-03-20 11:19:19,011 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/learn
+2025-03-20 11:19:19,011 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:19,684 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:19,712 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=f5115819d8ff4da09159afd2502b18f7
+2025-03-20 11:19:19,712 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/learn
+2025-03-20 11:19:19,712 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:20,351 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:20,379 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=db81909984b547b98d3e80f4b519e586
+2025-03-20 11:19:20,379 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/learn
+2025-03-20 11:19:20,384 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:20,676 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:20,713 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=fdc54d273a0c458f96d54c5c6319d514
+2025-03-20 11:19:20,713 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/learn
+2025-03-20 11:19:20,714 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/question/y-a-t-il-une-difference-entre-une-certification-professionnelle-obtenue-par-la-formation-et-celle-obtenue-par-la-vae/: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:21,037 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:21,073 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=50493bbc29184ca091ac3b9d8eae0bd1
+2025-03-20 11:19:21,073 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/question/y-a-t-il-une-difference-entre-une-certification-professionnelle-obtenue-par-la-formation-et-celle-obtenue-par-la-vae/
+2025-03-20 11:19:21,074 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/formation/responsable-ressources-humaines-et-finances-profil-experimente/#competence-3: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:21,740 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:21,766 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=366f9ba356eb4718a82608455debb59f
+2025-03-20 11:19:21,766 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/formation/responsable-ressources-humaines-et-finances-profil-experimente/#competence-3
+2025-03-20 11:19:21,771 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:22,097 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:22,123 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=124270d7f6eb465cbb511954d54e00c1
+2025-03-20 11:19:22,123 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284
+2025-03-20 11:19:22,123 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:22,624 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:22,650 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=5ee2939b95da4e9c98c33db4fdd838d1
+2025-03-20 11:19:22,650 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284
+2025-03-20 11:19:22,653 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:23,087 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:23,114 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=c17e9d82e6644984b374ec78dd5c30bf
+2025-03-20 11:19:23,115 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:19:23,116 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:23,411 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:23,438 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=cf892844b7404f098c68b82ca6d2d7c3
+2025-03-20 11:19:23,438 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:19:23,441 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:24,206 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:24,236 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=364c4698598f48879bc046e2e9515167
+2025-03-20 11:19:24,237 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:19:24,238 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:24,574 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:24,602 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=d6789290974c4b42957bf589fe0c2322
+2025-03-20 11:19:24,603 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:19:24,603 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:25,351 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:25,380 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=c5c0f6e1e2394ab5a0510f79e748ee9a
+2025-03-20 11:19:25,381 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:19:25,383 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:26,056 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:26,083 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=c32f5b20dc82414cad6a962113ad02c4
+2025-03-20 11:19:26,083 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:19:26,085 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:26,561 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:26,596 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=dd9780d410eb4821b16d7ec1ce07cdc3
+2025-03-20 11:19:26,596 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:19:26,600 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:26,946 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:26,974 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=33380daccc4c42b885749055dee90ea9
+2025-03-20 11:19:26,975 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:19:26,977 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:27,717 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:27,744 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=b915879ab8b24ace881edcec689b5b28
+2025-03-20 11:19:27,745 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:19:27,745 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:28,519 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:28,547 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=e5a3b7a88a104eb7af45bb6f7ae5ab12
+2025-03-20 11:19:28,547 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:19:28,550 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: 'QdrantConnector' object has no attribute 'construct_metadata_filter'
+2025-03-20 11:19:28,914 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 11:19:28,942 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=b365174a6bb54c21bc99a615894a8e9d
+2025-03-20 11:19:28,943 - upsert_data - INFO - Document upserté avec succès: https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance
+2025-03-20 11:19:28,945 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: 'QdrantConnector' object has no attribute 'construct_metadata_filter'

@@ -1,0 +1,78 @@
+2025-03-20 10:23:55,785 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: c:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
+2025-03-20 10:23:55,785 - bioforce_scraper.integration.gpt_filter_integration - INFO - Initialisation du filtre GPT
+2025-03-20 10:23:56,440 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 10:23:56,440 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-20 10:23:57,086 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-20 10:23:57,174 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 10:23:57,241 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=3bba5bb5ceb246d584f412ed265a0ad2
+2025-03-20 10:23:57,264 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 10:23:57,312 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=21c6a2bc57374616b5f522244b4ab1c4
+2025-03-20 10:23:57,313 - __main__ - INFO - Test de connexion à Qdrant et d'upsert de documents réussi
+2025-03-20 10:23:57,313 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-20 10:23:57,353 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-20 10:23:57,915 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-20 10:23:57,915 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-20 10:23:57,923 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-20 10:23:58,590 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-20 10:23:58,593 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-20 10:23:58,848 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-20 10:23:58,855 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-20 10:23:59,133 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-20 10:23:59,143 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-20 10:23:59,423 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-20 10:23:59,428 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-20 10:23:59,932 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-20 10:23:59,950 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-20 10:24:00,610 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-20 10:24:00,651 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-20 10:24:00,886 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-20 10:24:00,890 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-20 10:24:02,861 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-20 10:24:02,965 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-20 10:24:03,451 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-20 10:24:03,478 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-20 10:24:03,811 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-20 10:24:03,818 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-20 10:24:03,826 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-20 10:24:03,826 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-20 10:24:03,827 - __main__ - INFO - Mode incrémental: True
+2025-03-20 10:24:03,828 - __main__ - INFO - Démarrage du scraping...
+2025-03-20 10:24:03,829 - __main__ - INFO - Récupération des URLs FAQ depuis le sitemap...
+2025-03-20 10:24:03,830 - bioforce_scraper.utils.sitemap_parser - INFO - Parsing du sitemap FAQ: https://www.bioforce.org/question-sitemap.xml
+2025-03-20 10:24:04,461 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-20 10:24:04,483 - bioforce_scraper.utils.sitemap_parser - INFO - 232 URLs FAQ trouvées dans le sitemap
+2025-03-20 10:24:04,485 - __main__ - INFO - 232 URLs FAQ trouvées dans le sitemap.
+2025-03-20 10:24:04,961 - __main__ - INFO - 16 URLs FAQ ajoutées à la file d'attente pour traitement
+2025-03-20 10:24:04,961 - __main__ - INFO - Traitement de l'URL 1/500: https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:24:04,961 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:24:07,435 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:24:07,452 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:24:08,961 - __main__ - INFO - Traitement de l'URL 2/500: https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:24:08,961 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:24:10,448 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:24:10,463 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:24:11,974 - __main__ - INFO - Traitement de l'URL 3/500: https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:24:11,974 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:24:13,390 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:24:13,405 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:24:14,917 - __main__ - INFO - Traitement de l'URL 4/500: https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:24:14,918 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:24:16,250 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:24:16,266 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:24:17,769 - __main__ - INFO - Traitement de l'URL 5/500: https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:24:17,772 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:24:19,188 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:24:19,202 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:24:20,713 - __main__ - INFO - Traitement de l'URL 6/500: https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:24:20,714 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:24:22,109 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:24:22,125 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:24:23,638 - __main__ - INFO - Traitement de l'URL 7/500: https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:24:23,640 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:24:25,036 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:24:25,049 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:24:26,553 - __main__ - INFO - Traitement de l'URL 8/500: https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:24:26,555 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:24:27,950 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:24:27,968 - __main__ - INFO - Contenu non pertinent, ignoré pour l'indexation: https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:24:28,950 - __main__ - ERROR - Erreur lors de la fermeture des ressources: BrowserContext.close: Target page, context or browser has been closed

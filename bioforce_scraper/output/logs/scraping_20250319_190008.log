@@ -1,2 +1,0 @@
-2025-03-19 19:00:11,860 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
-2025-03-19 19:00:12,617 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' créée avec succès

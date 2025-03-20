@@ -1,9 +1,8 @@
 """
 Module pour classifier et filtrer le contenu extrait selon sa pertinence
 """
-import logging
 import re
-from typing import Dict, Any, List, Tuple, Set, Optional
+from typing import Dict, Any, Tuple, Set
 
 # Import absolus pour éviter les problèmes lorsque le module est importé depuis l'API
 import sys
@@ -66,7 +65,7 @@ class ContentClassifier:
         # Seuils de pertinence
         self.min_content_length = 100  # Longueur minimale du contenu (caractères)
         self.min_keyword_occurrences = 1  # Nombre minimal de mots-clés présents
-        self.min_relevance_score = 0.3  # Score minimal de pertinence (0 à 1)
+        self.min_relevance_score = 0.2  # Score minimal de pertinence (0 à 1)
     
     def classify_content(self, content: Dict[str, Any]) -> Tuple[bool, float, str]:
         """

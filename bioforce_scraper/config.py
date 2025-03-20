@@ -61,7 +61,7 @@ REPORTS_DIR = os.path.join(OUTPUT_DIR, "reports")
 
 # Configuration technique
 REQUEST_DELAY = 1.5  # Delay between requests in seconds
-MAX_PAGES = 500      # Maximum number of pages to scrape
+MAX_PAGES = 1500     # Maximum number of pages to scrape
 PDF_MAX_SIZE = 20 * 1024 * 1024  # 20 MB max PDF size
 USER_AGENT = "BioforceBot/1.0 (+https://www.bioforce.org/; Data collection for educational chatbot)"
 MAX_LINKS_PER_PAGE = 100  # Nombre maximum de liens à extraire par page
@@ -69,6 +69,7 @@ TIMEOUT = 30  # Timeout en secondes pour les requêtes
 PROCESSED_URLS_FILE = os.path.join(OUTPUT_DIR, "processed_urls.json")  # Fichier pour stocker les URLs traitées
 USE_QDRANT = True  # Utilisation de Qdrant pour stocker les embeddings
 DEBUG = False  # Mode debug
+CONCURRENT_REQUESTS = 5  # Nombre de requêtes parallèles à effectuer
 
 # Paramètres supplémentaires pour le mécanisme de retry et gestion des erreurs
 MAX_RETRIES = 3       # Nombre maximum de tentatives pour chaque URL
@@ -112,13 +113,14 @@ QDRANT_COLLECTION = "BIOFORCE"  # Collection principale pour la connaissance
 # Configuration OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 EMBEDDING_MODEL = "text-embedding-ada-002"
-COMPLETION_MODEL = "gpt-3.5-turbo"
+COMPLETION_MODEL = "gpt-4o-mini"
 
 # Configuration API FastAPI
 API_ROOT_PATH = os.getenv("API_ROOT_PATH", "")
 
 # GitHub configuration
 VERSION = "1.0.0"
+API_VERSION = "1.0.0"  # Version de l'API (utilisée dans les endpoints)
 GITHUB_REPO = os.getenv("GITHUB_REPO", "https://github.com/Philprz/BIOFORCE")
 
 API_WORKERS = int(os.getenv("API_WORKERS", "4"))
