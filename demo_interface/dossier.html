@@ -185,20 +185,18 @@
 
     <!-- Chatbot Widget -->
     <div class="chat-container" id="chatbot-widget">
-        <div class="chatbot-header">
+        <div class="chat-header">
             <h3>BioforceBot</h3>
-            <button id="minimize-chat">−</button>
+            <button id="minimize-chat" class="toggle-btn">−</button>
         </div>
-        <div class="chatbot-body">
-            <div class="chat-messages" id="chat-messages">
-                <div class="message bot">
-                    <p>Je vois que vous consultez votre dossier de candidature. Il vous manque quelques documents à fournir, notamment le justificatif de paiement des frais de candidature. Puis-je vous aider à finaliser cette étape ?</p>
-                </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot">
+                <p>Je vois que vous consultez votre dossier de candidature. Il vous manque quelques documents à fournir, notamment le justificatif de paiement des frais de candidature. Puis-je vous aider à finaliser cette étape ?</p>
             </div>
-            <div class="chat-input">
-                <input type="text" id="user-input" placeholder="Tapez votre message...">
-                <button id="send-message">Envoyer</button>
-            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tapez votre message...">
+            <button id="send-message">Envoyer</button>
         </div>
     </div>
 

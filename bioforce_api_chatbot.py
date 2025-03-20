@@ -20,6 +20,7 @@ import uvicorn  # noqa: E402
 from dotenv import load_dotenv  # noqa: E402
 from fastapi import FastAPI, HTTPException, Query, Body  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 from openai import AsyncOpenAI  # noqa: E402
 
@@ -139,6 +140,10 @@ app.add_middleware(
     max_age=86400,        # Cache les résultats preflight pour 24h
 )
 
+# Monter les fichiers statiques
+app.mount("/demo", StaticFiles(directory="demo_interface", html=True), name="demo")
+app.mount("/admin", StaticFiles(directory="bioforce-admin", html=True), name="admin")
+
 # Événement de démarrage pour initialiser le client et la collection
 @app.on_event("startup")
 async def startup_event():
@@ -206,20 +211,39 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
             logger.error("Échec de génération de l'embedding")
             return []
         
+        # Log du modèle d'embedding utilisé pour débogage
+        logger.info(f"Recherche avec le modèle d'embedding: {os.getenv('EMBEDDING_MODEL', 'text-embedding-ada-002')}")
+        
         # Résultats combinés des deux collections
         all_results = []
         
+        # Paramètres optimisés pour améliorer la pertinence
+        search_limit = 30  # Augmenté pour avoir plus de choix avant filtrage
+        min_score_threshold = 0.005  # Seuil minimal plus élevé pour la pertinence
+        
+        # Filtres de pertinence pour la langue
+        filter_conditions = {
+            "language": ["fr", "en", None]  # Inclure les documents sans langue spécifiée
+        }
+        
         # Recherche dans la collection principale (BIOFORCE - FAQ)
         try:
-            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: 20)")
+            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME}, limit: {search_limit})")
             original_collection = qdrant_connector.collection_name
             qdrant_connector.collection_name = COLLECTION_NAME
             
             search_results_faq = qdrant_connector.search(
                 query_vector=vector,
-                limit=20,  # Augmenter la limite pour avoir plus de résultats potentiels
-                filter_conditions={}
+                limit=search_limit,
+                filter_conditions=filter_conditions
             )
+            
+            # Log des scores pour débogage
+            if search_results_faq:
+                top_score = search_results_faq[0]["score"] if search_results_faq else 0
+                logger.info(f"Top score dans {COLLECTION_NAME}: {top_score}")
+                scores_log = [f"{i+1}: {r['score']:.6f}" for i, r in enumerate(search_results_faq[:5])]
+                logger.info(f"Top 5 scores: {', '.join(scores_log)}")
             
             # Ajouter une source pour identifier la collection
             for result in search_results_faq:
@@ -232,14 +256,21 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         
         # Recherche dans la collection secondaire (BIOFORCE_ALL - Site complet)
         try:
-            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME_ALL}, limit: 20)")
+            logger.info(f"Recherche dans Qdrant (collection: {COLLECTION_NAME_ALL}, limit: {search_limit})")
             qdrant_connector.collection_name = COLLECTION_NAME_ALL
             
             search_results_all = qdrant_connector.search(
                 query_vector=vector,
-                limit=20,  # Augmenter la limite pour avoir plus de résultats potentiels
-                filter_conditions={}
+                limit=search_limit,
+                filter_conditions=filter_conditions
             )
+            
+            # Log des scores pour débogage
+            if search_results_all:
+                top_score = search_results_all[0]["score"] if search_results_all else 0
+                logger.info(f"Top score dans {COLLECTION_NAME_ALL}: {top_score}")
+                scores_log = [f"{i+1}: {r['score']:.6f}" for i, r in enumerate(search_results_all[:5])]
+                logger.info(f"Top 5 scores: {', '.join(scores_log)}")
             
             # Ajouter une source pour identifier la collection
             for result in search_results_all:
@@ -272,11 +303,18 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
                 unique_results.append(result)
         
         # Filtrer et trier les résultats par score
-        filtered_results = [r for r in unique_results if r["score"] > 0.001]  # Filtrer les scores trop faibles
+        filtered_results = [r for r in unique_results if r["score"] > min_score_threshold]  # Filtrer les scores trop faibles
         sorted_results = sorted(filtered_results, key=lambda x: x["score"], reverse=True)
         
         # Limiter au nombre demandé
         results = sorted_results[:limit]
+        
+        # Log des scores finaux
+        if results:
+            top_score = results[0]["score"] if results else 0
+            logger.info(f"Score final maximal après filtrage: {top_score}")
+            scores_log = [f"{i+1}: {r['score']:.6f}" for i, r in enumerate(results)]
+            logger.info(f"Scores finaux: {', '.join(scores_log)}")
         
         # Transformer les résultats pour l'API
         formatted_results = []
@@ -419,6 +457,15 @@ async def chat(request: ChatRequest):
         logger.error(f"Erreur de chat: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Version v1 de l'API (pour assurer la compatibilité avec le frontend)
+@app.post("/api/v1/chat", response_model=ChatResponse)
+async def chat_v1(request: ChatRequest):
+    """
+    Point d'entrée pour le chat (API v1) - pour compatibilité
+    Redirige vers la fonction chat standard
+    """
+    return await chat(request)
+
 @app.post("/search", response_model=SearchResponse)
 async def search(request: SearchRequest):
     """Endpoint de recherche dans la base de connaissances"""
@@ -430,10 +477,24 @@ async def search(request: SearchRequest):
         logger.error(f"Erreur lors de la recherche: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Version v1 de l'API de recherche pour compatibilité
+@app.post("/api/v1/search", response_model=SearchResponse)
+async def search_v1(request: SearchRequest):
+    """
+    Endpoint de recherche (API v1) - pour compatibilité
+    Redirige vers la fonction search standard
+    """
+    return await search(request)
+
 @app.get("/health")
 async def health_check():
     """Vérifie l'état de l'API"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
+@app.get("/api/health")
+async def api_health_check():
+    """Route de santé additionnelle pour compatibilité"""
+    return await health_check()
 
 @app.post("/debug")
 async def debug_api(request: dict = Body(...)):

@@ -1,21 +1,18 @@
 """
 Module de connexion à Qdrant pour stocker les embeddings
 """
-import logging
 import os
-from typing import Dict, List, Any, Optional, Union
-
-import numpy as np
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
+import logging
+import time
+from typing import Dict, List, Optional, Any
+from qdrant_client import QdrantClient, models
 from qdrant_client.http.exceptions import UnexpectedResponse
 
-from bioforce_scraper.config import (QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, 
-                   VECTOR_SIZE, LOG_FILE)
-from bioforce_scraper.utils.logger import setup_logger
+from bioforce_scraper.config import (
+    QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, VECTOR_SIZE
+)
 
-# Configuration du logger
-logger = setup_logger(__name__, LOG_FILE)
+logger = logging.getLogger(__name__)
 
 class QdrantConnector:
     """
@@ -33,8 +30,36 @@ class QdrantConnector:
             collection_name: Nom de la collection (utilisera QDRANT_COLLECTION de config.py si None)
             is_full_site: Si True, utilise la collection pour le site complet (QDRANT_COLLECTION_ALL)
         """
-        self.url = url or QDRANT_URL
-        self.api_key = api_key or QDRANT_API_KEY
+        self.logger = logging.getLogger(self.__class__.__name__)
+        
+        # Utilisation des variables d'environnement si non spécifiées
+        self.url = url or os.getenv("QDRANT_URL") or os.getenv("QDRANT_HOST")
+        self.api_key = api_key or os.getenv("QDRANT_API_KEY")
+        self.collection_name = collection_name or os.getenv("QDRANT_COLLECTION") or "BIOFORCE"
+        
+        # Vérification des paramètres
+        if not self.url:
+            self.logger.error("URL Qdrant non définie. Veuillez définir QDRANT_URL ou QDRANT_HOST dans l'environnement.")
+            raise ValueError("URL Qdrant manquante")
+        
+        try:
+            self.logger.info(f"Initialisation de la connexion Qdrant: {self.url} (collection: {self.collection_name})")
+            
+            # Création du client avec timeout plus élevé pour être robuste aux latences réseau
+            self.client = QdrantClient(
+                url=self.url,
+                api_key=self.api_key,
+                timeout=30.0  # Timeout augmenté pour éviter les déconnexions prématurées
+            )
+            
+            # Test de connexion
+            self._test_connection()
+            
+            self.logger.info(f"Connexion à Qdrant établie avec succès: {self.url}")
+        except Exception as e:
+            self.logger.error(f"Échec d'initialisation du client Qdrant: {str(e)}")
+            # On laisse remonter l'exception pour que l'appelant puisse la gérer
+            raise
         
         # Détermine quelle collection utiliser
         if collection_name:
@@ -42,13 +67,12 @@ class QdrantConnector:
         else:
             self.collection_name = QDRANT_COLLECTION_ALL if is_full_site else QDRANT_COLLECTION
         
-        # Tenter de se connecter à Qdrant
+    def _test_connection(self):
         try:
-            self.client = QdrantClient(url=self.url, api_key=self.api_key)
-            logger.info(f"Connecté à Qdrant: {self.url}, collection: {self.collection_name}")
-        except Exception as e:
-            logger.error(f"Erreur de connexion à Qdrant: {e}")
-            self.client = None
+            self.client.get_collections()
+        except UnexpectedResponse as e:
+            self.logger.error(f"Erreur de connexion à Qdrant: {e}")
+            raise
     
     def ensure_collection(self, vector_size: int = VECTOR_SIZE) -> bool:
         """
@@ -114,71 +138,110 @@ class QdrantConnector:
             logger.error(f"Erreur lors de la création de la collection: {e}")
             return False
     
-    def search(self, query_vector: List[float], limit: int = 5, 
-              filter_conditions: Optional[Dict] = None) -> List[Dict]:
+    def search(self, query_vector: List[float], limit: int = 10, filter_conditions: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         """
-        Recherche les documents les plus similaires au vecteur de requête
+        Effectue une recherche dans Qdrant
         
         Args:
-            query_vector: Vecteur d'embedding de la requête
-            limit: Nombre maximum de résultats
-            filter_conditions: Conditions de filtrage (par exemple, par type de document)
+            query_vector: Vecteur de requête (embedding)
+            limit: Nombre de résultats maximum
+            filter_conditions: Filtres à appliquer
             
         Returns:
-            Liste des documents trouvés avec leurs scores de similarité
+            Liste des résultats correspondants
         """
         if not self.client:
-            logger.error("Client Qdrant non initialisé")
+            self.logger.error("Client Qdrant non disponible")
             return []
-        
+            
+        if not filter_conditions:
+            filter_conditions = {}
+            
         try:
-            # Préparer les filtres s'ils existent
+            self.logger.debug(f"Recherche dans Qdrant: collection={self.collection_name}, limit={limit}")
+            
+            # Vérification que la collection existe
+            collections = self.client.get_collections().collections
+            collection_names = [c.name for c in collections]
+            
+            if self.collection_name not in collection_names:
+                self.logger.warning(f"Collection {self.collection_name} introuvable dans Qdrant. Collections disponibles: {collection_names}")
+                return []
+                
+            # Construction des filtres
             search_filter = None
             if filter_conditions:
-                filter_must = []
+                filter_params = []
                 
-                for field, value in filter_conditions.items():
-                    if isinstance(value, list):
-                        # Pour les listes (OR)
-                        should = []
-                        for v in value:
-                            should.append(models.FieldCondition(
-                                key=field,
-                                match=models.MatchValue(value=v)
-                            ))
-                        filter_must.append(models.Filter(should=should))
-                    else:
-                        # Pour les valeurs simples (AND)
-                        filter_must.append(models.FieldCondition(
+                for field, values in filter_conditions.items():
+                    if isinstance(values, list):
+                        # Filter avec OR pour les listes de valeurs (match any)
+                        or_conditions = [models.FieldCondition(
                             key=field,
                             match=models.MatchValue(value=value)
+                        ) for value in values]
+                        
+                        filter_params.append(models.Filter(
+                            should=or_conditions,
+                            must=[]
+                        ))
+                    else:
+                        # Filter simple pour une valeur unique
+                        filter_params.append(models.Filter(
+                            must=[models.FieldCondition(
+                                key=field,
+                                match=models.MatchValue(value=values)
+                            )],
+                            should=[]
                         ))
                 
-                search_filter = models.Filter(must=filter_must)
+                if filter_params:
+                    search_filter = filter_params[0] if len(filter_params) == 1 else models.Filter(
+                        must=[],
+                        should=filter_params
+                    )
             
-            # Effectuer la recherche
-            search_result = self.client.search(
+            start_time = time.time()
+            search_results = self.client.search(
                 collection_name=self.collection_name,
                 query_vector=query_vector,
                 limit=limit,
                 query_filter=search_filter,
                 with_payload=True,
-                with_vectors=False
+                with_vectors=False,
             )
+            search_time = time.time() - start_time
             
-            # Formater les résultats
+            # Log des performances
+            self.logger.info(f"Recherche terminée en {search_time:.4f}s, {len(search_results)} résultats trouvés")
+            
+            # Transformation des résultats en format dict
             results = []
-            for scoring_point in search_result:
-                results.append({
-                    "id": scoring_point.id,
-                    "score": scoring_point.score,
-                    "payload": scoring_point.payload
-                })
-            
+            for res in search_results:
+                result = {
+                    "id": res.id,
+                    "score": res.score,
+                    "payload": res.payload,
+                }
+                results.append(result)
+                
+            # Log des scores
+            if results:
+                top_scores = [f"{i+1}: {r['score']:.4f}" for i, r in enumerate(results[:5])]
+                self.logger.debug(f"Top scores: {', '.join(top_scores)}")
+                
             return results
-            
+        except UnexpectedResponse as e:
+            self.logger.error(f"Erreur de réponse Qdrant: {str(e)}")
+            # Tenter de reconnexion
+            try:
+                self.client = QdrantClient(url=self.url, api_key=self.api_key, timeout=30.0)
+                self.logger.info("Reconnexion à Qdrant réussie")
+            except Exception as reconnect_error:
+                self.logger.error(f"Échec de reconnexion à Qdrant: {str(reconnect_error)}")
+            return []
         except Exception as e:
-            logger.error(f"Erreur lors de la recherche: {e}")
+            self.logger.error(f"Erreur lors de la recherche Qdrant: {str(e)}")
             return []
     
     def upsert_document(self, id: str, vector: List[float], payload: Dict[str, Any]) -> bool:

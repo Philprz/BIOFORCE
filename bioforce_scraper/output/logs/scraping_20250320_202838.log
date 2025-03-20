@@ -1,0 +1,2 @@
+2025-03-20 20:29:58,502 - bioforce_scraper.utils.embeddings - ERROR - Texte invalide fourni pour la génération d'embedding: <class 'list'>
+2025-03-20 20:30:12,015 - bioforce_scraper.utils.embeddings - ERROR - Texte invalide fourni pour la génération d'embedding: <class 'list'>
