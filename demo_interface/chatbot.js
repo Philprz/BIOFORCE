@@ -2,8 +2,10 @@
 // Possibilité de choisir entre l'API locale et l'API en production
 const API_LOCAL = 'http://localhost:8000'; 
 const API_PRODUCTION = 'https://bioforce-interface.onrender.com';  // URL exacte de votre API sur Render
+const ADMIN_PRODUCTION = 'https://bioforce-admin.onrender.com';    // URL exacte de l'admin sur Render
 const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); // Détection automatique
 const API_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
+const ADMIN_URL = USE_PRODUCTION_API ? ADMIN_PRODUCTION : `${API_LOCAL}/admin`;
 const USE_SIMULATION_FALLBACK = true; // Mode simulation toujours activé comme plan B
 
 // Configuration de l'administration
@@ -552,8 +554,7 @@ function checkAdminPassword() {
         hideAdminDialog();
         
         // Rediriger vers l'interface d'administration
-        const adminUrl = `${API_URL}/admin`;
-        window.open(adminUrl, '_blank');
+        window.open(ADMIN_URL, '_blank');
         
         addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
     } else {

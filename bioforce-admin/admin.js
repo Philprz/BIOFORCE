@@ -9,13 +9,13 @@ const API_BASE_URL = "https://bioforce-interface.onrender.com"; // URL de l'API 
 // const API_BASE_URL = window.location.origin; // URL de base de l'API (même domaine)
 
 const API_ENDPOINTS = {
-    systemInfo: '/admin/system-info',
-    qdrantStats: '/admin/qdrant-stats',
-    gitUpdate: '/admin/git-update',
-    scrapeFaq: '/scrape/faq',
-    scrapeFull: '/scrape/full',
-    logs: '/admin/logs',
-    status: '/admin/status'
+    systemInfo: '/api/admin/system-info',
+    qdrantStats: '/api/admin/qdrant-stats',
+    gitUpdate: '/api/admin/git-update',
+    scrapeFaq: '/api/scrape/faq',
+    scrapeFull: '/api/scrape/full',
+    logs: '/api/admin/logs',
+    status: '/api/admin/status'
 };
 
 // État global
@@ -99,23 +99,51 @@ async function checkStatus() {
             data.qdrant_status === 'connected' ? 'Connecté' : 'Non connecté');
         
         // Mise à jour de l'état global
-        systemStatus.server = data.server_status === 'ok';
-        systemStatus.scraping = data.scraping_status === 'ready';
-        systemStatus.qdrant = data.qdrant_status === 'connected';
+        systemStatus = {
+            server: data.server_status === 'ok',
+            scraping: data.scraping_status === 'ready',
+            qdrant: data.qdrant_status === 'connected'
+        };
+        
+        // Activation/désactivation des boutons en fonction de l'état
+        const scrapingFaqButtons = document.querySelectorAll('[data-action="scrape-faq"]');
+        const scrapingFullButtons = document.querySelectorAll('[data-action="scrape-full"]');
+        const gitUpdateButton = document.getElementById('updateFromGithub');
+        
+        scrapingFaqButtons.forEach(btn => btn.disabled = !systemStatus.server);
+        scrapingFullButtons.forEach(btn => btn.disabled = !systemStatus.server);
+        if (gitUpdateButton) gitUpdateButton.disabled = !systemStatus.server;
         
         // Mise à jour de la dernière vérification
         document.getElementById('lastUpdateTime').textContent = new Date().toLocaleString();
         
         return data;
     } catch (error) {
-        console.error('Erreur lors de la vérification des services:', error);
-        addLogMessage('systemLogs', `Erreur de vérification des services: ${error.message}`, 'error');
-        
-        // En cas d'erreur, on met tout en état d'erreur
+        console.error('Erreur lors de la vérification du statut:', error);
+        // En cas d'erreur, tous les services sont considérés comme hors ligne
         updateStatusIndicator('serverStatus', 'serverStatusText', false, 'Erreur de connexion');
         updateStatusIndicator('scrapingStatus', 'scrapingStatusText', false, 'Erreur de connexion');
         updateStatusIndicator('qdrantStatus', 'qdrantStatusText', false, 'Erreur de connexion');
         
+        systemStatus = {
+            server: false,
+            scraping: false,
+            qdrant: false
+        };
+        
+        // Désactivation de tous les boutons d'action
+        const scrapingFaqButtons = document.querySelectorAll('[data-action="scrape-faq"]');
+        const scrapingFullButtons = document.querySelectorAll('[data-action="scrape-full"]');
+        const gitUpdateButton = document.getElementById('updateFromGithub');
+        
+        scrapingFaqButtons.forEach(btn => btn.disabled = true);
+        scrapingFullButtons.forEach(btn => btn.disabled = true);
+        if (gitUpdateButton) gitUpdateButton.disabled = true;
+        
+        // Mise à jour de la dernière vérification
+        document.getElementById('lastUpdateTime').textContent = new Date().toLocaleString() + ' (échec)';
+        
+        addLogMessage('systemLogs', `Erreur de connexion à l'API: ${error.message}`, 'error');
         return null;
     }
 }
@@ -307,49 +335,64 @@ function addLogMessage(containerId, message, type = 'info') {
  * Configure les écouteurs d'événements pour l'interface
  */
 function setupEventListeners() {
-    // Bouton de vérification de statut
-    document.getElementById('checkStatusBtn').addEventListener('click', () => {
-        checkStatus();
+    // Bouton de vérification du statut
+    document.getElementById('checkStatusBtn').addEventListener('click', checkStatus);
+    
+    // Boutons de scraping
+    document.querySelectorAll('[data-action="scrape-faq"]').forEach(btn => {
+        btn.addEventListener('click', () => runFaqScraping(btn.dataset.forceUpdate === 'true'));
     });
     
-    // Bouton de rafraîchissement des stats Qdrant
-    document.getElementById('refreshQdrantStats').addEventListener('click', () => {
+    document.querySelectorAll('[data-action="scrape-full"]').forEach(btn => {
+        btn.addEventListener('click', () => runFullScraping(btn.dataset.forceUpdate === 'true'));
+    });
+    
+    // Bouton de rafraîchissement des statistiques Qdrant
+    document.getElementById('refreshQdrantStats').addEventListener('click', refreshQdrantStats);
+    
+    // Bouton de mise à jour depuis GitHub
+    document.getElementById('updateFromGithub').addEventListener('click', updateFromGithub);
+    
+    // Bouton de rafraîchissement global
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+        checkStatus();
         refreshQdrantStats();
-    });
-    
-    // Bouton de vérification de la connexion Qdrant
-    document.getElementById('checkQdrantBtn').addEventListener('click', () => {
-        addLogMessage('systemLogs', 'Vérification de la connexion Qdrant...', 'info');
-        checkStatus();
-    });
-    
-    // Bouton de mise à jour GitHub
-    document.getElementById('updateFromGithub').addEventListener('click', () => {
-        updateFromGithub();
-    });
-    
-    // Formulaire de scraping FAQ
-    document.getElementById('faqScraperForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const forceUpdate = document.getElementById('forceFaqUpdate').checked;
-        runFaqScraping(forceUpdate);
-    });
-    
-    // Formulaire de scraping complet
-    document.getElementById('fullScraperForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const forceUpdate = document.getElementById('forceFullUpdate').checked;
-        runFullScraping(forceUpdate);
+        addLogMessage('systemLogs', 'Actualisation manuelle déclenchée', 'info');
     });
     
     // Bouton de rafraîchissement des logs
     document.getElementById('refreshLogs').addEventListener('click', () => {
-        // TODO: Implémenter la récupération des logs système
-        addLogMessage('systemLogs', 'Rafraîchissement des logs...', 'info');
+        fetchLogs();
     });
     
-    // Bouton de rafraîchissement de la page
-    document.getElementById('refreshPage').addEventListener('click', () => {
-        window.location.reload();
-    });
+    // Action sur des boutons Qdrant spécifiques
+    const checkQdrantBtn = document.getElementById('checkQdrantBtn');
+    if (checkQdrantBtn) {
+        checkQdrantBtn.addEventListener('click', () => {
+            addLogMessage('systemLogs', 'Vérification de la connexion Qdrant...', 'info');
+            fetch(`${API_BASE_URL}${API_ENDPOINTS.qdrantStats}`)
+                .then(response => response.json())
+                .then(data => {
+                    addLogMessage('systemLogs', `Vérification Qdrant: ${data.status || 'OK'}`, 'success');
+                })
+                .catch(error => {
+                    addLogMessage('systemLogs', `Erreur Qdrant: ${error.message}`, 'error');
+                });
+        });
+    }
+    
+    const optimizeQdrantBtn = document.getElementById('optimizeQdrantBtn');
+    if (optimizeQdrantBtn) {
+        optimizeQdrantBtn.addEventListener('click', () => {
+            addLogMessage('systemLogs', 'Optimisation de Qdrant en cours...', 'info');
+            fetch(`${API_BASE_URL}${API_ENDPOINTS.qdrantStats}?action=optimize`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    addLogMessage('systemLogs', `Optimisation Qdrant: ${data.status || 'Terminée'}`, 'success');
+                })
+                .catch(error => {
+                    addLogMessage('systemLogs', `Erreur d'optimisation: ${error.message}`, 'error');
+                });
+        });
+    }
 }

@@ -124,7 +124,6 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="https://bioforce.org/wp-content/themes/bioforce/assets/img/logo-bioforce.svg" alt="Bioforce Logo" height="30" class="d-inline-block align-top bg-white rounded p-1 me-2">
                 Bioforce Admin
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -240,41 +239,37 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="card mb-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">Scraping FAQ</h5>
-                                        <p class="card-text">Lance un scraping des pages FAQ du site Bioforce.</p>
-                                        <form id="faqScraperForm">
-                                            <div class="form-check mb-3">
-                                                <input class="form-check-input" type="checkbox" id="forceFaqUpdate">
-                                                <label class="form-check-label" for="forceFaqUpdate">
-                                                    Forcer la mise à jour (ignorer le cache)
-                                                </label>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-cloud-download"></i> Lancer le scraping FAQ
-                                            </button>
-                                        </form>
+                                        <p>Lance un scraping des pages FAQ du site Bioforce.</p>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="forceFaqUpdate">
+                                            <label class="form-check-label" for="forceFaqUpdate">
+                                                Forcer la mise à jour (ignorer le cache)
+                                            </label>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" data-action="scrape-faq" data-force-update="false">
+                                            <i class="bi bi-cloud-download"></i> Lancer le scraping FAQ
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="card mb-3">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">Scraping site complet</h5>
-                                        <p class="card-text">Lance un scraping complet du site Bioforce.</p>
-                                        <form id="fullScraperForm">
-                                            <div class="form-check mb-3">
-                                                <input class="form-check-input" type="checkbox" id="forceFullUpdate">
-                                                <label class="form-check-label" for="forceFullUpdate">
-                                                    Forcer la mise à jour (ignorer le cache)
-                                                </label>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-cloud-download"></i> Lancer le scraping complet
-                                            </button>
-                                        </form>
+                                        <p>Lance un scraping complet du site Bioforce.</p>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="forceFullUpdate">
+                                            <label class="form-check-label" for="forceFullUpdate">
+                                                Forcer la mise à jour (ignorer le cache)
+                                            </label>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" data-action="scrape-full" data-force-update="false">
+                                            <i class="bi bi-cloud-download"></i> Lancer le scraping complet
+                                        </button>
                                     </div>
                                 </div>
                             </div>
