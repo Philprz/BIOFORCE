@@ -17,7 +17,8 @@ if parent_dir not in sys.path:
 # Ces imports proviennent de bibliothèques externes installées via pip
 import uvicorn  # noqa: E402
 from dotenv import load_dotenv  # noqa: E402
-from fastapi import FastAPI, HTTPException, Query, Body, Request, JSONResponse  # noqa: E402
+from fastapi import FastAPI, HTTPException, Query, Body, Request  # noqa: E402
+from fastapi.responses import JSONResponse, RedirectResponse  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
@@ -388,12 +389,8 @@ async def get_llm_response(messages, context=""):
 async def redirect_to_admin(request: Request):
     """Redirige la racine vers l'interface d'administration"""
     
-    # Utilisation de JSONResponse avec en-tête Location pour rediriger
-    return JSONResponse(
-        content={"message": "Redirection vers l'interface admin"},
-        headers={"Location": "/admin/index.html"},
-        status_code=302
-    )
+    # Utilisation de RedirectResponse pour une redirection correcte
+    return RedirectResponse(url="/admin/index.html")
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
