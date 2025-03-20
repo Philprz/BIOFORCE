@@ -4,6 +4,7 @@ import sys
 import json
 import asyncio
 import logging
+import random
 from datetime import datetime
 from typing import List, Dict, Any
 from pathlib import Path
@@ -64,28 +65,50 @@ async def initialize_qdrant_client():
     """Initialise le client Qdrant avec plusieurs tentatives en cas d'échec"""
     global qdrant_connector
     
-    max_retries = 3
+    max_retries = 5  # Augmenté de 3 à 5
     retry_count = 0
+    base_wait_time = 2  # Temps d'attente de base en secondes
     
     while retry_count < max_retries:
         try:
             logger.info(f"Tentative de connexion à Qdrant: {QDRANT_URL}")
+            
+            # Vérifier si les variables d'environnement sont définies
+            if not QDRANT_URL:
+                logger.error("URL Qdrant non définie. Vérifiez la variable d'environnement QDRANT_URL.")
+                return False
+                
             qdrant_connector = QdrantConnector(url=QDRANT_URL, api_key=QDRANT_API_KEY, collection_name=COLLECTION_NAME)
             
-            # Tester la connexion explicitement en s'assurant que la collection existe
-            qdrant_connector.ensure_collection()
+            # Augmenter le timeout pour la connexion
+            timeout = 10  # secondes
             
-            # Si on arrive ici, la connexion est réussie
-            logger.info("✅ Connexion à Qdrant établie avec succès")
-            return True
+            # Tester la connexion explicitement en s'assurant que la collection existe
+            # avec un timeout pour éviter les blocages
+            async def test_connection():
+                qdrant_connector.ensure_collection()
+                return True
+                
+            # Exécuter le test avec timeout
+            connection_test = asyncio.create_task(test_connection())
+            try:
+                result = await asyncio.wait_for(connection_test, timeout=timeout)
+                if result:
+                    # Si on arrive ici, la connexion est réussie
+                    logger.info("✅ Connexion à Qdrant établie avec succès")
+                    return True
+            except asyncio.TimeoutError:
+                logger.error(f"Timeout lors de la connexion à Qdrant après {timeout} secondes")
+                raise Exception(f"Timeout de connexion après {timeout} secondes")
+                
         except Exception as e:
             retry_count += 1
             logger.error(f"Erreur de connexion à Qdrant (tentative {retry_count}/{max_retries}): {e}")
             
             if retry_count < max_retries:
-                # Attendre avant de réessayer (backoff exponentiel)
-                wait_time = 2 ** retry_count
-                logger.info(f"Nouvelle tentative dans {wait_time} secondes...")
+                # Attendre avant de réessayer (backoff exponentiel avec jitter)
+                wait_time = base_wait_time ** retry_count + (random.random() * 2)
+                logger.info(f"Nouvelle tentative dans {wait_time:.2f} secondes...")
                 await asyncio.sleep(wait_time)
             else:
                 logger.error("Échec de la connexion à Qdrant après plusieurs tentatives")
@@ -561,26 +584,49 @@ async def status():
     Vérifie l'état des différents services
     """
     server_status = "ok"
+    server_message = "Serveur opérationnel"
     
     # Vérifier l'état de Qdrant
     qdrant_status = "unknown"
+    qdrant_message = "Statut inconnu"
     try:
         if not qdrant_connector:
             qdrant_status = "not_initialized"
+            qdrant_message = "Client non initialisé. Vérifiez les variables d'environnement."
         else:
-            qdrant_connector.client.get_collections()
-            qdrant_status = "connected"
+            # Tester la connexion avec un timeout
+            try:
+                # Définir un timeout court pour éviter de bloquer l'interface
+                async def test_qdrant():
+                    qdrant_connector.client.get_collections()
+                    return True
+                
+                result = await asyncio.wait_for(test_qdrant(), timeout=5.0)
+                if result:
+                    qdrant_status = "connected"
+                    qdrant_message = "Connexion établie"
+            except asyncio.TimeoutError:
+                qdrant_status = "timeout"
+                qdrant_message = "Délai de connexion dépassé"
+            except Exception as e:
+                qdrant_status = "error"
+                qdrant_message = f"Erreur: {str(e)}"
     except Exception as e:
         logger.error(f"Erreur de connexion à Qdrant: {str(e)}")
         qdrant_status = "error"
+        qdrant_message = f"Erreur: {str(e)}"
     
     # Vérifier l'état du scraping (pas de service réel, juste pour l'interface)
     scraping_status = "ready"
+    scraping_message = "Prêt à exécuter"
     
     return {
         "server_status": server_status,
+        "server_message": server_message,
         "qdrant_status": qdrant_status,
-        "scraping_status": scraping_status
+        "qdrant_message": qdrant_message,
+        "scraping_status": scraping_status,
+        "scraping_message": scraping_message
     }
 
 @app.get("/admin/qdrant-stats")
