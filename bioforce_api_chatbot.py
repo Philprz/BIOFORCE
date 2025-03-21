@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Body
-from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from typing import List, Dict, Any
 from datetime import datetime
@@ -26,19 +26,38 @@ logger = logging.getLogger(__name__)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 QDRANT_URL = os.getenv('QDRANT_URL')
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
-COLLECTION_NAME = "BIOFORCE"
+COLLECTION_NAME = os.getenv('QDRANT_COLLECTION', 'BIOFORCE')
+
+# Vérification des variables essentielles
+if not QDRANT_URL:
+    logger.error("Variable d'environnement QDRANT_URL non définie")
+    raise ValueError("QDRANT_URL doit être défini dans les variables d'environnement")
+
+if not QDRANT_API_KEY:
+    logger.warning("Variable d'environnement QDRANT_API_KEY non définie")
+
+if not OPENAI_API_KEY:
+    logger.error("Variable d'environnement OPENAI_API_KEY non définie")
+    raise ValueError("OPENAI_API_KEY doit être défini dans les variables d'environnement")
 
 # Initialisation des clients
+logger.info("Initialisation du client OpenAI")
 openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+
+logger.info(f"Initialisation du client Qdrant avec URL: {QDRANT_URL}")
 qdrant_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
 
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
     """Crée la collection bioforce_faq si elle n'existe pas déjà"""
     try:
+        logger.info(f"Tentative de connexion à Qdrant: {QDRANT_URL}, collection: {COLLECTION_NAME}")
+        
         # Vérifier si la collection existe
         collections = await qdrant_client.get_collections()
         collection_names = [collection.name for collection in collections.collections]
+        
+        logger.info(f"Collections existantes: {collection_names}")
         
         if COLLECTION_NAME not in collection_names:
             logger.info(f"Création de la collection {COLLECTION_NAME}")
@@ -54,10 +73,18 @@ async def initialize_qdrant_collection():
             
             logger.info(f"Collection {COLLECTION_NAME} créée avec succès")
         else:
-            logger.info(f"Collection {COLLECTION_NAME} existe déjà")
+            # Obtenir des informations sur la collection
+            collection_info = await qdrant_client.get_collection(collection_name=COLLECTION_NAME)
+            count = await qdrant_client.count(collection_name=COLLECTION_NAME)
+            
+            logger.info(f"Collection {COLLECTION_NAME} existe déjà avec {count.count} points")
+            logger.info(f"Info collection: {collection_info}")
             
     except Exception as e:
         logger.error(f"Erreur lors de l'initialisation de Qdrant: {str(e)}")
+        # Afficher plus d'informations pour le diagnostic
+        logger.error(f"Détails de connexion - URL: {QDRANT_URL}, Collection: {COLLECTION_NAME}")
+        logger.error(f"Type d'erreur: {type(e).__name__}")
         # Ne pas faire échouer le démarrage de l'application
         pass
 
@@ -119,46 +146,60 @@ async def generate_embedding(text: str) -> List[float]:
         logger.error(f"Erreur d'embedding: {str(e)}")
         raise
 
-async def search_knowledge_base(query: str, limit: int = 20) -> List[Dict[str, Any]]:
+async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
     """Recherche dans la base de connaissances"""
     try:
-        vector = await generate_embedding(query)
+        logger.info(f"Recherche pour la requête: '{query}' dans la collection {COLLECTION_NAME}")
         
+        # Générer l'embedding de la requête
+        vector = await generate_embedding(query)
+        logger.info(f"Embedding généré avec succès (taille: {len(vector)})")
+        
+        # Effectuer la recherche
         search_result = await qdrant_client.search(
             collection_name=COLLECTION_NAME,
             query_vector=vector,
-            limit=limit
+            limit=limit,
+            with_payload=True
         )
         
+        logger.info(f"Résultats trouvés: {len(search_result)}")
+        
+        # Formater les résultats
         results = []
-        min_score_threshold = 0.001  # Seuil minimum pour les résultats pertinents
-        
         for scored_point in search_result:
-            # Ne garder que les résultats avec un score supérieur au seuil
-            if scored_point.score >= min_score_threshold:
-                results.append({
-                    "score": scored_point.score,
-                    "question": scored_point.payload.get("question"),
-                    "answer": scored_point.payload.get("answer"),
-                    "category": scored_point.payload.get("category"),
-                    "url": scored_point.payload.get("url")
-                })
-        
-        # Tri explicite des résultats par score (du plus élevé au plus bas)
-        results.sort(key=lambda x: x["score"], reverse=True)
-        
-        # Logging pour le débogage
-        if results:
-            logger.info(f"Recherche pour '{query}': {len(results)} résultats pertinents trouvés. "
-                       f"Meilleur score: {results[0]['score']}")
-        else:
-            logger.warning(f"Aucun résultat pertinent trouvé pour '{query}'")
+            # Structure générique pour gérer différents formats de payload
+            result_data = {
+                "score": scored_point.score,
+            }
+            
+            # Ajouter les champs du payload en fonction de ce qui est disponible
+            payload = scored_point.payload
+            
+            # Si c'est une FAQ
+            if "question" in payload:
+                result_data["question"] = payload.get("question")
+                result_data["answer"] = payload.get("answer")
+            
+            # Si c'est un contenu de page
+            if "title" in payload:
+                result_data["title"] = payload.get("title")
+                result_data["content"] = payload.get("content", "")
+            
+            # Champs génériques communs
+            for field in ["category", "url", "source_url", "type", "language"]:
+                if field in payload:
+                    result_data[field] = payload.get(field)
+            
+            results.append(result_data)
         
         return results
     
     except Exception as e:
         logger.error(f"Erreur lors de la recherche: {str(e)}")
-        raise
+        logger.error(f"Détails: collection={COLLECTION_NAME}, query='{query}', type d'erreur={type(e).__name__}")
+        # En cas d'erreur, retourner une liste vide plutôt que de faire échouer l'appel
+        return []
 
 async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     """Formate les résultats de recherche en contexte pour le LLM"""
@@ -166,9 +207,9 @@ async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     
     for i, result in enumerate(results):
         context += f"Référence {i+1}:\n"
-        context += f"Question: {result['question']}\n"
-        context += f"Réponse: {result['answer']}\n"
-        context += f"Catégorie: {result['category']}\n\n"
+        context += f"Question: {result.get('question', 'Non disponible')}\n"
+        context += f"Réponse: {result.get('answer', 'Non disponible')}\n"
+        context += f"Catégorie: {result.get('category', 'Non disponible')}\n\n"
     
     return context
 
@@ -200,6 +241,8 @@ async def get_llm_response(messages, context=""):
                 "content": f"Informations supplémentaires pouvant être utiles pour répondre à la question: {context}"
             })
         
+        logger.info(f"Envoi de la requête au modèle LLM avec {len(api_messages)} messages")
+        
         # Obtenir la réponse du LLM
         response = await openai_client.chat.completions.create(
             model="gpt-4o-mini",
@@ -208,11 +251,29 @@ async def get_llm_response(messages, context=""):
             max_tokens=500
         )
         
-        return response.choices[0].message.content, []
+        content = response.choices[0].message.content
+        logger.info(f"Réponse reçue du LLM ({len(content)} caractères)")
+        
+        return content, []
     
     except Exception as e:
-        logger.error(f"Erreur lors de l'appel au LLM: {str(e)}")
-        raise
+        error_type = type(e).__name__
+        error_msg = str(e)
+        logger.error(f"Erreur lors de l'appel au LLM: {error_type} - {error_msg}")
+        
+        # Message d'erreur personnalisé pour l'utilisateur
+        fallback_message = "Désolé, j'ai rencontré un problème technique. "
+        
+        if "API key" in error_msg.lower():
+            fallback_message += "Il semble y avoir un problème avec la clé API. Veuillez contacter le support."
+        elif "rate limit" in error_msg.lower():
+            fallback_message += "Nos services sont actuellement très sollicités. Veuillez réessayer dans quelques instants."
+        elif "timeout" in error_msg.lower():
+            fallback_message += "La connexion semble lente. Veuillez réessayer votre question."
+        else:
+            fallback_message += "Veuillez réessayer ou contacter l'équipe Bioforce si le problème persiste."
+        
+        return fallback_message, []
 
 # Routes API
 @app.get("/")
@@ -270,6 +331,8 @@ async def chat(request: ChatRequest):
     Point d'entrée principal pour le chat
     """
     try:
+        # Récupérer les messages. Nous n'utilisons pas user_id et context_info pour l'instant
+        # mais ils pourraient être utiles dans le futur pour la personnalisation
         messages = request.messages
         
         # Récupérer le dernier message utilisateur
@@ -282,18 +345,49 @@ async def chat(request: ChatRequest):
         if not last_message:
             raise HTTPException(status_code=400, detail="Aucun message utilisateur trouvé")
         
+        logger.info(f"Traitement de la requête chat: '{last_message[:50]}...' (tronqué)")
+        
         # Obtenir le contexte pertinent depuis Qdrant
         context = ""
+        qdrant_results = []
+        
         try:
+            logger.info("Recherche de contexte dans Qdrant...")
             qdrant_results = await search_knowledge_base(last_message)
+            
             if qdrant_results:
-                context = "\n\n".join([f"Q: {item['question']}\nR: {item['answer']}" for item in qdrant_results])
+                logger.info(f"Contexte trouvé: {len(qdrant_results)} résultats")
+                context = await format_context_from_results(qdrant_results)
+            else:
+                logger.warning("Aucun résultat trouvé dans Qdrant")
         except Exception as e:
-            logger.error(f"Erreur lors de la requête Qdrant: {e}")
+            logger.error(f"Erreur lors de la requête Qdrant: {str(e)}")
+            logger.info("Poursuite du traitement sans contexte")
             # On continue sans contexte
         
         # Construire et envoyer la requête à OpenAI
         response_content, references = await get_llm_response(messages, context)
+        
+        # Formater les références à partir des résultats Qdrant
+        formatted_references = []
+        for result in qdrant_results:
+            ref = {
+                "score": result.get("score", 0),
+                "source": result.get("source_url", result.get("url", "Non disponible"))
+            }
+            
+            # Ajouter les informations disponibles
+            if "question" in result:
+                ref["question"] = result["question"]
+                ref["answer"] = result.get("answer", "")
+            
+            if "title" in result:
+                ref["title"] = result["title"]
+            
+            if "category" in result:
+                ref["category"] = result["category"]
+                
+            formatted_references.append(ref)
         
         # Formater et renvoyer la réponse
         return {
@@ -301,7 +395,7 @@ async def chat(request: ChatRequest):
                 "role": "assistant",
                 "content": response_content
             },
-            "references": references
+            "references": formatted_references
         }
     except Exception as e:
         logger.error(f"Erreur dans /chat: {e}")

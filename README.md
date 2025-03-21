@@ -88,3 +88,68 @@ Le planificateur exécute par défaut les tâches suivantes:
 - Envoi de rappels: toutes les 5 minutes pour les utilisateurs actifs
 
 Ces paramètres sont configurables dans le fichier `config.py`.
+
+## Dépannage de la connexion à Qdrant
+
+Si vous rencontrez des problèmes de connexion avec Qdrant, voici les étapes à suivre pour diagnostiquer et résoudre les problèmes :
+
+### Vérification des variables d'environnement
+
+Assurez-vous que les variables d'environnement suivantes sont correctement définies dans votre fichier `.env` :
+
+```
+QDRANT_URL=https://votre-instance.qdrant.io:6333
+QDRANT_API_KEY=votre_clé_api_qdrant
+QDRANT_COLLECTION=BIOFORCE
+```
+
+### Tests de diagnostic
+
+Nous avons inclus plusieurs scripts de test pour vérifier la connexion à Qdrant :
+
+1. **Test rapide de connexion à Qdrant** :
+   ```
+   python test_qdrant.py
+   ```
+   Ce script vérifie simplement si la connexion à Qdrant peut être établie.
+
+2. **Test de recherche dans Qdrant** :
+   ```
+   python test_qdrant_search.py
+   ```
+   Ce script effectue une recherche de test dans la collection Qdrant.
+
+3. **Test du chatbot avec Qdrant** :
+   ```
+   python test_chatbot.py
+   ```
+   Ce script teste le chatbot complet, y compris la connexion à Qdrant et la génération de réponses.
+
+4. **Test complet du système** :
+   ```
+   python test_full_system.py -v
+   ```
+   Ce script exécute une série de tests sur tous les composants du système. L'option `-v` active le mode verbeux pour plus de détails.
+
+### Erreurs courantes
+
+- **Erreur de connexion réseau** : Vérifiez que votre instance Qdrant est accessible depuis votre réseau actuel.
+- **Erreur d'authentification** : Vérifiez que votre clé API Qdrant est correcte.
+- **Collection non trouvée** : Vérifiez que le nom de collection spécifié existe dans votre instance Qdrant.
+- **Erreur de format de vecteur** : Assurez-vous que la dimension des vecteurs générés correspond à celle attendue par Qdrant.
+
+### Vérification de l'état du service
+
+Vous pouvez vérifier l'état du service en accédant à l'URL `/admin/status` de l'API. Cette page affiche le statut de tous les composants, y compris la connexion à Qdrant.
+
+## Journalisation
+
+Le système utilise le module de journalisation standard de Python. Les logs sont affichés dans la console et peuvent être configurés pour être enregistrés dans un fichier.
+
+Pour augmenter le niveau de détail des logs, modifiez le niveau de journalisation dans le fichier `bioforce_api_chatbot.py` :
+
+```python
+logging.basicConfig(level=logging.DEBUG, ...)
+```
+
+Les niveaux disponibles sont : DEBUG, INFO, WARNING, ERROR, CRITICAL.

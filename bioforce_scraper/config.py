@@ -101,14 +101,14 @@ CURRENT_DATE = datetime.now().strftime(DATE_FORMAT)
 SUPPORTED_LANGUAGES = ["fr", "en"]
 
 # Configuration Qdrant
-QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
-QDRANT_HOST = os.getenv("QDRANT_URL", "http://localhost:6333")  # Alias pour QDRANT_URL pour compatibilité
-QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
+QDRANT_URL = os.getenv("QDRANT_URL")
+QDRANT_HOST = os.getenv("QDRANT_URL")  # Alias pour QDRANT_URL pour compatibilité
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 VECTOR_SIZE = 1536  # Taille des vecteurs OpenAI
 QDRANT_COLLECTION_ALL = "BIOFORCE_ALL"  # Collection pour toutes les données
 COLLECTION_NAME_ALL = "BIOFORCE_ALL"  # Alias pour QDRANT_COLLECTION_ALL pour compatibilité
-COLLECTION_NAME = "BIOFORCE"
-QDRANT_COLLECTION = "BIOFORCE"  # Collection principale pour la connaissance
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "BIOFORCE")
+QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "BIOFORCE")  # Collection principale pour la connaissance
 
 # Configuration OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
