@@ -133,12 +133,15 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         
         results = []
         for scored_point in search_result:
+            # Vérification des clés essentielles avec valeurs par défaut
+            payload = scored_point.payload or {}
+            
             results.append({
                 "score": scored_point.score,
-                "question": scored_point.payload.get("title"),
-                "answer": scored_point.payload.get("content"),
-                "category": scored_point.payload.get("category"),
-                "url": scored_point.payload.get("source_url")
+                "question": payload.get("title", "Pas de titre disponible"),
+                "answer": payload.get("content", "Pas de contenu disponible"),
+                "category": payload.get("category", "Non catégorisé"),
+                "url": payload.get("source_url", "")
             })
         
         return results
@@ -234,16 +237,28 @@ async def chat(request: ChatRequest):
         
         # Obtenir le contexte pertinent depuis Qdrant
         context = ""
+        references = []
         try:
             qdrant_results = await search_knowledge_base(last_message)
             if qdrant_results:
-                context = "\n\n".join([f"Q: {item.question}\nR: {item.answer}" for item in qdrant_results])
+                context = await format_context_from_results(qdrant_results)
+                # Extraire les références pour les inclure dans la réponse
+                references = [
+                    {
+                        "question": item["question"],
+                        "answer": item["answer"],
+                        "category": item["category"],
+                        "url": item["url"],
+                        "score": item["score"]
+                    } 
+                    for item in qdrant_results
+                ]
         except Exception as e:
             logger.error(f"Erreur lors de la requête Qdrant: {e}")
             # On continue sans contexte
         
         # Construire et envoyer la requête à OpenAI
-        response_content, references = await get_llm_response(messages, context)
+        response_content, _ = await get_llm_response(messages, context)
         
         # Formater et renvoyer la réponse
         return {
