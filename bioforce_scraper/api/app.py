@@ -16,7 +16,7 @@ if parent_dir not in sys.path:
 # Imports tiers
 import uvicorn  # noqa: E402
 from fastapi import FastAPI, BackgroundTasks  # noqa: E402
-from fastapi.responses import JSONResponse  # noqa: E402
+from fastapi.responses import JSONResponse, HTMLResponse  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
@@ -35,6 +35,7 @@ from bioforce_scraper.scheduler import SchedulerService  # noqa: E402
 from bioforce_scraper.api.admin import router as admin_router  # noqa: E402
 from bioforce_scraper.utils.reminder_service import ReminderService  # noqa: E402
 from bioforce_scraper.main import BioforceScraperMain  # noqa: E402
+from bioforce_scraper.api.system_status import get_system_status, generate_status_html  # noqa: E402
 
 # Configuration du logger
 logger = setup_logger(__name__, LOG_FILE)
@@ -357,6 +358,35 @@ async def get_qdrant_stats():
             status_code=500,
             content={"status": "error", "message": str(e)}
         )
+
+@app.get("/system-status")
+async def system_status_route():
+    """Endpoint pour obtenir l'état du système"""
+    try:
+        status_data = await get_system_status()
+        return status_data
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération de l'état du système: {e}")
+        return JSONResponse(
+            status_code=500, 
+            content={"status": "error", "message": str(e)}
+        )
+
+@app.get("/system-status-widget", response_class=HTMLResponse)
+async def system_status_widget_route():
+    """Endpoint pour obtenir un widget HTML montrant l'état du système"""
+    try:
+        status_data = await get_system_status()
+        html_content = generate_status_html(status_data)
+        return html_content
+    except Exception as e:
+        logger.error(f"Erreur lors de la génération du widget d'état: {e}")
+        return f"""
+        <div style="color: red; padding: 20px; text-align: center;">
+            <h3>Erreur de chargement du statut</h3>
+            <p>{str(e)}</p>
+        </div>
+        """
 
 @app.post("/chat")
 async def chat(request: dict):

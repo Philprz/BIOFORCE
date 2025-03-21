@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démo - Statut du Système Bioforce</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #FF5733;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .panel {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #555;
+        }
+        .demo-section {
+            margin-top: 40px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #e04726;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .status-display {
+            min-height: 200px;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+        .status-widget-container {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .widget-label {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background-color: white;
+            padding: 0 10px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bioforce System Status</h1>
+        
+        <div class="panel">
+            <h2>À propos de cette page</h2>
+            <p>Cette page de démonstration vous permet de tester l'état du système Bioforce et d'afficher l'indicateur de statut (feu tricolore) qui peut être intégré dans toutes les pages du chatbot.</p>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Statut actuel du système</h2>
+            
+            <div class="status-widget-container">
+                <span class="widget-label">Widget de statut intégré</span>
+                <div id="system-status-container"></div>
+            </div>
+            
+            <div class="controls">
+                <button id="refresh-status">Rafraîchir le statut</button>
+                <button id="show-raw-data">Afficher les données brutes</button>
+            </div>
+            
+            <div id="status-raw-data" class="status-display">
+                <pre>Cliquez sur "Afficher les données brutes" pour voir le JSON retourné par l'API</pre>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>Intégration dans votre application</h2>
+            
+            <p>Pour intégrer cet indicateur de statut dans votre application, ajoutez le code suivant à vos pages HTML :</p>
+            
+            <pre>&lt;div id="system-status-container"&gt;&lt;/div&gt;
+&lt;script src="/static/system-status.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    initSystemStatusIndicator({
+        apiUrl: '/system-status',
+        position: 'top-right',
+        size: 'medium',
+        autoRefresh: true,
+        refreshInterval: 60000 // 1 minute
+    });
+&lt;/script&gt;</pre>
+        </div>
+        
+        <div class="footer">
+            <p>Bioforce Chatbot &copy; 2025</p>
+        </div>
+    </div>
+    
+    <script src="/static/system-status.js"></script>
+    <script>
+        // Initialiser l'indicateur de statut
+        let statusIndicator = new SystemStatusIndicator({
+            apiUrl: '/system-status',
+            position: 'top-right',
+            size: 'medium',
+            autoRefresh: false
+        }).init();
+        
+        // Gestionnaires d'événements pour les boutons
+        document.getElementById('refresh-status').addEventListener('click', () => {
+            statusIndicator.refresh();
+        });
+        
+        document.getElementById('show-raw-data').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/system-status');
+                const data = await response.json();
+                document.getElementById('status-raw-data').innerHTML = 
+                    `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('status-raw-data').innerHTML = 
+                    `<pre style="color: red">Erreur: ${error.message}</pre>`;
+            }
+        });
+    </script>
+</body>
+</html>

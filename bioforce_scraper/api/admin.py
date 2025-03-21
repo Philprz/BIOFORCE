@@ -18,7 +18,7 @@ import traceback
 # Ajout du répertoire parent au path pour les importations
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
-from bioforce_scraper.config import VERSION, GITHUB_REPO
+from bioforce_scraper.config import VERSION, GITHUB_REPO, VECTOR_SIZE
 from bioforce_scraper.utils.qdrant_connector import QdrantConnector
 
 # Création du router FastAPI
@@ -276,8 +276,8 @@ async def get_status_route():
             results["qdrant"]["details"] = {
                 "error": str(e),
                 "error_type": type(e).__name__,
-                "host": getattr(qdrant.client, "_host", "Non disponible"),
-                "port": getattr(qdrant.client, "_port", "Non disponible"),
+                "host": getattr(qdrant, "url", "Non disponible"),
+                "port": getattr(qdrant, "collection_name", "Non disponible"),
                 "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
         
@@ -512,12 +512,15 @@ async def get_qdrant_stats_route():
         add_debug_log("Récupération des statistiques via qdrant.get_stats()")
         
         try:
-            # Test de recherche simple pour vérifier la disponibilité réelle
+            # Test de recherche simple pour vérifier la disponibilité complète
             add_debug_log("Test de recherche simple pour vérifier la disponibilité complète")
             
             # Requête de recherche simple
-            test_query_vector = [0.0] * qdrant.dim  # Vecteur de test (tous zéros)
-            test_search = await qdrant.search_points(test_query_vector, limit=1)
+            test_query_vector = [0.0] * VECTOR_SIZE  # Vecteur de test (tous zéros)
+            test_search = await qdrant.search(
+                query_vector=test_query_vector,
+                limit=1
+            )
             
             add_debug_log(f"Test de recherche réussi - {len(test_search)} résultats retournés", "info", {
                 "results_count": len(test_search),
@@ -709,3 +712,153 @@ async def save_email_template_route(template: EmailTemplate):
             status_code=500,
             content={"success": False, "message": f"Erreur serveur: {str(e)}"}
         )
+
+@router.get("/status-demo")
+async def get_status_demo_route():
+    """
+    Redirige vers la page de démonstration du statut système
+    """
+    return HTMLResponse(
+        content="""
+        <html>
+            <head>
+                <title>État du système (Feu tricolore)</title>
+            </head>
+            <body>
+                <h1>État du système (Feu tricolore)</h1>
+                <ul>
+                    <li><a href="javascript:void(0);" onclick="loadContent('/admin/system-info')">Informations système</a></li>
+                    <li><a href="javascript:void(0);" onclick="loadContent('/admin/qdrant-stats')">Statistiques Qdrant</a></li>
+                    <li><a href="/static/status-demo.html" target="_blank">État du système (Feu tricolore)</a></li>
+                </ul>
+            </div>
+        </body>
+    </html>
+    """, 
+        status_code=200
+    )
+
+CSS_STYLES = """
+.status-indicator-sidebar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    background-color: #1f1f1f;
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: white;
+}
+
+.status-light-sidebar {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-light-sidebar.green {
+    background-color: #2ecc71;
+    box-shadow: 0 0 5px #2ecc71;
+}
+.status-light-sidebar.orange {
+    background-color: #f39c12;
+    box-shadow: 0 0 5px #f39c12;
+}
+.status-light-sidebar.red {
+    background-color: #e74c3c;
+    box-shadow: 0 0 5px #e74c3c;
+}
+.status-light-sidebar.unknown {
+    background-color: #95a5a6;
+    box-shadow: 0 0 5px #95a5a6;
+}
+"""
+
+CONTENT_SCRIPT = """
+<script>
+// Fonction pour charger et afficher l'état du système
+function loadSystemStatus() {
+    fetch('/system-status')
+        .then(response => response.json())
+        .then(data => {
+            const statusContainer = document.getElementById('system-status-sidebar');
+            if (statusContainer) {
+                const statusLight = statusContainer.querySelector('.status-light-sidebar');
+                const statusText = statusContainer.querySelector('.status-text');
+                
+                // Mettre à jour la classe et le texte
+                statusLight.className = 'status-light-sidebar ' + data.overall_status;
+                
+                // Déterminer le message à afficher
+                let statusMessage = 'Inconnu';
+                switch(data.overall_status) {
+                    case 'green': statusMessage = 'Opérationnel'; break;
+                    case 'orange': statusMessage = 'Problèmes mineurs'; break;
+                    case 'red': statusMessage = 'Problèmes majeurs'; break;
+                }
+                
+                statusText.textContent = statusMessage;
+                
+                // Mettre à jour l'infobulle
+                const tooltip = [];
+                for (const [name, service] of Object.entries(data.services)) {
+                    tooltip.push(`${service.name}: ${service.message}`);
+                }
+                statusContainer.title = tooltip.join('\\n');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération de l\'état du système:', error);
+            const statusContainer = document.getElementById('system-status-sidebar');
+            if (statusContainer) {
+                const statusLight = statusContainer.querySelector('.status-light-sidebar');
+                const statusText = statusContainer.querySelector('.status-text');
+                
+                statusLight.className = 'status-light-sidebar red';
+                statusText.textContent = 'Erreur';
+                statusContainer.title = 'Impossible de récupérer l\'état du système';
+            }
+        });
+}
+
+// Charger l'état du système au démarrage
+document.addEventListener('DOMContentLoaded', function() {
+    loadSystemStatus();
+    // Rafraîchir toutes les 60 secondes
+    setInterval(loadSystemStatus, 60000);
+});
+</script>
+"""
+
+@router.get("/system-status", response_class=HTMLResponse)
+async def get_system_status_route(request: Request):
+    """
+    Redirige vers le site statique d'administration sur Render
+    """
+    return HTMLResponse(
+        content="""
+        <html>
+            <head>
+                <title>État du système</title>
+                <style>
+                    """ + CSS_STYLES + """
+                </style>
+            </head>
+            <body>
+                <h1>Administration Bioforce</h1>
+                <h2>État du système</h2>
+                <div id="system-status-sidebar" class="status-indicator-sidebar" onclick="window.open('/static/status-demo.html', '_blank')">
+                    <span class="status-light-sidebar unknown"></span>
+                    <span class="status-text">Chargement...</span>
+                </div>
+                """ + CONTENT_SCRIPT + """
+            </div>
+        </body>
+    </html>
+    """, 
+        status_code=200
+    )
