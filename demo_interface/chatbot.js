@@ -1,7 +1,7 @@
 // Configuration de l'API
 // Possibilité de choisir entre l'API locale et l'API en production
 const API_LOCAL = 'http://localhost:8000'; 
-const API_PRODUCTION = 'https://bioforce-interface.onrender.com';  // URL exacte de votre API sur Render
+const API_PRODUCTION = 'https://bioforce-admin.onrender.com';  // URL exacte de votre API sur Render
 const ADMIN_PRODUCTION = 'https://bioforce-admin.onrender.com';    // URL exacte de l'admin sur Render
 const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); // Détection automatique
 const API_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;

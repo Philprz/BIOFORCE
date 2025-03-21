@@ -5,7 +5,7 @@
 
 // Configuration de base
 const API_LOCAL = window.location.origin; // Utiliser l'origine actuelle comme API locale
-const API_PRODUCTION = 'https://bioforce-interface.onrender.com';
+const API_PRODUCTION = 'https://bioforce-admin.onrender.com';
 const USE_PRODUCTION_API = window.location.hostname.includes('render.com');
 const API_BASE_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
 
