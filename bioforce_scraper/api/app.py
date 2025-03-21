@@ -398,8 +398,12 @@ async def chat(request: dict):
         # Le contexte peut contenir des informations spécifiques à la session que nous utiliserons ultérieurement
         session_context = request.get("context", {})
         
+        logger.info(f"[CHAT] Nouvelle requête - User: {user_id}, Nombre de messages: {len(messages)}")
+        logger.debug(f"[CHAT] Contexte de session: {session_context}")
+        
         # Vérifier qu'il y a au moins un message
         if not messages:
+            logger.warning("[CHAT] Requête reçue sans message")
             return JSONResponse(
                 status_code=400,
                 content={"status": "error", "message": "Aucun message fourni"}
@@ -407,9 +411,11 @@ async def chat(request: dict):
         
         # Obtenir le dernier message de l'utilisateur
         last_message = messages[-1]["content"]
+        logger.debug(f"[CHAT] Traitement du message: '{last_message}'")
         
         # Vérifier les commandes spéciales (comme *Admin*)
         if last_message.strip() == "*Admin*":
+            logger.info("[CHAT] Commande spéciale *Admin* détectée")
             return {
                 "status": "success",
                 "message": {
@@ -421,16 +427,47 @@ async def chat(request: dict):
             }
         
         # Créer un embedding pour la requête
-        query_embedding = await generate_embeddings(last_message)
+        logger.debug("[CHAT] Génération de l'embedding pour la requête...")
+        try:
+            query_embedding = await generate_embeddings(last_message)
+            logger.debug(f"[CHAT] Embedding généré avec succès (taille: {len(query_embedding)})")
+        except Exception as e:
+            logger.error(f"[CHAT] Erreur lors de la génération de l'embedding: {str(e)}")
+            logger.error(f"[CHAT] Type d'erreur: {type(e).__name__}")
+            import traceback
+            logger.error(f"[CHAT] Stack trace: {traceback.format_exc()}")
+            raise Exception("Impossible de générer l'embedding pour la requête")
+            
         if not query_embedding:
+            logger.error("[CHAT] L'embedding généré est vide ou None")
             raise Exception("Impossible de générer l'embedding pour la requête")
         
         # On peut utiliser le contexte pour ajuster les filtres de recherche si nécessaire
         additional_filters = session_context.get("filters", {})
+        logger.debug(f"[CHAT] Filtres additionnels: {additional_filters}")
         
         # Rechercher dans les deux collections (FAQ et site complet)
-        faq_results = await qdrant_faq.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
-        site_results = await qdrant_full.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
+        logger.debug("[CHAT] Recherche dans la collection FAQ...")
+        try:
+            faq_results = await qdrant_faq.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
+            logger.debug(f"[CHAT] Résultats FAQ: {len(faq_results)} trouvés")
+        except Exception as e:
+            logger.error(f"[CHAT] Erreur lors de la recherche dans la FAQ: {str(e)}")
+            logger.error(f"[CHAT] Type d'erreur: {type(e).__name__}")
+            import traceback
+            logger.error(f"[CHAT] Stack trace: {traceback.format_exc()}")
+            faq_results = []
+        
+        logger.debug("[CHAT] Recherche dans la collection site complet...")
+        try:
+            site_results = await qdrant_full.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
+            logger.debug(f"[CHAT] Résultats Site: {len(site_results)} trouvés")
+        except Exception as e:
+            logger.error(f"[CHAT] Erreur lors de la recherche dans le site complet: {str(e)}")
+            logger.error(f"[CHAT] Type d'erreur: {type(e).__name__}")
+            import traceback
+            logger.error(f"[CHAT] Stack trace: {traceback.format_exc()}")
+            site_results = []
         
         # Combiner les résultats (avec priorité à la FAQ si pertinent)
         combined_results = []
@@ -443,17 +480,27 @@ async def chat(request: dict):
         ]
         
         is_faq_related = any(keyword in last_message.lower() for keyword in faq_keywords)
+        logger.debug(f"[CHAT] Question liée à la FAQ: {is_faq_related}")
         
         # Prioriser selon le type de question
         if is_faq_related and faq_results and faq_results[0]["score"] > 0.7:
             # Question FAQ, prioriser ces résultats
+            logger.debug("[CHAT] Priorité aux résultats FAQ (score élevé et question liée à la FAQ)")
             combined_results = faq_results + site_results
         elif site_results and site_results[0]["score"] > 0.7:
             # Question site, prioriser ces résultats
+            logger.debug("[CHAT] Priorité aux résultats du site (score élevé)")
             combined_results = site_results + faq_results
         else:
             # Pas de préférence claire, mélanger selon les scores
+            logger.debug("[CHAT] Pas de préférence claire, mélange des résultats par score")
             combined_results = sorted(faq_results + site_results, key=lambda x: x["score"], reverse=True)
+        
+        logger.debug(f"[CHAT] Résultats combinés: {len(combined_results)} au total")
+        if combined_results:
+            logger.debug(f"[CHAT] Meilleur score: {combined_results[0]['score']}")
+        else:
+            logger.warning("[CHAT] Aucun résultat trouvé!")
         
         # Générer la réponse
         bot_response = ""
@@ -461,41 +508,75 @@ async def chat(request: dict):
         
         # Vérifier si nous avons des résultats pertinents (score > 0.7)
         has_relevant_results = combined_results and combined_results[0]["score"] > 0.7
+        logger.debug(f"[CHAT] Résultats pertinents trouvés: {has_relevant_results}")
         
         if has_relevant_results:
             # Utiliser le résultat le plus pertinent
             top_result = combined_results[0]
-            bot_response = top_result["content"]
+            logger.debug(f"[CHAT] Utilisation du résultat le plus pertinent (score: {top_result['score']})")
+            
+            # Vérifier si le contenu est présent
+            if 'content' not in top_result:
+                logger.warning(f"[CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: {list(top_result.keys())}")
+                # Essayer de trouver le contenu dans d'autres champs possibles
+                if 'answer' in top_result:
+                    logger.debug("[CHAT] Utilisation du champ 'answer' comme contenu")
+                    bot_response = top_result["answer"]
+                else:
+                    logger.error("[CHAT] Aucun contenu utilisable trouvé dans le résultat")
+                    bot_response = "Je suis désolé, je n'ai pas trouvé de contenu utilisable pour répondre à votre question."
+            else:
+                bot_response = top_result["content"]
             
             # Ajouter les références
             for result in combined_results[:3]:  # Limiter à 3 références
                 if result["score"] > 0.6:  # Seuil de pertinence pour les références
-                    references.append({
+                    reference = {
                         "title": result.get("title", ""),
                         "url": result.get("source_url", ""),
                         "score": result["score"]
-                    })
+                    }
+                    logger.debug(f"[CHAT] Ajout de la référence: {reference['title']} (score: {reference['score']})")
+                    references.append(reference)
         else:
             # Pas de résultat pertinent trouvé, reformuler la question et fournir la meilleure réponse
+            logger.debug("[CHAT] Pas de résultat pertinent, construction d'une réponse alternative")
             best_result = combined_results[0] if combined_results else None
             
             if best_result:
+                logger.debug(f"[CHAT] Utilisation du meilleur résultat disponible (score: {best_result['score']})")
+                
+                # Vérifier si le contenu est présent
+                if 'content' not in best_result:
+                    logger.warning(f"[CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: {list(best_result.keys())}")
+                    # Essayer de trouver le contenu dans d'autres champs possibles
+                    if 'answer' in best_result:
+                        content = best_result["answer"]
+                    else:
+                        logger.error("[CHAT] Aucun contenu utilisable trouvé dans le résultat")
+                        content = "Information non disponible"
+                else:
+                    content = best_result['content']
+                
                 # Construire une réponse qui reconnaît l'absence de correspondance exacte
                 bot_response = (
                     f"Je n'ai pas trouvé de réponse exacte à votre question '{last_message}'. "
                     f"Cependant, voici l'information la plus proche dont je dispose :\n\n"
-                    f"{best_result['content']}\n\n"
+                    f"{content}\n\n"
                     f"Cette réponse traite de '{best_result.get('title', 'ce sujet')}' qui pourrait être lié à votre question."
                 )
                 
                 # Ajouter la référence
-                references.append({
+                reference = {
                     "title": best_result.get("title", ""),
                     "url": best_result.get("source_url", ""),
                     "score": best_result["score"]
-                })
+                }
+                logger.debug(f"[CHAT] Ajout de la référence: {reference['title']} (score: {reference['score']})")
+                references.append(reference)
             else:
                 # Aucun résultat du tout
+                logger.warning("[CHAT] Aucun résultat trouvé, retour d'une réponse par défaut")
                 bot_response = (
                     f"Je n'ai pas trouvé d'information sur votre question '{last_message}'. "
                     f"Je vous invite à reformuler votre question ou à contacter directement notre équipe "
@@ -503,9 +584,10 @@ async def chat(request: dict):
                 )
         
         # Logger la requête et la réponse
-        logger.info(f"Chat - User: {user_id}, Question: '{last_message}'")
+        logger.info(f"[CHAT] Réponse générée pour l'utilisateur {user_id} - Longueur: {len(bot_response)} caractères")
         
         # Retourner la réponse
+        logger.debug("[CHAT] Envoi de la réponse")
         return {
             "status": "success",
             "message": {
@@ -517,7 +599,10 @@ async def chat(request: dict):
         }
     
     except Exception as e:
-        logger.error(f"Erreur lors du traitement du chat: {e}")
+        logger.error(f"[CHAT] Erreur lors du traitement du chat: {str(e)}")
+        logger.error(f"[CHAT] Type d'erreur: {type(e).__name__}")
+        import traceback
+        logger.error(f"[CHAT] Stack trace: {traceback.format_exc()}")
         return JSONResponse(
             status_code=500,
             content={"status": "error", "message": str(e)}
