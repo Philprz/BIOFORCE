@@ -1,17 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, Body, Query
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from pydantic import BaseModel
+from typing import List, Dict, Any
 from datetime import datetime
 import os
-import asyncio
 import json
 import logging
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from dotenv import load_dotenv
 import uvicorn
-import uuid
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -237,7 +235,7 @@ async def chat(request: ChatRequest):
         try:
             qdrant_results = await search_knowledge_base(last_message)
             if qdrant_results:
-                context = "\n\n".join([f"Q: {item.question}\nR: {item.answer}" for item in qdrant_results])
+                context = "\n\n".join([f"Q: {item['question']}\nR: {item['answer']}" for item in qdrant_results])
         except Exception as e:
             logger.error(f"Erreur lors de la requête Qdrant: {e}")
             # On continue sans contexte
@@ -245,12 +243,16 @@ async def chat(request: ChatRequest):
         # Construire et envoyer la requête à OpenAI
         response_content, references = await get_llm_response(messages, context)
         
+        # Logger l'interaction avec l'identifiant utilisateur
+        logger.info(f"Chat - User: {user_id}, Question: '{last_message}', Context info: {context_info}")
+        
         # Formater et renvoyer la réponse
         return {
             "message": {
                 "role": "assistant",
                 "content": response_content
             },
+            "context": context_info,  # Renvoyer le contexte dans la réponse
             "references": references
         }
     except Exception as e:
@@ -319,4 +321,4 @@ async def debug_api(request: dict = Body(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(__name__ + ":app", host="0.0.0.0", port=8000, reload=True)
