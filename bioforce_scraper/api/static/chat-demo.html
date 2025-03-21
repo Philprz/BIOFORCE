@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioforceBot Chat</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #FF5733;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        .chat-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            background: #007BFF;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            display: inline-block;
+        }
+        .user-message {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .user-message .message-content {
+            background: #007BFF;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .bot-message {
+            display: flex;
+            justify-content: flex-start;
+        }
+        .bot-message .message-content {
+            background: #E9E9E9;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 1rem;
+        }
+        .chat-input button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-left: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .chat-input button:hover {
+            background: #0069d9;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .references {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            margin-top: 5px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+        }
+        .ref-title {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .ref-item {
+            margin-bottom: 5px;
+        }
+        .ref-item a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .ref-item a:hover {
+            text-decoration: underline;
+        }
+        .system-message {
+            text-align: center;
+            margin: 10px 0;
+            font-style: italic;
+            color: #666;
+        }
+        .typing-indicator {
+            display: flex;
+            padding: 5px 15px;
+            background: #E9E9E9;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #888;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing-animation 1.5s infinite;
+        }
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typing-animation {
+            0% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+            100% { opacity: 0.3; transform: translateY(0); }
+        }
+        .admin-link {
+            text-align: right;
+            margin-top: 10px;
+        }
+        .admin-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .admin-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BIOFORCE - Assistant Virtuel</h1>
+    </header>
+    
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="status-indicator"></div>
+                <h2>BioforceBot</h2>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="bot-message message">
+                    <div class="message-content">
+                        Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Tapez votre message ici..." autocomplete="off">
+                <button id="send-button">Envoyer</button>
+            </div>
+        </div>
+        
+        <div class="admin-link">
+            <a href="/admin">Accéder à l'interface d'administration</a>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2025 Bioforce - Tous droits réservés
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            
+            let chatHistory = [{
+                role: "system",
+                content: "Vous êtes BioforceBot, l'assistant virtuel pour les candidats aux formations Bioforce."
+            }, {
+                role: "assistant",
+                content: "Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?"
+            }];
+            
+            function addMessage(content, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isUser ? 'user-message message' : 'bot-message message';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.innerHTML = content.replace(/\n/g, '<br>');
+                
+                messageDiv.appendChild(messageContent);
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Add to chat history
+                chatHistory.push({
+                    role: isUser ? "user" : "assistant",
+                    content: content
+                });
+            }
+            
+            function addTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'bot-message message';
+                typingDiv.id = 'typing-indicator';
+                
+                const typingContent = document.createElement('div');
+                typingContent.className = 'typing-indicator';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'typing-dot';
+                    typingContent.appendChild(dot);
+                }
+                
+                typingDiv.appendChild(typingContent);
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function removeTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            function addReferences(references) {
+                if (!references || references.length === 0) return;
+                
+                const refsDiv = document.createElement('div');
+                refsDiv.className = 'references';
+                
+                const refsTitle = document.createElement('div');
+                refsTitle.className = 'ref-title';
+                refsTitle.textContent = 'Sources:';
+                refsDiv.appendChild(refsTitle);
+                
+                references.forEach(ref => {
+                    const refItem = document.createElement('div');
+                    refItem.className = 'ref-item';
+                    
+                    if (ref.url) {
+                        const link = document.createElement('a');
+                        link.href = ref.url;
+                        link.textContent = ref.title || ref.url;
+                        link.target = '_blank';
+                        refItem.appendChild(link);
+                    } else {
+                        refItem.textContent = ref.title || 'Source';
+                    }
+                    
+                    refsDiv.appendChild(refItem);
+                });
+                
+                chatMessages.appendChild(refsDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            async function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage(message, true);
+                userInput.value = '';
+                
+                // Show typing indicator
+                addTypingIndicator();
+                
+                try {
+                    // Prepare the request to the API
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: 'web-demo-user',
+                            messages: chatHistory.filter(msg => msg.role !== 'system'),
+                            context: {}
+                        })
+                    });
+                    
+                    // Remove typing indicator
+                    removeTypingIndicator();
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Add bot response to chat
+                        addMessage(data.message.content);
+                        
+                        // Add references if available
+                        if (data.references && data.references.length > 0) {
+                            addReferences(data.references);
+                        }
+                    } else {
+                        // Handle API error
+                        addMessage("Désolé, j'ai rencontré un problème pour traiter votre demande. Veuillez réessayer plus tard.");
+                    }
+                } catch (error) {
+                    // Remove typing indicator in case of error
+                    removeTypingIndicator();
+                    
+                    // Handle network error
+                    console.error('Error:', error);
+                    addMessage("Désolé, je ne peux pas vous répondre pour le moment. Veuillez vérifier votre connexion internet et réessayer.");
+                }
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            
+            userInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Focus input on load
+            userInput.focus();
+        });
+    </script>
+</body>
+</html>

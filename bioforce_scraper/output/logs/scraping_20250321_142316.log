@@ -1,0 +1,10 @@
+2025-03-21 14:23:21,535 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-21 14:23:21,736 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-21 14:23:21,737 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-21 14:23:21,740 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-21 14:23:21,742 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-21 14:23:21,743 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-21 14:23:43,636 - bioforce_scraper.api.app - INFO - [CHAT] Nouvelle requête - User: web-demo-user, Nombre de messages: 2
+2025-03-21 14:23:44,493 - bioforce_scraper.api.app - WARNING - [CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: ['id', 'score', 'payload']
+2025-03-21 14:23:44,493 - bioforce_scraper.api.app - ERROR - [CHAT] Aucun contenu utilisable trouvé dans le résultat
+2025-03-21 14:23:44,494 - bioforce_scraper.api.app - INFO - [CHAT] Réponse générée pour l'utilisateur web-demo-user - Longueur: 88 caractères
