@@ -1,0 +1,6 @@
+2025-03-21 10:43:20,144 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-21 10:43:20,339 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-21 10:43:20,341 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-21 10:43:20,343 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-21 10:43:20,348 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-21 10:43:20,349 - bioforce_scraper.api.app - INFO - Planificateur démarré

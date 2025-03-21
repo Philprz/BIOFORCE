@@ -129,7 +129,7 @@ async def query(request: QueryRequest):
         
         # Effectuer la recherche dans la collection appropriée
         if search_type == "faq":
-            search_results = qdrant_faq.search(
+            search_results = await qdrant_faq.search(
                 query_vector=query_embedding,
                 limit=max(20, request.max_results),  
                 filter_conditions=filters
@@ -140,7 +140,7 @@ async def query(request: QueryRequest):
             search_results = sorted(search_results, key=lambda x: x["score"], reverse=True)
             collection_used = "FAQ (BIOFORCE)"
         else:  # "site"
-            search_results = qdrant_full.search(
+            search_results = await qdrant_full.search(
                 query_vector=query_embedding,
                 limit=max(20, request.max_results),  
                 filter_conditions=filters
@@ -154,7 +154,7 @@ async def query(request: QueryRequest):
             # Si on ne trouve pas de résultats pertinents dans le site complet, 
             # essayer aussi la FAQ comme sauvegarde
             if not search_results or search_results[0]["score"] < 0.7:
-                backup_results = qdrant_faq.search(
+                backup_results = await qdrant_faq.search(
                     query_vector=query_embedding,
                     limit=max(20, request.max_results),  
                     filter_conditions=filters
@@ -342,8 +342,8 @@ async def get_qdrant_stats():
     """Endpoint pour récupérer les statistiques de Qdrant"""
     try:
         # Obtenir les statistiques des deux collections
-        faq_stats = qdrant_faq.get_stats()
-        full_stats = qdrant_full.get_stats()
+        faq_stats = await qdrant_faq.get_stats()
+        full_stats = await qdrant_full.get_stats()
         
         return {
             "status": "success",
@@ -429,8 +429,8 @@ async def chat(request: dict):
         additional_filters = session_context.get("filters", {})
         
         # Rechercher dans les deux collections (FAQ et site complet)
-        faq_results = qdrant_faq.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
-        site_results = qdrant_full.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
+        faq_results = await qdrant_faq.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
+        site_results = await qdrant_full.search(query_vector=query_embedding, limit=3, filter_conditions=additional_filters)
         
         # Combiner les résultats (avec priorité à la FAQ si pertinent)
         combined_results = []
@@ -546,8 +546,8 @@ async def startup_event():
     logger.info("Démarrage de l'API Bioforce")
     
     # S'assurer que la collection Qdrant existe
-    qdrant_faq.ensure_collection()
-    qdrant_full.ensure_collection()
+    await qdrant_faq.ensure_collection()
+    await qdrant_full.ensure_collection()
     
     # Démarrer le planificateur si activé
     if SCHEDULER_ENABLED:

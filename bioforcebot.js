@@ -539,7 +539,7 @@ class BioforceBot {
             this._addMessage('user', text);
             
             // Création d'un message avec un lien cliquable
-            const adminLink = "https://bioforce-admin.onrender.com/";
+            const adminLink = "/admin";
             const adminMessage = `Pour accéder à l'interface d'administration, veuillez cliquer sur ce lien : <a href="${adminLink}" target="_blank" style="color: #0099cc; text-decoration: underline; font-weight: bold;">Interface d'administration Bioforce</a>`;
             
             this._addMessage('assistant', adminMessage);
