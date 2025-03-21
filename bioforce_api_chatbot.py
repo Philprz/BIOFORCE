@@ -133,11 +133,14 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         
         results = []
         for scored_point in search_result:
-            # Vérification des clés essentielles avec valeurs par défaut
-            payload = scored_point.payload or {}
-            
+            if isinstance(scored_point, dict):
+                payload = scored_point.get("payload", {})
+                score = scored_point.get("score")
+            else:
+                payload = scored_point.payload or {}
+                score = scored_point.score
             results.append({
-                "score": scored_point.score,
+                "score": score,
                 "question": payload.get("title", "Pas de titre disponible"),
                 "answer": payload.get("content", "Pas de contenu disponible"),
                 "category": payload.get("category", "Non catégorisé"),
