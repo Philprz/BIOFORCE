@@ -1,17 +1,23 @@
 """
-Module de connexion à Qdrant pour stocker les embeddings
+Connecteur pour Qdrant, gestionnaire de vecteurs pour la recherche
 """
-from typing import Dict, List, Any, Optional
+import os
+import logging
+from typing import Dict, List, Optional, Any
+from dotenv import load_dotenv
 
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
+from qdrant_client import AsyncQdrantClient
+from qdrant_client import models
 
-from bioforce_scraper.config import (QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, QDRANT_COLLECTION_ALL, 
-                   VECTOR_SIZE, LOG_FILE)
-from bioforce_scraper.utils.logger import setup_logger
+# Import de la configuration
+from bioforce_scraper.config import VECTOR_SIZE, QDRANT_COLLECTION, QDRANT_COLLECTION_ALL
 
-# Configuration du logger
-logger = setup_logger(__name__, LOG_FILE)
+# Configuration du logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Chargement des variables d'environnement
+load_dotenv()
 
 class QdrantConnector:
     """
@@ -29,176 +35,114 @@ class QdrantConnector:
             collection_name: Nom de la collection (utilisera QDRANT_COLLECTION de config.py si None)
             is_full_site: Si True, utilise la collection pour le site complet (QDRANT_COLLECTION_ALL)
         """
-        self.url = url or QDRANT_URL
-        self.api_key = api_key or QDRANT_API_KEY
-        
-        # Détermine quelle collection utiliser
-        if collection_name:
-            self.collection_name = collection_name
-        else:
-            self.collection_name = QDRANT_COLLECTION_ALL if is_full_site else QDRANT_COLLECTION
-        
-        # Tenter de se connecter à Qdrant
         try:
-            self.client = QdrantClient(url=self.url, api_key=self.api_key)
-            logger.info(f"Connecté à Qdrant: {self.url}, collection: {self.collection_name}")
-        except Exception as e:
-            logger.error(f"Erreur de connexion à Qdrant: {e}")
-            self.client = None
-    
-    def ensure_collection(self, vector_size: int = VECTOR_SIZE) -> bool:
-        """
-        S'assure que la collection existe, la crée si ce n'est pas le cas
-        
-        Args:
-            vector_size: Taille des vecteurs d'embedding
+            self.url = url or os.getenv("QDRANT_URL")
+            self.api_key = api_key or os.getenv("QDRANT_API_KEY")
             
-        Returns:
-            True si la collection existe ou a été créée, False sinon
+            # Détermine quelle collection utiliser
+            if collection_name:
+                self.collection_name = collection_name
+            else:
+                self.collection_name = os.getenv("QDRANT_COLLECTION_ALL", QDRANT_COLLECTION_ALL) if is_full_site else os.getenv("QDRANT_COLLECTION", QDRANT_COLLECTION)
+            
+            logger.info(f"URL Qdrant: {self.url}")
+            logger.info(f"API Key Qdrant: {self.api_key[:10]}... (tronquée pour sécurité)")
+            logger.info(f"Collection Qdrant: {self.collection_name}")
+            
+            if not self.url:
+                raise ValueError("URL Qdrant non configurée. Définissez QDRANT_URL dans le fichier .env")
+            
+            if not self.api_key:
+                raise ValueError("API Key Qdrant non configurée. Définissez QDRANT_API_KEY dans le fichier .env")
+            
+            # Initialisation avec la nouvelle version de qdrant-client
+            self.client = AsyncQdrantClient(url=self.url, api_key=self.api_key, timeout=30)
+            logger.info(f"Connexion à Qdrant initialisée: {self.url}, collection: {self.collection_name}")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation de la connexion Qdrant: {str(e)}")
+            # On relève l'exception pour ne pas masquer l'erreur
+            raise
+    
+    async def ensure_collection(self, vector_size: int = VECTOR_SIZE) -> bool:
         """
-        if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return False
-        
+        S'assure que la collection existe et crée celle-ci si nécessaire
+        """
         try:
             # Vérifier si la collection existe
-            collections = self.client.get_collections().collections
-            collection_names = [collection.name for collection in collections]
+            collections = await self.client.get_collections()
+            collection_names = [collection.name for collection in collections.collections]
             
-            if self.collection_name not in collection_names:
-                # Créer la collection
-                self.client.create_collection(
-                    collection_name=self.collection_name,
-                    vectors_config=models.VectorParams(
-                        size=vector_size,
-                        distance=models.Distance.COSINE
-                    )
-                )
-                
-                # Créer les index pour la recherche par payload
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="source_url",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="type",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="category",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="language",
-                    field_schema=models.PayloadSchemaType.KEYWORD
-                )
-                
-                logger.info(f"Collection '{self.collection_name}' créée avec succès")
-            else:
-                logger.info(f"Collection '{self.collection_name}' existe déjà")
+            if self.collection_name in collection_names:
+                # La collection existe déjà
+                # Récupérer le nombre de points pour le log
+                count = await self.client.count(collection_name=self.collection_name)
+                logger.info(f"Collection {self.collection_name} trouvée avec {count.count} points")
+                return True
             
+            # La collection n'existe pas, on la crée
+            await self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=models.VectorParams(
+                    size=vector_size,
+                    distance=models.Distance.COSINE
+                )
+            )
+            logger.info(f"Collection {self.collection_name} créée avec succès")
             return True
             
         except Exception as e:
-            logger.error(f"Erreur lors de la création de la collection: {e}")
+            logger.error(f"Erreur lors de la vérification/création de la collection {self.collection_name}: {str(e)}")
             return False
     
-    def search(self, query_vector: List[float], limit: int = 5, 
-              filter_conditions: Optional[Dict] = None) -> List[Dict]:
+    async def search(self, query_vector: List[float], limit: int = 5, 
+               filter_conditions: Optional[Dict] = None) -> List[Dict]:
         """
-        Recherche les documents les plus similaires au vecteur de requête
-        
-        Args:
-            query_vector: Vecteur d'embedding de la requête
-            limit: Nombre maximum de résultats
-            filter_conditions: Conditions de filtrage (par exemple, par type de document)
-            
-        Returns:
-            Liste des documents trouvés avec leurs scores de similarité
+        Effectue une recherche par similarité dans Qdrant
         """
-        if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return []
-        
         try:
-            # Préparer les filtres s'ils existent
-            search_filter = None
-            if filter_conditions:
-                filter_must = []
-                
-                for field, value in filter_conditions.items():
-                    if isinstance(value, list):
-                        # Pour les listes (OR)
-                        should = []
-                        for v in value:
-                            should.append(models.FieldCondition(
-                                key=field,
-                                match=models.MatchValue(value=v)
-                            ))
-                        filter_must.append(models.Filter(should=should))
-                    else:
-                        # Pour les valeurs simples (AND)
-                        filter_must.append(models.FieldCondition(
-                            key=field,
-                            match=models.MatchValue(value=value)
-                        ))
-                
-                search_filter = models.Filter(must=filter_must)
+            if filter_conditions is None:
+                search_result = await self.client.search(
+                    collection_name=self.collection_name,
+                    query_vector=query_vector,
+                    limit=limit
+                )
+            else:
+                search_result = await self.client.search(
+                    collection_name=self.collection_name,
+                    query_vector=query_vector,
+                    limit=limit,
+                    query_filter=models.Filter(
+                        must=[
+                            models.FieldCondition(
+                                key=key,
+                                match=models.MatchValue(value=value)
+                            ) for key, value in filter_conditions.items()
+                        ]
+                    )
+                )
             
-            # Effectuer la recherche
-            search_result = self.client.search(
-                collection_name=self.collection_name,
-                query_vector=query_vector,
-                limit=limit,
-                query_filter=search_filter,
-                with_payload=True,
-                with_vectors=False
-            )
-            
-            # Formater les résultats
+            # Convertir les résultats en dictionnaires
             results = []
-            for scoring_point in search_result:
-                results.append({
-                    "id": scoring_point.id,
-                    "score": scoring_point.score,
-                    "payload": scoring_point.payload
-                })
+            for scored_point in search_result:
+                point_dict = {
+                    "id": scored_point.id,
+                    "score": scored_point.score,
+                    "payload": scored_point.payload
+                }
+                results.append(point_dict)
             
             return results
-            
+        
         except Exception as e:
-            logger.error(f"Erreur lors de la recherche: {e}")
+            logger.error(f"Erreur lors de la recherche dans Qdrant: {str(e)}")
             return []
     
-    def upsert_document(self, id: str, vector: List[float], payload: Dict[str, Any]) -> bool:
+    async def upsert_document(self, id: str, vector: List[float], payload: Dict[str, Any]) -> bool:
         """
-        Insère ou met à jour un document dans Qdrant
-        
-        Args:
-            id: Identifiant unique du document
-            vector: Vecteur d'embedding
-            payload: Métadonnées du document
-            
-        Returns:
-            True si l'opération a réussi, False sinon
+        Ajoute ou met à jour un document dans Qdrant
         """
-        if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return False
-        
         try:
-            # S'assurer que la collection existe
-            self.ensure_collection()
-            
-            # Insérer ou mettre à jour le document
-            self.client.upsert(
+            await self.client.upsert(
                 collection_name=self.collection_name,
                 points=[
                     models.PointStruct(
@@ -208,61 +152,38 @@ class QdrantConnector:
                     )
                 ]
             )
-            
-            logger.info(f"Document inséré/mis à jour avec succès: ID={id}")
+            logger.debug(f"Document {id} ajouté/mis à jour avec succès")
             return True
             
         except Exception as e:
-            logger.error(f"Erreur lors de l'insertion/mise à jour du document: {e}")
+            logger.error(f"Erreur lors de l'ajout/mise à jour du document {id}: {str(e)}")
             return False
     
-    def delete_document(self, id: str) -> bool:
+    async def delete_document(self, id: str) -> bool:
         """
         Supprime un document de Qdrant
-        
-        Args:
-            id: Identifiant unique du document
-            
-        Returns:
-            True si l'opération a réussi, False sinon
         """
-        if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return False
-        
         try:
-            # Supprimer le document
-            self.client.delete(
+            await self.client.delete(
                 collection_name=self.collection_name,
                 points_selector=models.PointIdsList(
                     points=[id]
                 )
             )
-            
-            logger.info(f"Document supprimé avec succès: ID={id}")
+            logger.debug(f"Document {id} supprimé avec succès")
             return True
             
         except Exception as e:
-            logger.error(f"Erreur lors de la suppression du document: {e}")
+            logger.error(f"Erreur lors de la suppression du document {id}: {str(e)}")
             return False
     
-    def get_document_by_url(self, url: str) -> List[Dict]:
+    async def get_document_by_url(self, url: str) -> List[Dict]:
         """
-        Récupère les documents associés à une URL
-        
-        Args:
-            url: URL source du document
-            
-        Returns:
-            Liste des documents trouvés
+        Récupère un document par son URL
         """
-        if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return []
-        
         try:
-            # Rechercher par URL
-            search_result = self.client.scroll(
+            # Recherche par URL dans le payload
+            result = await self.client.scroll(
                 collection_name=self.collection_name,
                 scroll_filter=models.Filter(
                     must=[
@@ -272,74 +193,63 @@ class QdrantConnector:
                         )
                     ]
                 ),
-                limit=100,
-                with_payload=True,
-                with_vectors=False
+                limit=10  # Limite à 10 documents au cas où il y aurait des doublons
             )
             
-            points, _ = search_result
-            
-            # Formater les résultats
-            results = []
-            for point in points:
-                results.append({
+            if not result.points:
+                return []
+                
+            # Convertir les résultats
+            documents = []
+            for point in result.points:
+                documents.append({
                     "id": point.id,
                     "payload": point.payload
                 })
-            
-            return results
+                
+            return documents
             
         except Exception as e:
-            logger.error(f"Erreur lors de la récupération des documents par URL: {e}")
+            logger.error(f"Erreur lors de la recherche du document par URL {url}: {str(e)}")
             return []
     
-    def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> Dict[str, Any]:
         """
-        Récupère des statistiques sur la collection
-        
-        Returns:
-            Dictionnaire contenant les statistiques
+        Récupère les statistiques de la collection
         """
-        if not self.client:
-            logger.error("Client Qdrant non initialisé")
-            return {}
-        
         try:
-            # Récupérer les statistiques de la collection
-            collection_info = self.client.get_collection(self.collection_name)
+            # Vérifier que la collection existe
+            collections = await self.client.get_collections()
+            collection_names = [collection.name for collection in collections.collections]
             
-            # Calculer les statistiques par type de document
-            stats_by_type = {}
+            if self.collection_name not in collection_names:
+                return {
+                    "status": "error",
+                    "message": f"Collection {self.collection_name} non trouvée",
+                    "collection_exists": False,
+                    "count": 0
+                }
+                
+            # Récupérer les informations de la collection
+            count = await self.client.count(collection_name=self.collection_name)
             
-            try:
-                # Récupérer les types uniques
-                scroll_result = self.client.scroll(
-                    collection_name=self.collection_name,
-                    scroll_filter=None,
-                    limit=10000,
-                    with_payload=["type"],
-                    with_vectors=False
-                )
-                
-                points, _ = scroll_result
-                
-                # Compter les occurrences de chaque type
-                for point in points:
-                    doc_type = point.payload.get("type", "unknown")
-                    if doc_type not in stats_by_type:
-                        stats_by_type[doc_type] = 0
-                    stats_by_type[doc_type] += 1
-                    
-            except Exception as e:
-                logger.error(f"Erreur lors du calcul des statistiques par type: {e}")
+            # Récupérer une répartition par type de document
+            types_stats = {}
+            categories_stats = {}
             
             return {
-                "points_count": collection_info.points_count,
-                "vectors_count": collection_info.vectors_count,
-                "indexed_vectors_count": collection_info.indexed_vectors_count,
-                "by_type": stats_by_type
+                "status": "success",
+                "collection_exists": True,
+                "count": count.count,
+                "types": types_stats,
+                "categories": categories_stats
             }
             
         except Exception as e:
-            logger.error(f"Erreur lors de la récupération des statistiques: {e}")
-            return {}
+            logger.error(f"Erreur lors de la récupération des statistiques: {str(e)}")
+            return {
+                "status": "error", 
+                "message": str(e),
+                "collection_exists": False,
+                "count": 0
+            }

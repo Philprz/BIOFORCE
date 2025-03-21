@@ -150,7 +150,7 @@ class SystemStatusManager:
         
         try:
             # Initialiser le client Qdrant
-            client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+            client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, timeout=10)
             
             # Vérifier que Qdrant répond
             collections = await client.get_collections()
@@ -158,7 +158,6 @@ class SystemStatusManager:
             
             # Vérifier si la collection existe
             if QDRANT_COLLECTION in collection_names:
-                collection_info = await client.get_collection(collection_name=QDRANT_COLLECTION)
                 count = await client.count(collection_name=QDRANT_COLLECTION)
                 
                 # Faire une recherche simple pour vérifier la fonctionnalité complète
@@ -175,7 +174,6 @@ class SystemStatusManager:
                     {
                         "collections": collection_names,
                         "collection_info": {
-                            "vectors_count": collection_info.vectors_count if hasattr(collection_info, 'vectors_count') else "N/A",
                             "points_count": count.count
                         },
                         "search_test": len(search_result) > 0
