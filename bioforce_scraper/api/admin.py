@@ -299,11 +299,17 @@ async def get_status_route():
 @router.get("/", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
     """
-    Redirige vers le site statique d'administration sur Render
+    Page d'administration principale
     """
-    return HTMLResponse(
-        content='<script>window.location.href = "https://bioforce-admin.onrender.com";</script>', 
-        status_code=200
+    system_info = {
+        "version": VERSION,
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        "platform": platform.system(),
+        "current_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    return templates.TemplateResponse(
+        "admin_dashboard.html", 
+        {"request": request, "system_info": system_info}
     )
 
 @router.post("/run-faq-scraper")
