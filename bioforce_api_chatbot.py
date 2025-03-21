@@ -1,17 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, Body, Query
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from pydantic import BaseModel
+from typing import List, Dict, Any
 from datetime import datetime
 import os
-import asyncio
 import json
 import logging
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from dotenv import load_dotenv
 import uvicorn
-import uuid
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -135,10 +133,10 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         for scored_point in search_result:
             results.append({
                 "score": scored_point.score,
-                "question": scored_point.payload.get("question"),
-                "answer": scored_point.payload.get("answer"),
+                "question": scored_point.payload.get("title"),
+                "answer": scored_point.payload.get("content"),
                 "category": scored_point.payload.get("category"),
-                "url": scored_point.payload.get("url")
+                "url": scored_point.payload.get("source_url")
             })
         
         return results
