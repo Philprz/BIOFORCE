@@ -1,0 +1,31 @@
+2025-03-21 12:02:20,912 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-21 12:02:21,171 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-21 12:02:21,174 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-21 12:02:21,176 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-21 12:02:21,184 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-21 12:02:21,185 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-21 12:03:29,974 - bioforce_scraper.api.app - INFO - [CHAT] Nouvelle requête - User: test-user-123, Nombre de messages: 1
+2025-03-21 12:03:31,132 - bioforce_scraper.api.app - WARNING - [CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: ['id', 'score', 'payload']
+2025-03-21 12:03:31,135 - bioforce_scraper.api.app - ERROR - [CHAT] Aucun contenu utilisable trouvé dans le résultat
+2025-03-21 12:03:31,135 - bioforce_scraper.api.app - INFO - [CHAT] Réponse générée pour l'utilisateur test-user-123 - Longueur: 88 caractères
+2025-03-21 12:04:27,639 - bioforce_scraper.api.app - INFO - [CHAT] Nouvelle requête - User: demo-user-928, Nombre de messages: 1
+2025-03-21 12:04:28,538 - bioforce_scraper.api.app - WARNING - [CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: ['id', 'score', 'payload']
+2025-03-21 12:04:28,539 - bioforce_scraper.api.app - ERROR - [CHAT] Aucun contenu utilisable trouvé dans le résultat
+2025-03-21 12:04:28,539 - bioforce_scraper.api.app - INFO - [CHAT] Réponse générée pour l'utilisateur demo-user-928 - Longueur: 88 caractères
+2025-03-21 12:07:21,184 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-21 12:07:21,185 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-21 12:07:21,186 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-21 12:07:52,220 - bioforce_scraper.api.app - INFO - [CHAT] Nouvelle requête - User: demo-user-730, Nombre de messages: 1
+2025-03-21 12:07:53,117 - bioforce_scraper.api.app - WARNING - [CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: ['id', 'score', 'payload']
+2025-03-21 12:07:53,118 - bioforce_scraper.api.app - ERROR - [CHAT] Aucun contenu utilisable trouvé dans le résultat
+2025-03-21 12:07:53,119 - bioforce_scraper.api.app - INFO - [CHAT] Réponse générée pour l'utilisateur demo-user-730 - Longueur: 88 caractères
+2025-03-21 12:12:21,194 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-21 12:12:21,197 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-21 12:12:21,198 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
+2025-03-21 12:16:29,828 - bioforce_scraper.api.app - INFO - [CHAT] Nouvelle requête - User: demo-user-978, Nombre de messages: 1
+2025-03-21 12:16:30,830 - bioforce_scraper.api.app - WARNING - [CHAT] Clé 'content' manquante dans le résultat. Clés disponibles: ['id', 'score', 'payload']
+2025-03-21 12:16:30,831 - bioforce_scraper.api.app - ERROR - [CHAT] Aucun contenu utilisable trouvé dans le résultat
+2025-03-21 12:16:30,832 - bioforce_scraper.api.app - INFO - [CHAT] Réponse générée pour l'utilisateur demo-user-978 - Longueur: 88 caractères
+2025-03-21 12:17:21,188 - bioforce_scraper.scheduler - INFO - Envoi des rappels aux utilisateurs
+2025-03-21 12:17:21,189 - bioforce_scraper.utils.reminder_service - INFO - Envoi des rappels aux utilisateurs actifs
+2025-03-21 12:17:21,190 - bioforce_scraper.scheduler - ERROR - Exception lors de l'envoi des rappels: name 'REMINDER_INTERVAL_MINUTES' is not defined
