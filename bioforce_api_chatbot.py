@@ -135,10 +135,10 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         for scored_point in search_result:
             results.append({
                 "score": scored_point.score,
-                "question": scored_point.payload.get("question"),
-                "answer": scored_point.payload.get("answer"),
+                "question": scored_point.payload.get("title"),
+                "answer": scored_point.payload.get("content"),
                 "category": scored_point.payload.get("category"),
-                "url": scored_point.payload.get("url")
+                "url": scored_point.payload.get("source_url")
             })
         
         return results
