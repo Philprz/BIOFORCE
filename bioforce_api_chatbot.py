@@ -1,18 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, Body, Query
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from pydantic import BaseModel
+from typing import List, Dict, Any
 from datetime import datetime
 import os
-import asyncio
-import json
 import logging
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from dotenv import load_dotenv
 import uvicorn
-import uuid
-
+import json     
 # Chargement des variables d'environnement
 load_dotenv()
 
