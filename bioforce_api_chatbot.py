@@ -243,16 +243,12 @@ async def chat(request: ChatRequest):
         # Construire et envoyer la requête à OpenAI
         response_content, references = await get_llm_response(messages, context)
         
-        # Logger l'interaction avec l'identifiant utilisateur
-        logger.info(f"Chat - User: {user_id}, Question: '{last_message}', Context info: {context_info}")
-        
         # Formater et renvoyer la réponse
         return {
             "message": {
                 "role": "assistant",
                 "content": response_content
             },
-            "context": context_info,  # Renvoyer le contexte dans la réponse
             "references": references
         }
     except Exception as e:
