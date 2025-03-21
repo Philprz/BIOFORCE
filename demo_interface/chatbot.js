@@ -1,10 +1,19 @@
 // Configuration de l'API
 // Possibilité de choisir entre l'API locale et l'API en production
 const API_LOCAL = 'http://localhost:8000'; 
-const API_PRODUCTION = 'https://bioforce-admin.onrender.com';  // URL exacte de votre API sur Render
-const ADMIN_PRODUCTION = 'https://bioforce-admin.onrender.com';    // URL exacte de l'admin sur Render
-const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); // Détection automatique
-const API_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
+const API_PRODUCTION = 'https://bioforce-interface.onrender.com';  // URL de l'interface
+const ADMIN_PRODUCTION = 'https://bioforce-admin.onrender.com';    // URL de l'admin
+const USE_CORS_PROXY = true; // Activer le proxy CORS pour contourner les problèmes d'accès
+const CORS_PROXY = 'https://corsproxy.io/?';  // Proxy CORS fiable
+
+// Détection automatique de l'environnement
+const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); 
+
+// URL finale avec proxy CORS si nécessaire
+const API_URL = USE_PRODUCTION_API 
+    ? (USE_CORS_PROXY ? CORS_PROXY + encodeURIComponent(API_PRODUCTION) : API_PRODUCTION) 
+    : API_LOCAL;
+
 const ADMIN_URL = USE_PRODUCTION_API ? ADMIN_PRODUCTION : `${API_LOCAL}/admin`;
 const USE_SIMULATION_FALLBACK = true; // Mode simulation toujours activé comme plan B
 

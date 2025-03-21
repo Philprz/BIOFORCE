@@ -7,7 +7,19 @@
 const API_LOCAL = window.location.origin; // Utiliser l'origine actuelle comme API locale
 const API_PRODUCTION = 'https://bioforce-admin.onrender.com';
 const USE_PRODUCTION_API = window.location.hostname.includes('render.com');
-const API_BASE_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
+const USE_CORS_PROXY = true; // Activer le proxy CORS pour contourner les problèmes d'accès
+const CORS_PROXY = 'https://corsproxy.io/?'; // Proxy CORS fiable
+
+// Déterminer l'URL de l'API
+let API_BASE_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
+
+// Appliquer le proxy CORS si nécessaire
+function getApiUrl(endpoint) {
+    const fullUrl = `${API_BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    return USE_CORS_PROXY && USE_PRODUCTION_API
+        ? `${CORS_PROXY}${encodeURIComponent(fullUrl)}`
+        : fullUrl;
+}
 
 // Activer les logs détaillés
 const DEBUG_MODE = true;
@@ -66,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function fetchSystemInfo() {
     try {
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.systemInfo}`);
+        const response = await fetch(getApiUrl(API_ENDPOINTS.systemInfo));
         if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
         
         const data = await response.json();
@@ -111,7 +123,7 @@ async function checkStatus() {
             }
         });
         
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.status}`);
+        const response = await fetch(getApiUrl(API_ENDPOINTS.status));
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP ${response.status}`);
@@ -176,7 +188,7 @@ async function checkStatus() {
         // Vérification approfondie de Qdrant (test direct)
         try {
             debugLog('Vérification directe de Qdrant...', 'info');
-            const qdrantDirectResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.qdrantStats}`);
+            const qdrantDirectResponse = await fetch(getApiUrl(API_ENDPOINTS.qdrantStats));
             const qdrantDirectData = await qdrantDirectResponse.json();
             
             debugLog('Réponse directe de Qdrant', 'info', qdrantDirectData);
@@ -229,7 +241,7 @@ async function checkStatus() {
                 <div class="small text-muted mt-1">
                     ${error.message}
                     <br>
-                    API URL: ${API_BASE_URL}${API_ENDPOINTS.status}
+                    API URL: ${getApiUrl(API_ENDPOINTS.status)}
                     <br>
                     Environnement: ${USE_PRODUCTION_API ? 'Production' : 'Local'}
                 </div>
@@ -242,7 +254,7 @@ async function checkStatus() {
         addLogMessage('systemLogs', `Erreur de connexion à l'API: ${error.message}`, 'error');
         debugLog('Erreur lors de la vérification du statut', 'error', {
             error: error.message,
-            apiUrl: `${API_BASE_URL}${API_ENDPOINTS.status}`,
+            apiUrl: getApiUrl(API_ENDPOINTS.status),
             environment: USE_PRODUCTION_API ? 'Production' : 'Local'
         });
         return null;
@@ -255,7 +267,7 @@ async function checkStatus() {
 async function refreshQdrantStats() {
     try {
         debugLog('Récupération des statistiques Qdrant...', 'info');
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.qdrantStats}`);
+        const response = await fetch(getApiUrl(API_ENDPOINTS.qdrantStats));
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP ${response.status}`);
@@ -482,13 +494,13 @@ async function refreshQdrantStats() {
             `<div class="alert alert-danger">
                 <i class="bi bi-exclamation-triangle-fill"></i> Erreur: ${error.message}
                 <div class="mt-2">
-                    <p>URL: <code>${API_BASE_URL}${API_ENDPOINTS.qdrantStats}</code></p>
+                    <p>URL: <code>${getApiUrl(API_ENDPOINTS.qdrantStats)}</code></p>
                     <p>Environnement: <code>${USE_PRODUCTION_API ? 'Production' : 'Local'}</code></p>
                 </div>
             </div>`;
         debugLog('Erreur lors de la récupération des statistiques Qdrant', 'error', {
             error: error.message,
-            apiUrl: `${API_BASE_URL}${API_ENDPOINTS.qdrantStats}`,
+            apiUrl: getApiUrl(API_ENDPOINTS.qdrantStats),
             environment: USE_PRODUCTION_API ? 'Production' : 'Local'
         });
         return null;
@@ -503,7 +515,7 @@ async function updateFromGithub() {
         addLogMessage('githubLogs', 'Démarrage de la mise à jour depuis GitHub...', 'info');
         debugLog('Démarrage de la mise à jour depuis GitHub', 'info');
         
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.gitUpdate}`, {
+        const response = await fetch(getApiUrl(API_ENDPOINTS.gitUpdate), {
             method: 'POST'
         });
         
@@ -545,7 +557,7 @@ async function runFaqScraping(forceUpdate = false) {
         addLogMessage('scrapingLogs', 'Démarrage du scraping FAQ...', 'info');
         debugLog('Démarrage du scraping FAQ', 'info');
         
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.scrapeFaq}`, {
+        const response = await fetch(getApiUrl(API_ENDPOINTS.scrapeFaq), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -581,7 +593,7 @@ async function runFullScraping(forceUpdate = false) {
         addLogMessage('scrapingLogs', 'Démarrage du scraping complet...', 'info');
         debugLog('Démarrage du scraping complet', 'info');
         
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.scrapeFull}`, {
+        const response = await fetch(getApiUrl(API_ENDPOINTS.scrapeFull), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -687,7 +699,7 @@ function setupEventListeners() {
         checkQdrantBtn.addEventListener('click', () => {
             addLogMessage('systemLogs', 'Vérification de la connexion Qdrant...', 'info');
             debugLog('Vérification de la connexion Qdrant', 'info');
-            fetch(`${API_BASE_URL}${API_ENDPOINTS.qdrantStats}`)
+            fetch(getApiUrl(API_ENDPOINTS.qdrantStats))
                 .then(response => response.json())
                 .then(data => {
                     addLogMessage('systemLogs', `Vérification Qdrant: ${data.status || 'OK'}`, 'success');
@@ -705,7 +717,7 @@ function setupEventListeners() {
         optimizeQdrantBtn.addEventListener('click', () => {
             addLogMessage('systemLogs', 'Optimisation de Qdrant en cours...', 'info');
             debugLog('Optimisation de Qdrant en cours', 'info');
-            fetch(`${API_BASE_URL}${API_ENDPOINTS.qdrantStats}?action=optimize`, { method: 'POST' })
+            fetch(`${getApiUrl(API_ENDPOINTS.qdrantStats)}?action=optimize`, { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
                     addLogMessage('systemLogs', `Optimisation Qdrant: ${data.status || 'Terminée'}`, 'success');
@@ -744,7 +756,7 @@ async function loadEmailTemplate() {
     try {
         addLogMessage('systemLogs', `Chargement du template d'email: ${templateType}...`, 'info');
         debugLog(`Chargement du template d'email: ${templateType}`, 'info');
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.emailTemplate}?type=${templateType}`);
+        const response = await fetch(`${getApiUrl(API_ENDPOINTS.emailTemplate)}?type=${templateType}`);
         
         if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
         
@@ -781,7 +793,7 @@ async function saveEmailTemplate() {
         addLogMessage('systemLogs', `Enregistrement du template d'email: ${templateType}...`, 'info');
         debugLog(`Enregistrement du template d'email: ${templateType}`, 'info');
         
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.emailTemplate}`, {
+        const response = await fetch(getApiUrl(API_ENDPOINTS.emailTemplate), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

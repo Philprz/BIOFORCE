@@ -80,7 +80,7 @@
         <h2>3. Test de l'API déployée</h2>
         <p>Envoie une requête à l'API déployée sur Render</p>
         <button onclick="testDeployedApi()">Tester l'API déployée</button>
-        <div id="deployed-result" class="result"></div>
+        <div id="deployedResult" class="result"></div>
     </div>
     
     <div class="test-card">
@@ -93,8 +93,8 @@
     <div class="test-card">
         <h2>5. Test avec Proxy CORS</h2>
         <p>Utilise un proxy CORS pour contourner les restrictions</p>
-        <button onclick="testWithCorsProxy()">Test via Proxy CORS</button>
-        <div id="proxy-result" class="result"></div>
+        <button onclick="testCorsProxy()">Test via Proxy CORS</button>
+        <div id="corsProxyResult" class="result"></div>
     </div>
     
     <div class="test-card">
@@ -106,8 +106,9 @@
     <script>
         // Configuration des URLs
         const API_LOCAL = 'http://localhost:8000';
-        const API_PRODUCTION = 'https://bioforce-admin.onrender.com'; // URL correcte de l'API
-        const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+        const API_PRODUCTION = 'https://bioforce-interface.onrender.com'; // URL de l'interface
+        const CORS_PROXY = 'https://corsproxy.io/?'; // Proxy CORS fiable
+        const USE_CORS_PROXY = true; // Activer le proxy CORS pour contourner les problèmes d'accès
         
         // Fonction pour afficher les erreurs de manière plus détaillée
         function handleFetchError(error, resultElement) {
@@ -165,61 +166,23 @@
         }
         
         async function testDeployedApi() {
-            const resultElement = document.getElementById('deployed-result');
+            const resultElement = document.getElementById('deployedResult');
             resultElement.className = 'result';
             resultElement.innerHTML = 'Test en cours...';
             
+            // Préparation de l'URL avec proxy CORS si nécessaire
+            const apiUrl = USE_CORS_PROXY ? CORS_PROXY + encodeURIComponent(API_PRODUCTION) : API_PRODUCTION;
+            
             try {
-                console.log('Test de l\'API déployée...');
+                console.log('Test de l\'API déployée à l\'URL:', apiUrl);
                 
-                // Vérifier d'abord si l'API est accessible en mode GET
-                console.log('Vérification de l\'accessibilité de l\'API sur', API_PRODUCTION);
-                
-                try {
-                    const pingResponse = await fetch(`${API_PRODUCTION}/`, {
-                        method: 'GET',
-                        mode: 'cors',
-                        credentials: 'omit',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-                    
-                    if (pingResponse.ok) {
-                        console.log('L\'API est accessible:', await pingResponse.json());
-                    } else {
-                        console.warn('L\'API est accessible mais retourne une erreur:', pingResponse.status);
-                    }
-                } catch (pingError) {
-                    console.error('L\'API n\'est pas accessible:', pingError);
-                }
-                
-                // Test complet avec une requête POST
-                const testMessage = {
-                    user_id: 'test-user-123',
-                    messages: [
-                        {
-                            role: 'user',
-                            content: 'Bonjour, pouvez-vous me donner des informations sur Bioforce?'
-                        }
-                    ],
-                    context: {
-                        page: '/test_api.html',
-                        candidature_id: '00000000'
-                    }
-                };
-                
-                console.log(`Envoi de requête à ${API_PRODUCTION}/chat...`);
-                
-                const response = await fetch(`${API_PRODUCTION}/chat`, {
-                    method: 'POST',
-                    mode: 'cors',
-                    credentials: 'omit',
+                // Création de la requête
+                const response = await fetch(`${apiUrl}/health-check`, {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(testMessage)
+                    }
                 });
                 
                 console.log('Réponse reçue:', response.status, response.statusText);
@@ -253,8 +216,8 @@
                     <p>Solutions possibles:</p>
                     <ul>
                         <li>Déployez la version corrigée de l'API sur Render</li>
-                        <li>Vérifiez que l'URL "${API_PRODUCTION}" est correcte</li>
-                        <li>Essayez d'accéder directement à <a href="${API_PRODUCTION}" target="_blank">${API_PRODUCTION}</a> pour vérifier si l'API répond</li>
+                        <li>Vérifiez que l'URL "${apiUrl}" est correcte</li>
+                        <li>Essayez d'accéder directement à <a href="${apiUrl}" target="_blank">${apiUrl}</a> pour vérifier si l'API répond</li>
                     </ul>
                 `;
                 
@@ -336,91 +299,86 @@
                 <pre>${randomResponse}</pre>`;
         }
         
-        async function testWithCorsProxy() {
-            const resultElement = document.getElementById('proxy-result');
+        async function testCorsProxy() {
+            const resultElement = document.getElementById('corsProxyResult');
             resultElement.className = 'result';
-            resultElement.innerHTML = 'Test en cours via proxy CORS...';
+            resultElement.innerHTML = 'Test du proxy CORS en cours...';
             
             try {
-                console.log('Test via proxy CORS...');
+                const proxiedUrl = CORS_PROXY + encodeURIComponent(API_PRODUCTION);
+                console.log('Test avec proxy CORS:', proxiedUrl);
                 
-                // URL avec proxy CORS
-                const proxiedUrl = `${CORS_PROXY}${API_PRODUCTION}`;
-                console.log('URL avec proxy:', proxiedUrl);
-                
-                // Test d'accessibilité via le proxy
                 try {
-                    const pingResponse = await fetch(`${proxiedUrl}/`, {
+                    const pingResponse = await fetch(`${proxiedUrl}`, {
                         method: 'GET',
-                        headers: { 'Accept': 'application/json' }
+                        headers: {
+                            'Accept': 'application/json',
+                            'Origin': 'http://localhost'
+                        }
                     });
                     
                     if (pingResponse.ok) {
-                        const pingData = await pingResponse.json();
-                        console.log('API accessible via proxy:', pingData);
-                        
-                        // Si l'API est accessible, essayons une requête chat
-                        const testMessage = {
-                            user_id: 'test-user-123',
-                            messages: [
-                                {
-                                    role: 'user',
-                                    content: 'Bonjour, pouvez-vous me donner des informations sur Bioforce?'
-                                }
-                            ],
-                            context: {
-                                page: '/test_api.html',
-                                candidature_id: '00000000'
-                            }
-                        };
-                        
-                        const response = await fetch(`${proxiedUrl}/chat`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'Origin': 'http://localhost'
-                            },
-                            body: JSON.stringify(testMessage)
-                        });
-                        
-                        const responseText = await response.text();
-                        console.log('Réponse via proxy:', responseText);
-                        
-                        try {
-                            const data = JSON.parse(responseText);
-                            resultElement.className = 'result success';
-                            resultElement.innerHTML = `
-                                <p>Succès via proxy CORS ! Code: ${response.status}</p>
-                                <pre>${JSON.stringify(data, null, 2)}</pre>
-                                <p><strong>Note:</strong> Votre API semble fonctionner correctement, mais les en-têtes CORS ne sont pas configurés. Vous devez déployer les modifications de configuration CORS sur Render.</p>
-                            `;
-                        } catch (jsonError) {
-                            resultElement.className = 'result warning';
-                            resultElement.innerHTML = `
-                                <p>Réponse reçue mais format incorrect. Code: ${response.status}</p>
-                                <pre>${responseText}</pre>
-                            `;
-                        }
+                        console.log('L\'API est accessible:', await pingResponse.json());
                     } else {
-                        resultElement.className = 'result error';
-                        resultElement.innerHTML = `
-                            <p>L'API est accessible via le proxy mais renvoie une erreur: ${pingResponse.status}</p>
-                            <p>Contenu: ${await pingResponse.text()}</p>
-                        `;
+                        console.warn('L\'API est accessible mais retourne une erreur:', pingResponse.status);
                     }
-                } catch (error) {
-                    resultElement.className = 'result error';
-                    resultElement.innerHTML = `
-                        <p>Erreur avec le proxy CORS: ${error.message}</p>
-                        <p>Le proxy CORS-Anywhere nécessite parfois une autorisation. Essayez d'accéder à <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">https://cors-anywhere.herokuapp.com/corsdemo</a> et de demander un accès temporaire.</p>
-                    `;
+                } catch (pingError) {
+                    console.error('L\'API n\'est pas accessible:', pingError);
                 }
                 
+                // Test complet avec une requête POST
+                const testMessage = {
+                    user_id: 'test-user-123',
+                    messages: [
+                        {
+                            role: 'user',
+                            content: 'Bonjour, pouvez-vous me donner des informations sur Bioforce?'
+                        }
+                    ],
+                    context: {
+                        page: '/test_api.html',
+                        candidature_id: '00000000'
+                    }
+                };
+                
+                console.log(`Envoi de requête à ${proxiedUrl}/chat...`);
+                
+                const response = await fetch(`${proxiedUrl}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Origin': 'http://localhost'
+                    },
+                    body: JSON.stringify(testMessage)
+                });
+                
+                console.log('Réponse reçue:', response.status, response.statusText);
+                
+                const responseText = await response.text();
+                console.log('Contenu de la réponse:', responseText);
+                
+                try {
+                    const data = JSON.parse(responseText);
+                    resultElement.className = 'result success';
+                    resultElement.innerHTML = `
+                        <p>Succès via proxy CORS ! Code: ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <p><strong>Note:</strong> Votre API semble fonctionner correctement, mais les en-têtes CORS ne sont pas configurés. Vous devez déployer les modifications de configuration CORS sur Render.</p>
+                    `;
+                } catch (jsonError) {
+                    resultElement.className = 'result warning';
+                    resultElement.innerHTML = `
+                        <p>Réponse reçue mais format incorrect. Code: ${response.status}</p>
+                        <pre>${responseText}</pre>
+                    `;
+                }
             } catch (error) {
-                console.error('Erreur générale proxy test:', error);
                 resultElement.className = 'result error';
-                resultElement.innerHTML = `<p>Erreur: ${error.message}</p>`;
+                resultElement.innerHTML = `
+                    <p>Erreur avec le proxy CORS: ${error.message}</p>
+                    <p>Essayez un autre proxy CORS comme <a href="https://corsproxy.io/" target="_blank">corsproxy.io</a>.</p>
+                `;
             }
         }
     </script>
