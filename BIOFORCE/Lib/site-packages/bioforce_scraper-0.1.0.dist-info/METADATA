@@ -1,0 +1,15 @@
+Metadata-Version: 2.2
+Name: bioforce_scraper
+Version: 0.1.0
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: playwright
+Requires-Dist: qdrant-client
+Requires-Dist: openai
+Requires-Dist: apscheduler
+Requires-Dist: langdetect
+Requires-Dist: python-dotenv
+Requires-Dist: python-multipart
+Requires-Dist: beautifulsoup4
+Requires-Dist: httpx
+Dynamic: requires-dist

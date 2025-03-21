@@ -1,10 +1,40 @@
 // Configuration de l'API
-// Possibilité de choisir entre l'API locale et l'API en production
+// Forcé pour utiliser uniquement l'API locale
 const API_LOCAL = 'http://localhost:8000'; 
-const API_PRODUCTION = 'https://bioforce.onrender.com';  // URL exacte de votre API sur Render
-const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); // Détection automatique
-const API_URL = USE_PRODUCTION_API ? API_PRODUCTION : API_LOCAL;
-const USE_SIMULATION_FALLBACK = true; // Mode simulation toujours activé comme plan B
+const API_PRODUCTION = 'https://bioforce-interface.onrender.com';  // URL de l'interface
+const ADMIN_PRODUCTION = 'https://bioforce-admin.onrender.com';    // URL de l'admin
+const USE_CORS_PROXY = false; // Désactivé car nous utilisons l'API locale
+const CORS_PROXY = 'https://corsproxy.io/?';  // Proxy CORS fiable
+
+// SOLUTION D'URGENCE: Forcer l'utilisation de l'API locale
+const USE_PRODUCTION_API = false; // Force mode local
+const USE_LOCAL_API = true;      // Active l'API locale
+const USE_SIMULATION_FALLBACK = true; // Mode simulation uniquement comme fallback
+const FORCE_SIMULATION_MODE = false;  // Désactive le mode simulation forcé
+
+// Détection automatique de l'environnement
+// const USE_PRODUCTION_API = window.location.hostname.includes('render.com'); 
+
+// URL finale avec proxy CORS si nécessaire
+const API_URL = USE_PRODUCTION_API 
+    ? (USE_CORS_PROXY ? CORS_PROXY + encodeURIComponent(API_PRODUCTION) : API_PRODUCTION) 
+    : API_LOCAL;
+
+const ADMIN_URL = USE_PRODUCTION_API ? ADMIN_PRODUCTION : `${API_LOCAL}/admin`;
+
+// Configuration de l'administration
+const ADMIN_PASSWORD = "bioforce2025"; // Mot de passe pour l'accès admin
+
+// Mots-clés associés aux questions de candidature/admission
+const FORMATION_KEYWORDS = [
+    "formation", "étudier", "apprendre", "cours", "programme", 
+    "devenir", "métier", "carrière", "humanitaire", "diplôme"
+];
+
+const ORIENTATION_KEYWORDS = [
+    "orientation", "test", "choix", "carrière", "métier", "convient", 
+    "profil", "compétence", "aptitude"
+];
 
 // Éléments DOM
 const chatWidget = document.getElementById('chatbot-widget');
@@ -13,6 +43,14 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-message');
 const minimizeButton = document.getElementById('minimize-chat');
+const adminButton = document.getElementById('admin-btn');
+
+// Éléments de la boîte de dialogue admin
+const adminOverlay = document.getElementById('admin-overlay');
+const adminDialog = document.getElementById('admin-dialog');
+const adminPassword = document.getElementById('admin-password');
+const cancelAdminBtn = document.getElementById('cancel-admin');
+const loginAdminBtn = document.getElementById('login-admin');
 
 // Variables globales
 let isDragging = false;
@@ -40,6 +78,12 @@ document.addEventListener('touchend', handleTouchEnd);
 
 // Fonction pour commencer le déplacement
 function startDrag(e) {
+    // Ne pas commencer le déplacement si on clique sur un bouton
+    if (e.target === minimizeButton || e.target === adminButton || 
+        e.target.closest('#minimize-chat') || e.target.closest('#admin-btn')) {
+        return;
+    }
+
     isDragging = true;
     chatWidget.classList.add('dragging');
     
@@ -108,8 +152,9 @@ function stopDrag() {
 
 // Gestionnaires d'événements tactiles
 function handleTouchStart(e) {
-    // Ne pas déclencher le déplacement si on touche le bouton de minimisation
-    if (e.target === minimizeButton || e.target.closest('#minimize-chat')) {
+    // Ne pas déclencher le déplacement si on touche les boutons
+    if (e.target === minimizeButton || e.target === adminButton || 
+        e.target.closest('#minimize-chat') || e.target.closest('#admin-btn')) {
         return;
     }
     startDrag(e);
@@ -199,8 +244,56 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+/**
+ * Fonction pour gérer les commandes spéciales
+ * @param {string} message - Le message utilisateur
+ * @returns {boolean} - True si une commande a été traitée
+ */
+function handleSpecialCommands(message) {
+    // Commande d'administration via message
+    if (message.trim() === '*Admin*') {
+        // Ouvrir la boîte de dialogue d'authentification
+        showAdminDialog();
+        addMessageToChat("Veuillez vous authentifier pour accéder à l'interface d'administration.", 'bot');
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Fonction pour détecter si le message concerne les formations
+ * @param {string} message - Le message utilisateur
+ * @returns {boolean} - True si le message concerne les formations
+ */
+function isFormationRelated(message) {
+    const messageLower = message.toLowerCase();
+    return FORMATION_KEYWORDS.some(keyword => messageLower.includes(keyword.toLowerCase()));
+}
+
+/**
+ * Fonction pour détecter si le message concerne l'orientation
+ * @param {string} message - Le message utilisateur
+ * @returns {boolean} - True si le message concerne l'orientation
+ */
+function isOrientationRelated(message) {
+    const messageLower = message.toLowerCase();
+    return ORIENTATION_KEYWORDS.some(keyword => messageLower.includes(keyword.toLowerCase()));
+}
+
 // Fonction pour envoyer un message à l'API
 async function sendMessageToAPI(userMessage) {
+    // Vérifier s'il s'agit d'une commande spéciale
+    if (handleSpecialCommands(userMessage)) {
+        return;
+    }
+    
+    // SOLUTION D'URGENCE: Si le mode simulation forcé est activé, utiliser directement la simulation
+    if (FORCE_SIMULATION_MODE) {
+        console.log('SOLUTION D\'URGENCE: Mode simulation forcé activé');
+        simulateAPIResponse(userMessage);
+        return;
+    }
+    
     try {
         console.log('Tentative de connexion à l\'API:', API_URL);
         console.log('Mode API:', USE_PRODUCTION_API ? 'Production' : 'Local');
@@ -274,19 +367,49 @@ async function sendMessageToAPI(userMessage) {
             // Afficher la réponse du chatbot
             addMessageToChat(apiResponse.message.content, 'bot');
             
-            // Afficher les références si disponibles
+            // Ajouter des liens vers les sources si disponibles
             if (apiResponse.references && apiResponse.references.length > 0) {
-                const referencesDiv = document.createElement('div');
-                referencesDiv.classList.add('message', 'bot', 'references');
+                // Création d'un élément pour afficher les références/sources
+                const sourcesDiv = document.createElement('div');
+                sourcesDiv.classList.add('message', 'bot', 'sources');
                 
-                let referencesContent = '<p><small><em>Sources:</em><br>';
-                apiResponse.references.forEach((ref, index) => {
-                    referencesContent += `${index + 1}. ${ref.question}<br>`;
+                let sourcesContent = '<p><small>Sources pertinentes :</small></p><ul>';
+                apiResponse.references.forEach(ref => {
+                    if (ref.url) {
+                        sourcesContent += `<li><a href="${ref.url}" target="_blank" class="source-link">${ref.question || ref.url}</a></li>`;
+                    }
                 });
-                referencesContent += '</small></p>';
+                sourcesContent += '</ul>';
                 
-                referencesDiv.innerHTML = referencesContent;
-                chatMessages.appendChild(referencesDiv);
+                sourcesDiv.innerHTML = sourcesContent;
+                chatMessages.appendChild(sourcesDiv);
+            }
+            
+            // Vérifier si le message concerne les formations ou l'orientation
+            if (isFormationRelated(userMessage)) {
+                // Suggestion pour page des formations
+                const formationDiv = document.createElement('div');
+                formationDiv.classList.add('message', 'bot', 'suggestion');
+                formationDiv.innerHTML = `
+                    <p>Pour explorer toutes nos formations, vous pouvez consulter notre page dédiée :</p>
+                    <p><a href="https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/" target="_blank" class="suggestion-link">
+                        Trouver ma formation humanitaire →
+                    </a></p>
+                `;
+                chatMessages.appendChild(formationDiv);
+            }
+            
+            if (isOrientationRelated(userMessage)) {
+                // Suggestion pour le test d'orientation
+                const orientationDiv = document.createElement('div');
+                orientationDiv.classList.add('message', 'bot', 'suggestion');
+                orientationDiv.innerHTML = `
+                    <p>Vous vous interrogez sur votre orientation ? Découvrez notre test d'orientation :</p>
+                    <p><a href="https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/" target="_blank" class="suggestion-link">
+                        Faire le test d'orientation →
+                    </a></p>
+                `;
+                chatMessages.appendChild(orientationDiv);
             }
         } else if (USE_SIMULATION_FALLBACK) {
             console.log('Utilisation du mode simulation comme fallback');
@@ -313,35 +436,86 @@ async function sendMessageToAPI(userMessage) {
     }
 }
 
-// Mode de démonstration - simulation des réponses sans API
+// Fonction pour la simulation de réponse API (fallback)
 function simulateAPIResponse(userMessage) {
+    // Réponses prédéfinies pour la démo
+    const responses = {
+        "default": {
+            content: "Je suis désolé, je n'ai pas trouvé d'information précise sur ce sujet. Vous pouvez consulter notre site web ou contacter directement notre équipe pour obtenir une réponse personnalisée.",
+            source: "https://www.bioforce.org/contact/"
+        },
+        "formation": {
+            content: "Bioforce propose plusieurs formations dans le domaine humanitaire, allant des métiers de support (logistique, RH, finances) aux métiers de coordination de projet. Nos formations sont reconnues par le secteur humanitaire international.",
+            source: "https://www.bioforce.org/learn/formations-humanitaires/"
+        },
+        "logistique": {
+            content: "La formation en logistique humanitaire de Bioforce vous prépare à gérer l'approvisionnement, le transport et le stockage des biens et équipements essentiels aux opérations humanitaires.",
+            source: "https://www.bioforce.org/learn/formations-humanitaires/logistique-humanitaire/"
+        },
+        "financement": {
+            content: "Plusieurs options de financement sont disponibles pour nos formations : bourses, prise en charge par Pôle Emploi, financement par des organismes de formation continue ou votre CPF.",
+            source: "https://www.bioforce.org/learn/financer-ma-formation/"
+        },
+        "inscription": {
+            content: "Les inscriptions se font en ligne sur notre site. Le processus comprend le dépôt d'un dossier de candidature, suivi d'un entretien de sélection pour évaluer votre motivation et votre projet professionnel.",
+            source: "https://www.bioforce.org/learn/candidater/"
+        }
+    };
+    
+    // Recherche de mots-clés dans la question
+    const messageLower = userMessage.toLowerCase();
+    let bestMatch = "default";
+    
+    // Trouver la meilleure correspondance
+    Object.keys(responses).forEach(key => {
+        if (key !== "default" && messageLower.includes(key)) {
+            bestMatch = key;
+        }
+    });
+    
+    // Simuler un délai de traitement
     setTimeout(() => {
-        let botResponse;
+        // Ajouter la réponse du chatbot
+        addMessageToChat(responses[bestMatch].content, 'bot');
         
-        // Quelques réponses prédéfinies pour la démonstration
-        if (userMessage.toLowerCase().includes('formation')) {
-            botResponse = "Les formations Bioforce vous préparent aux métiers de l'humanitaire. Nous proposons plusieurs parcours selon vos objectifs. Avez-vous une idée du domaine qui vous intéresse : logistique, management, RH, finances ?";
-        } 
-        else if (userMessage.toLowerCase().includes('frais') || userMessage.toLowerCase().includes('payer') || userMessage.toLowerCase().includes('coût')) {
-            botResponse = "Les frais de candidature s'élèvent à 60€/20000 CFA. C'est une étape nécessaire pour accéder à la sélection. Le paiement peut être effectué en ligne. Avez-vous des difficultés à finaliser cette étape ?";
-        }
-        else if (userMessage.toLowerCase().includes('candidature') || userMessage.toLowerCase().includes('dossier')) {
-            botResponse = "Pour compléter votre dossier de candidature, vous devez fournir plusieurs documents : CV, lettre de motivation, copie de pièce d'identité et justificatifs de diplômes. Vous pouvez les télécharger dans la section 'Documents à fournir' de votre espace candidat.";
-        }
-        else if (userMessage.toLowerCase().includes('sélection') || userMessage.toLowerCase().includes('entretien')) {
-            botResponse = "Le processus de sélection comprend plusieurs étapes : l'analyse de votre dossier, un test écrit et un entretien individuel. Une fois votre dossier complet et les frais de candidature réglés, vous serez convoqué aux épreuves de sélection.";
-        }
-        else if (userMessage.toLowerCase().includes('contact') || userMessage.toLowerCase().includes('aide')) {
-            botResponse = "Pour toute question, vous pouvez contacter notre équipe par email à infoeurope@bioforce.org ou par téléphone au +33 (0)4 37 41 30 30. Nos bureaux sont ouverts du lundi au vendredi de 9h à 17h.";
-        }
-        else {
-            botResponse = "Merci pour votre message. En tant qu'assistant de Bioforce, je suis là pour vous aider dans votre processus de candidature. Avez-vous des questions spécifiques sur nos formations, le processus de sélection ou les documents à fournir ?";
+        // Ajouter un lien vers la source
+        if (responses[bestMatch].source) {
+            const sourceDiv = document.createElement('div');
+            sourceDiv.classList.add('message', 'bot', 'source');
+            sourceDiv.innerHTML = `
+                <p><small>Pour plus d'informations, consultez :</small></p>
+                <p><a href="${responses[bestMatch].source}" target="_blank" class="source-link">
+                    ${responses[bestMatch].source.replace('https://www.bioforce.org/', '')} →
+                </a></p>
+            `;
+            chatMessages.appendChild(sourceDiv);
         }
         
-        // Ajouter la réponse simulée au chat
-        addMessageToChat(botResponse, 'bot');
+        // Vérifier si le message concerne les formations ou l'orientation (même pour les réponses simulées)
+        if (isFormationRelated(userMessage)) {
+            const formationDiv = document.createElement('div');
+            formationDiv.classList.add('message', 'bot', 'suggestion');
+            formationDiv.innerHTML = `
+                <p>Pour explorer toutes nos formations, vous pouvez consulter notre page dédiée :</p>
+                <p><a href="https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/" target="_blank" class="suggestion-link">
+                    Trouver ma formation humanitaire →
+                </a></p>
+            `;
+            chatMessages.appendChild(formationDiv);
+        }
         
-    }, 1000); // Délai simulé pour donner l'impression d'un traitement
+        if (isOrientationRelated(userMessage)) {
+            const orientationDiv = document.createElement('div');
+            orientationDiv.classList.add('message', 'bot', 'suggestion');
+            orientationDiv.innerHTML = `
+                <p>Vous vous interrogez sur votre orientation ? Découvrez notre test d'orientation :</p>
+                <p><a href="https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/" target="_blank" class="suggestion-link">
+                    Faire le test d'orientation →
+                </a></p>
+            `;
+            chatMessages.appendChild(orientationDiv);
+        }
+    }, 1000);
 }
 
 // Event Listeners
@@ -349,34 +523,89 @@ sendButton.addEventListener('click', () => {
     const message = userInput.value.trim();
     
     if (message) {
-        // Ajouter le message de l'utilisateur à l'interface
+        // Ajouter le message de l'utilisateur au chat
         addMessageToChat(message, 'user');
-        
-        // Vider l'input
         userInput.value = '';
-        
-        // Utiliser l'API réelle au lieu de la simulation
-        sendMessageToAPI(message);
+
+        // Vérifier s'il s'agit d'une commande spéciale
+        if (!handleSpecialCommands(message)) {
+            // Envoyer le message à l'API
+            sendMessageToAPI(message);
+        }
     }
 });
 
+// Écouteur d'événement pour la touche Entrée
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         sendButton.click();
     }
 });
 
+// Écouteur d'événement pour le bouton de minimisation
 minimizeButton.addEventListener('click', () => {
-    const chatbotBody = document.querySelector('.chatbot-body');
+    // Basculer la visibilité du chatbot (minimiser/agrandir)
+    const isMinimized = chatWidget.classList.toggle('minimized');
     
-    if (chatbotBody.style.display === 'none') {
-        chatbotBody.style.display = 'flex';
-        minimizeButton.textContent = '−';
+    // Mettre à jour le texte du bouton
+    minimizeButton.textContent = isMinimized ? '+' : '−';
+    
+    // Sauvegarder l'état dans localStorage
+    localStorage.setItem('chatbotMinimized', isMinimized);
+});
+
+// Fonctions pour l'administration
+function showAdminDialog() {
+    adminOverlay.style.display = 'block';
+    adminDialog.style.display = 'block';
+    adminPassword.value = '';
+    adminPassword.focus();
+}
+
+function hideAdminDialog() {
+    adminOverlay.style.display = 'none';
+    adminDialog.style.display = 'none';
+    adminPassword.value = '';
+}
+
+function checkAdminPassword() {
+    const password = adminPassword.value.trim();
+    
+    if (password === ADMIN_PASSWORD) {
+        hideAdminDialog();
+        
+        // Rediriger vers l'interface d'administration
+        window.open(ADMIN_URL, '_blank');
+        
+        addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
     } else {
-        chatbotBody.style.display = 'none';
-        minimizeButton.textContent = '+';
+        adminPassword.value = '';
+        adminPassword.placeholder = 'Mot de passe incorrect';
+        adminPassword.classList.add('error');
+        
+        setTimeout(() => {
+            adminPassword.placeholder = 'Mot de passe';
+            adminPassword.classList.remove('error');
+        }, 2000);
+    }
+}
+
+// Écouteurs d'événements pour l'administration
+adminButton.addEventListener('click', showAdminDialog);
+cancelAdminBtn.addEventListener('click', hideAdminDialog);
+loginAdminBtn.addEventListener('click', checkAdminPassword);
+adminPassword.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        checkAdminPassword();
     }
 });
+adminOverlay.addEventListener('click', hideAdminDialog);
+
+// Restaurer l'état minimisé du chatbot (si sauvegardé)
+if (localStorage.getItem('chatbotMinimized') === 'true') {
+    chatWidget.classList.add('minimized');
+    minimizeButton.textContent = '+';
+}
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {

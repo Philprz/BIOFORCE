@@ -1,0 +1,17 @@
+2025-03-20 15:14:45,454 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 15:14:46,550 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 15:14:47,111 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-20 15:14:47,778 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 15:14:48,356 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE_ALL
+2025-03-20 15:14:48,365 - bioforce_scraper.api.app - INFO - Démarrage de l'API Bioforce
+2025-03-20 15:14:48,456 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 15:14:48,539 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-20 15:14:48,540 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour de la FAQ planifiée: 0 0 * * 0
+2025-03-20 15:14:48,540 - bioforce_scraper.scheduler - INFO - Tâche de mise à jour complète du site planifiée: 0 2 * * 0
+2025-03-20 15:14:48,542 - bioforce_scraper.scheduler - INFO - Tâche d'envoi de rappels planifiée: toutes les 5 minutes
+2025-03-20 15:14:48,545 - bioforce_scraper.scheduler - INFO - Planificateur démarré
+2025-03-20 15:14:48,545 - bioforce_scraper.api.app - INFO - Planificateur démarré
+2025-03-20 15:18:13,793 - bioforce_scraper.scheduler - INFO - Signal reçu: 2
+2025-03-20 15:18:13,793 - bioforce_scraper.scheduler - INFO - Planificateur arrêté
+2025-03-20 15:18:13,794 - bioforce_scraper.api.app - INFO - Arrêt de l'API Bioforce
+2025-03-20 15:18:13,794 - bioforce_scraper.api.app - INFO - Planificateur arrêté

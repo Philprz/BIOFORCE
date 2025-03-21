@@ -1,0 +1,37 @@
+2025-03-20 12:00:31,495 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 12:00:31,495 - check_duplicates - INFO - Vérification des doublons dans la collection BIOFORCE...
+2025-03-20 12:00:31,497 - check_duplicates - INFO - Récupération de tous les documents...
+2025-03-20 12:00:31,678 - check_duplicates - INFO - Récupérés 100 documents
+2025-03-20 12:00:31,723 - check_duplicates - INFO - Récupérés 200 documents
+2025-03-20 12:00:31,771 - check_duplicates - INFO - Récupérés 300 documents
+2025-03-20 12:00:31,852 - check_duplicates - INFO - Récupérés 400 documents
+2025-03-20 12:00:31,927 - check_duplicates - INFO - Récupérés 500 documents
+2025-03-20 12:00:31,978 - check_duplicates - INFO - Récupérés 600 documents
+2025-03-20 12:00:32,026 - check_duplicates - INFO - Récupérés 700 documents
+2025-03-20 12:00:32,078 - check_duplicates - INFO - Récupérés 800 documents
+2025-03-20 12:00:32,143 - check_duplicates - INFO - Récupérés 900 documents
+2025-03-20 12:00:32,186 - check_duplicates - INFO - Récupérés 1000 documents
+2025-03-20 12:00:32,265 - check_duplicates - INFO - Récupérés 1100 documents
+2025-03-20 12:00:32,329 - check_duplicates - INFO - Récupérés 1200 documents
+2025-03-20 12:00:32,424 - check_duplicates - INFO - Récupérés 1300 documents
+2025-03-20 12:00:32,464 - check_duplicates - INFO - Récupérés 1400 documents
+2025-03-20 12:00:32,520 - check_duplicates - INFO - Récupérés 1500 documents
+2025-03-20 12:00:32,567 - check_duplicates - INFO - Récupérés 1600 documents
+2025-03-20 12:00:32,613 - check_duplicates - INFO - Récupérés 1700 documents
+2025-03-20 12:00:32,655 - check_duplicates - INFO - Récupérés 1800 documents
+2025-03-20 12:00:32,711 - check_duplicates - INFO - Récupérés 1900 documents
+2025-03-20 12:00:32,780 - check_duplicates - INFO - Récupérés 2000 documents
+2025-03-20 12:00:32,834 - check_duplicates - INFO - Récupérés 2100 documents
+2025-03-20 12:00:32,888 - check_duplicates - INFO - Récupérés 2200 documents
+2025-03-20 12:00:32,945 - check_duplicates - INFO - Récupérés 2300 documents
+2025-03-20 12:00:33,032 - check_duplicates - INFO - Récupérés 2394 documents
+2025-03-20 12:00:33,032 - check_duplicates - INFO - Récupérés 2394 documents au total
+2025-03-20 12:00:33,033 - check_duplicates - INFO - Recherche des doublons exacts (même URL)...
+2025-03-20 12:00:33,033 - check_duplicates - INFO - Trouvé 417 URLs avec doublons exacts
+2025-03-20 12:00:33,034 - check_duplicates - INFO - Recherche des documents avec titres identiques...
+2025-03-20 12:00:33,036 - check_duplicates - INFO - Trouvé 267 titres dupliqués
+2025-03-20 12:00:33,036 - check_duplicates - INFO - Génération du rapport...
+2025-03-20 12:00:33,038 - check_duplicates - INFO - Rapport écrit dans duplicates_report.txt
+2025-03-20 12:00:33,041 - check_duplicates - INFO - Nombre de documents en doublon à supprimer: 1614
+2025-03-20 12:00:33,043 - check_duplicates - INFO - Consultez le rapport et exécutez avec l'option --delete pour supprimer les doublons exacts
+2025-03-20 12:00:33,043 - check_duplicates - INFO - Opération terminée

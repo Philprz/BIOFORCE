@@ -1,0 +1,8 @@
+2025-03-20 09:08:03,106 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: c:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
+2025-03-20 09:08:04,730 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 09:08:04,730 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-20 09:08:05,828 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-20 09:08:05,830 - __main__ - ERROR - Erreur lors du test de Qdrant et des embeddings: 'QdrantConnector' object has no attribute 'upsert_document_chunks'
+2025-03-20 09:08:05,833 - __main__ - ERROR - Échec des tests préliminaires, arrêt du traitement
+2025-03-20 09:08:06,346 - __main__ - INFO - Ressources libérées
+2025-03-20 09:08:06,348 - __main__ - INFO - Temps d'exécution total: 3.34 secondes

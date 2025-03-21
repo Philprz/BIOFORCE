@@ -1,0 +1,113 @@
+2025-03-20 11:21:07,502 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 11:21:07,514 - upsert_data - INFO - Nombre de fichiers JSON trouvés: 2335
+2025-03-20 11:21:07,634 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/question/comment-financer-ma-formation-2/: object tuple can't be used in 'await' expression
+2025-03-20 11:21:08,013 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/question/comment-financer-ma-formation-2/: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 2044085148538171799 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:08,026 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/question/comment-financer-ma-formation-2/
+2025-03-20 11:21:08,068 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: object tuple can't be used in 'await' expression
+2025-03-20 11:21:08,404 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/learn: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1383081305186362817 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:08,405 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/learn
+2025-03-20 11:21:08,446 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: object tuple can't be used in 'await' expression
+2025-03-20 11:21:08,691 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/learn: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1383081305186362817 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:08,693 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/learn
+2025-03-20 11:21:08,735 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: object tuple can't be used in 'await' expression
+2025-03-20 11:21:09,043 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/learn: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1383081305186362817 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:09,045 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/learn
+2025-03-20 11:21:09,088 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/learn: object tuple can't be used in 'await' expression
+2025-03-20 11:21:09,633 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/learn: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1383081305186362817 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:09,636 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/learn
+2025-03-20 11:21:09,677 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/question/y-a-t-il-une-difference-entre-une-certification-professionnelle-obtenue-par-la-formation-et-celle-obtenue-par-la-vae/: object tuple can't be used in 'await' expression
+2025-03-20 11:21:10,024 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/question/y-a-t-il-une-difference-entre-une-certification-professionnelle-obtenue-par-la-formation-et-celle-obtenue-par-la-vae/: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 699687682468362361 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:10,026 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/question/y-a-t-il-une-difference-entre-une-certification-professionnelle-obtenue-par-la-formation-et-celle-obtenue-par-la-vae/
+2025-03-20 11:21:10,066 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/formation/responsable-ressources-humaines-et-finances-profil-experimente/#competence-3: object tuple can't be used in 'await' expression
+2025-03-20 11:21:10,454 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/formation/responsable-ressources-humaines-et-finances-profil-experimente/#competence-3: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -3069529991258062595 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:10,455 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/formation/responsable-ressources-humaines-et-finances-profil-experimente/#competence-3
+2025-03-20 11:21:10,497 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284: object tuple can't be used in 'await' expression
+2025-03-20 11:21:10,911 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -1158246329730745308 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:10,912 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284
+2025-03-20 11:21:10,952 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284: object tuple can't be used in 'await' expression
+2025-03-20 11:21:11,303 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -1158246329730745308 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:11,305 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/inscription-a-la-formation/?formation_id=53280&session=53284
+2025-03-20 11:21:11,346 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:11,929 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -6534596547384206963 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:11,929 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:21:11,974 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:12,386 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -6534596547384206963 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:12,388 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:21:12,430 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:12,741 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -6534596547384206963 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:12,743 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:21:12,786 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:13,152 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value -6534596547384206963 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:13,153 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2022/05/2022_PEAH_4.1-Fiche_dangers_blessures.pdf
+2025-03-20 11:21:13,195 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:13,600 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1531678038826104837 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:13,600 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:21:13,646 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:14,074 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1531678038826104837 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:14,076 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:21:14,119 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:14,827 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1531678038826104837 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:14,828 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:21:14,872 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:15,354 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1531678038826104837 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:15,354 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:21:15,395 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:15,744 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1531678038826104837 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:15,745 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:21:15,788 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: object tuple can't be used in 'await' expression
+2025-03-20 11:21:16,190 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1531678038826104837 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:16,191 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/wp-content/uploads/2020/06/2024_Bioforce_RPEHA-2.pdf
+2025-03-20 11:21:16,228 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: object tuple can't be used in 'await' expression
+2025-03-20 11:21:16,679 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 7816399184795367708 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:16,681 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance
+2025-03-20 11:21:16,722 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: object tuple can't be used in 'await' expression
+2025-03-20 11:21:17,054 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 7816399184795367708 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:17,056 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance
+2025-03-20 11:21:17,102 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: object tuple can't be used in 'await' expression
+2025-03-20 11:21:17,491 - upsert_data - ERROR - Erreur lors de l'upsert du document https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 7816399184795367708 is not a valid point ID, valid values are either an unsigned integer or a UUID"},"time":0.0}'
+2025-03-20 11:21:17,492 - upsert_data - ERROR - Échec de l'upsert du document: https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance
+2025-03-20 11:21:17,533 - upsert_data - ERROR - Erreur lors de la vérification de l'URL https://www.bioforce.org/toutes-les-formations-humanitaires-a-distance: object tuple can't be used in 'await' expression

@@ -1,0 +1,12 @@
+2025-03-20 09:15:19,847 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: c:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
+2025-03-20 09:15:20,670 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 09:15:20,671 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-20 09:15:21,018 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-20 09:15:21,106 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 09:15:21,189 - bioforce_scraper.utils.qdrant_connector - ERROR - Erreur lors de l'insertion/mise à jour du document: Unexpected Response: 400 (Bad Request)
+Raw response content:
+b'{"status":{"error":"Format error in JSON body: value 1b6587242d4db59cfd4771880c54fd7813ee3887f9964e36b8c15c996d5aeb7d is not a valid point ID, valid values are either an unsigned integer or a UUID" ...'
+2025-03-20 09:15:21,190 - __main__ - ERROR - Échec du test d'upsert dans la collection BIOFORCE_ALL
+2025-03-20 09:15:21,190 - __main__ - ERROR - Échec des tests préliminaires, arrêt du traitement
+2025-03-20 09:15:21,697 - __main__ - INFO - Ressources libérées
+2025-03-20 09:15:21,698 - __main__ - INFO - Temps d'exécution total: 1.85 secondes

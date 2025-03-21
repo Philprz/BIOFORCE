@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioforce - Tableau de Bord Administrateur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bioforce-orange: #ef7d00;
+            --bioforce-dark: #333333;
+            --bioforce-light: #f5f5f5;
+        }
+        body {
+            background-color: var(--bioforce-light);
+            font-family: 'Open Sans', Arial, sans-serif;
+        }
+        .navbar {
+            background-color: var(--bioforce-orange);
+        }
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+        }
+        .nav-link {
+            color: white;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background-color: var(--bioforce-orange);
+            color: white;
+            font-weight: bold;
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+        }
+        .btn-primary {
+            background-color: var(--bioforce-orange);
+            border-color: var(--bioforce-orange);
+        }
+        .btn-primary:hover {
+            background-color: #d06c00;
+            border-color: #d06c00;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-good {
+            background-color: #28a745;
+        }
+        .status-warning {
+            background-color: #ffc107;
+        }
+        .status-error {
+            background-color: #dc3545;
+        }
+        .github-section {
+            background-color: #24292e;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .log-window {
+            background-color: #222;
+            color: #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+        }
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .action-card {
+            transition: all 0.3s;
+        }
+        .action-card:hover {
+            background-color: rgba(239, 125, 0, 0.1);
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-nav li {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        .sidebar-nav li:hover, .sidebar-nav li.active {
+            background-color: rgba(239, 125, 0, 0.1);
+        }
+        .sidebar-nav a {
+            color: var(--bioforce-dark);
+            text-decoration: none;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            background-color: var(--bioforce-dark);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://bioforce.org/wp-content/themes/bioforce/assets/img/logo-bioforce.svg" alt="Bioforce Logo" height="30" class="d-inline-block align-top bg-white rounded p-1 me-2">
+                Bioforce Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Tableau de bord</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="refreshPage"><i class="bi bi-arrow-clockwise"></i> Actualiser</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="sidebar">
+                    <h5 class="text-center mb-4">Navigation</h5>
+                    <ul class="sidebar-nav">
+                        <li class="active"><a href="#dashboard"><i class="bi bi-speedometer2"></i> Tableau de bord</a></li>
+                        <li><a href="#scraping"><i class="bi bi-cloud-download"></i> Scraping</a></li>
+                        <li><a href="#qdrant"><i class="bi bi-database"></i> Qdrant</a></li>
+                        <li><a href="#github"><i class="bi bi-github"></i> GitHub</a></li>
+                        <li><a href="#logs"><i class="bi bi-journal-text"></i> Logs</a></li>
+                    </ul>
+
+                    <hr>
+                    <div class="system-info">
+                        <h6>Informations système</h6>
+                        <small><strong>Version:</strong> {{ system_info.version }}</small><br>
+                        <small><strong>Python:</strong> {{ system_info.python_version }}</small><br>
+                        <small><strong>Plateforme:</strong> {{ system_info.platform }}</small><br>
+                        <small><strong>Date:</strong> {{ system_info.current_time }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9">
+                <!-- Status Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">État du serveur</h5>
+                                <div class="status-indicator status-good"></div>
+                                <span>En ligne</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Scraping</h5>
+                                <div class="status-indicator status-good"></div>
+                                <span>Prêt</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Qdrant</h5>
+                                <div class="status-indicator status-good" id="qdrantStatus"></div>
+                                <span id="qdrantStatusText">Connecté</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scraping Section -->
+                <div class="card mb-4" id="scraping">
+                    <div class="card-header">
+                        Actions de Scraping
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card action-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Scraper la FAQ</h5>
+                                        <p class="card-text">Lance le scraping de la FAQ Bioforce uniquement.</p>
+                                        <form id="faqScraperForm" action="/admin/run-faq-scraper" method="post">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="forceFaqUpdate" name="force_update">
+                                                <label class="form-check-label" for="forceFaqUpdate">
+                                                    Forcer la mise à jour (ignorer le cache)
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Lancer le scraping FAQ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card action-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Scraper le site complet</h5>
+                                        <p class="card-text">Lance le scraping du site Bioforce complet.</p>
+                                        <form id="fullScraperForm" action="/admin/run-full-scraper" method="post">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="forceFullUpdate" name="force_update">
+                                                <label class="form-check-label" for="forceFullUpdate">
+                                                    Forcer la mise à jour (ignorer le cache)
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Lancer le scraping complet</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Qdrant Section -->
+                <div class="card mb-4" id="qdrant">
+                    <div class="card-header">
+                        Base de connaissances Qdrant
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h5>Statistiques de la base</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Collection
+                                        <span id="qdrantCollection">{{ qdrant_stats.name if 'name' in qdrant_stats else 'N/A' }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Vecteurs
+                                        <span id="qdrantVectors">{{ qdrant_stats.vectors_count if 'vectors_count' in qdrant_stats else 'N/A' }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Segments
+                                        <span id="qdrantSegments">{{ qdrant_stats.segments_count if 'segments_count' in qdrant_stats else 'N/A' }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Actions</h5>
+                                <button class="btn btn-primary mb-2 w-100" id="refreshQdrantStats">Actualiser les statistiques</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GitHub Update Section -->
+                <div class="card mb-4" id="github">
+                    <div class="card-header">
+                        Mise à jour depuis GitHub
+                    </div>
+                    <div class="card-body">
+                        <div class="github-section mb-3">
+                            <h5><i class="bi bi-github"></i> Dépôt GitHub</h5>
+                            <p>{{ system_info.github_repo if system_info.github_repo else 'Non configuré' }}</p>
+                        </div>
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle"></i> La mise à jour depuis GitHub téléchargera la dernière version du code et redémarrera l'application.
+                        </div>
+                        <button id="updateGithubBtn" class="btn btn-primary" {% if not system_info.github_repo %}disabled{% endif %}>
+                            <i class="bi bi-cloud-download"></i> Mettre à jour depuis GitHub
+                        </button>
+                        <div id="githubUpdateResult" class="mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Logs Section -->
+                <div class="card mb-4" id="logs">
+                    <div class="card-header">
+                        Journaux d'activité
+                    </div>
+                    <div class="card-body">
+                        <div class="log-window" id="logWindow">
+                            <!-- Les logs seront ajoutés ici dynamiquement -->
+                            <div class="log-line">Bienvenue dans le tableau de bord administrateur Bioforce.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>Bioforce Scraper Admin Dashboard © {{ system_info.current_time.split(' ')[0].split('-')[0] }}</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to add log messages
+            function addLogMessage(message) {
+                const logWindow = document.getElementById('logWindow');
+                const timestamp = new Date().toLocaleTimeString();
+                const logLine = document.createElement('div');
+                logLine.className = 'log-line';
+                logLine.innerHTML = `<span class="text-muted">[${timestamp}]</span> ${message}`;
+                logWindow.appendChild(logLine);
+                logWindow.scrollTop = logWindow.scrollHeight;
+            }
+
+            // Function to send AJAX requests
+            async function sendRequest(url, method = 'GET', data = null) {
+                try {
+                    const options = {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    };
+
+                    if (data) {
+                        options.body = JSON.stringify(data);
+                    }
+
+                    const response = await fetch(url, options);
+                    return await response.json();
+                } catch (error) {
+                    console.error('Request failed:', error);
+                    return { status: 'error', message: error.message };
+                }
+            }
+
+            // Refresh page
+            document.getElementById('refreshPage').addEventListener('click', function(e) {
+                e.preventDefault();
+                location.reload();
+            });
+
+            // Qdrant stats refresh
+            document.getElementById('refreshQdrantStats').addEventListener('click', async function() {
+                addLogMessage('Actualisation des statistiques Qdrant...');
+                const result = await sendRequest('/admin/qdrant-stats');
+                
+                if (result.status === 'success') {
+                    document.getElementById('qdrantCollection').textContent = result.data.name || 'N/A';
+                    document.getElementById('qdrantVectors').textContent = result.data.vectors_count || 'N/A';
+                    document.getElementById('qdrantSegments').textContent = result.data.segments_count || 'N/A';
+                    
+                    document.getElementById('qdrantStatus').className = 'status-indicator status-good';
+                    document.getElementById('qdrantStatusText').textContent = 'Connecté';
+                    
+                    addLogMessage('Statistiques Qdrant actualisées avec succès.');
+                } else {
+                    document.getElementById('qdrantStatus').className = 'status-indicator status-error';
+                    document.getElementById('qdrantStatusText').textContent = 'Erreur';
+                    
+                    addLogMessage(`Erreur lors de l'actualisation des statistiques Qdrant: ${result.message}`);
+                }
+            });
+
+            // GitHub update
+            document.getElementById('updateGithubBtn').addEventListener('click', async function() {
+                const btn = this;
+                const resultDiv = document.getElementById('githubUpdateResult');
+                
+                // Disable button and show loading state
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Mise à jour en cours...';
+                
+                addLogMessage('Démarrage de la mise à jour depuis GitHub...');
+                
+                const result = await sendRequest('/admin/update-github', 'POST');
+                
+                // Reset button
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-cloud-download"></i> Mettre à jour depuis GitHub';
+                
+                // Show result
+                resultDiv.style.display = 'block';
+                
+                if (result.success) {
+                    resultDiv.className = 'alert alert-success';
+                    resultDiv.innerHTML = `<h5>Mise à jour réussie</h5><p>${result.message}</p>`;
+                    if (result.details) {
+                        resultDiv.innerHTML += `<pre>${result.details}</pre>`;
+                    }
+                    addLogMessage('Mise à jour depuis GitHub réussie.');
+                } else {
+                    resultDiv.className = 'alert alert-danger';
+                    resultDiv.innerHTML = `<h5>Échec de la mise à jour</h5><p>${result.message}</p>`;
+                    if (result.details) {
+                        resultDiv.innerHTML += `<pre>${result.details}</pre>`;
+                    }
+                    addLogMessage(`Échec de la mise à jour depuis GitHub: ${result.message}`);
+                }
+            });
+
+            // FAQ Scraper Form
+            document.getElementById('faqScraperForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const form = this;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const forceUpdate = document.getElementById('forceFaqUpdate').checked;
+                
+                // Disable button and show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Démarrage...';
+                
+                addLogMessage(`Démarrage du scraper FAQ ${forceUpdate ? '(forcer la mise à jour)' : ''}...`);
+                
+                const formData = new FormData();
+                formData.append('force_update', forceUpdate);
+                
+                try {
+                    const response = await fetch('/admin/run-faq-scraper', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'started') {
+                        addLogMessage(`Scraper FAQ démarré en arrière-plan: ${result.message}`);
+                    } else {
+                        addLogMessage(`Erreur lors du démarrage du scraper FAQ: ${result.message}`);
+                    }
+                } catch (error) {
+                    addLogMessage(`Erreur lors du démarrage du scraper FAQ: ${error.message}`);
+                }
+                
+                // Reset button
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Lancer le scraping FAQ';
+                }, 2000);
+            });
+
+            // Full Scraper Form
+            document.getElementById('fullScraperForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const form = this;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const forceUpdate = document.getElementById('forceFullUpdate').checked;
+                
+                // Disable button and show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Démarrage...';
+                
+                addLogMessage(`Démarrage du scraper complet ${forceUpdate ? '(forcer la mise à jour)' : ''}...`);
+                
+                const formData = new FormData();
+                formData.append('force_update', forceUpdate);
+                
+                try {
+                    const response = await fetch('/admin/run-full-scraper', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'started') {
+                        addLogMessage(`Scraper complet démarré en arrière-plan: ${result.message}`);
+                    } else {
+                        addLogMessage(`Erreur lors du démarrage du scraper complet: ${result.message}`);
+                    }
+                } catch (error) {
+                    addLogMessage(`Erreur lors du démarrage du scraper complet: ${error.message}`);
+                }
+                
+                // Reset button
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Lancer le scraping complet';
+                }, 2000);
+            });
+
+            // Initial log message
+            addLogMessage('Interface administrateur Bioforce chargée.');
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('.sidebar-nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update active state
+                        document.querySelectorAll('.sidebar-nav li').forEach(li => {
+                            li.classList.remove('active');
+                        });
+                        this.parentElement.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

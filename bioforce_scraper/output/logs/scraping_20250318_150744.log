@@ -1,0 +1,76 @@
+2025-03-18 15:07:49,322 - bioforce_scraper.integration.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io
+2025-03-18 15:07:49,323 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-18 15:07:50,035 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-18 15:07:50,111 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 15:07:50,155 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/test
+2025-03-18 15:07:50,227 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/test
+2025-03-18 15:07:50,329 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/test (1 chunks)
+2025-03-18 15:07:50,342 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 15:07:50,376 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/question/test
+2025-03-18 15:07:50,423 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/question/test
+2025-03-18 15:07:50,527 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/question/test (1 chunks)
+2025-03-18 15:07:50,527 - __main__ - INFO - Test de connexion à Qdrant et d'upsert de documents réussi
+2025-03-18 15:07:50,527 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-18 15:07:50,577 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-18 15:07:51,245 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-18 15:07:51,245 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-18 15:07:51,245 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-18 15:07:51,878 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-18 15:07:51,899 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-18 15:07:52,166 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-18 15:07:52,177 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:52,428 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-18 15:07:52,435 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:53,059 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 15:07:53,085 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:55,013 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-18 15:07:55,113 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:55,463 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-18 15:07:55,472 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:56,263 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-18 15:07:56,297 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:56,924 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-18 15:07:56,945 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:57,236 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-18 15:07:57,237 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:57,577 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-18 15:07:57,586 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-18 15:07:57,586 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-18 15:07:57,586 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-18 15:07:57,586 - __main__ - INFO - Mode incrémental: True
+2025-03-18 15:07:57,586 - __main__ - INFO - Démarrage du scraping...
+2025-03-18 15:07:57,586 - __main__ - INFO - Récupération des URLs FAQ depuis le sitemap...
+2025-03-18 15:07:57,586 - bioforce_scraper.utils.sitemap_parser - INFO - Parsing du sitemap FAQ: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 15:07:58,192 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 15:07:58,216 - bioforce_scraper.utils.sitemap_parser - INFO - 232 URLs FAQ trouvées dans le sitemap
+2025-03-18 15:07:58,216 - __main__ - INFO - 232 URLs FAQ trouvées dans le sitemap.
+2025-03-18 15:07:58,492 - __main__ - INFO - 230 URLs FAQ ajoutées à la file d'attente pour traitement
+2025-03-18 15:07:58,492 - __main__ - INFO - Traitement de l'URL 1/500: https://www.bioforce.org/question/sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-accusantium-doloremque-laudantium-totam-rem-2/
+2025-03-18 15:07:58,492 - __main__ - INFO - Traitement de https://www.bioforce.org/question/sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-accusantium-doloremque-laudantium-totam-rem-2/
+2025-03-18 15:08:10,563 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/sed-ut-perspiciatis-unde-omnis-iste-natus-error-sit-voluptatem-accusantium-doloremque-laudantium-totam-rem-2/: ContentClassifier.classify_content() takes 2 positional arguments but 4 were given
+2025-03-18 15:08:12,096 - __main__ - INFO - Traitement de l'URL 2/500: https://www.bioforce.org/question/quelle-est-la-specificite-des-formations-bioforce/
+2025-03-18 15:08:12,096 - __main__ - INFO - Traitement de https://www.bioforce.org/question/quelle-est-la-specificite-des-formations-bioforce/
+2025-03-18 15:08:16,732 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/quelle-est-la-specificite-des-formations-bioforce/: ContentClassifier.classify_content() takes 2 positional arguments but 4 were given
+2025-03-18 15:08:18,241 - __main__ - INFO - Traitement de l'URL 3/500: https://www.bioforce.org/question/qui-sont-les-intervenants-formateurs-de-bioforce/
+2025-03-18 15:08:18,241 - __main__ - INFO - Traitement de https://www.bioforce.org/question/qui-sont-les-intervenants-formateurs-de-bioforce/
+2025-03-18 15:08:22,266 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/qui-sont-les-intervenants-formateurs-de-bioforce/: ContentClassifier.classify_content() takes 2 positional arguments but 4 were given
+2025-03-18 15:08:23,774 - __main__ - INFO - Traitement de l'URL 4/500: https://www.bioforce.org/question/quels-sont-les-parcours-profils-des-formateurs/
+2025-03-18 15:08:23,774 - __main__ - INFO - Traitement de https://www.bioforce.org/question/quels-sont-les-parcours-profils-des-formateurs/
+2025-03-18 15:08:27,597 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/quels-sont-les-parcours-profils-des-formateurs/: ContentClassifier.classify_content() takes 2 positional arguments but 4 were given
+2025-03-18 15:08:29,107 - __main__ - INFO - Traitement de l'URL 5/500: https://www.bioforce.org/question/comment-fonctionne-le-cpf-de-transition-professionnelle-anciennement-cif/
+2025-03-18 15:08:29,107 - __main__ - INFO - Traitement de https://www.bioforce.org/question/comment-fonctionne-le-cpf-de-transition-professionnelle-anciennement-cif/
+2025-03-18 15:08:32,927 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/comment-fonctionne-le-cpf-de-transition-professionnelle-anciennement-cif/: ContentClassifier.classify_content() takes 2 positional arguments but 4 were given
+2025-03-18 15:08:34,436 - __main__ - INFO - Traitement de l'URL 6/500: https://www.bioforce.org/question/les-supports-de-cours-me-sont-ils-communiques/
+2025-03-18 15:08:34,445 - __main__ - INFO - Traitement de https://www.bioforce.org/question/les-supports-de-cours-me-sont-ils-communiques/
+2025-03-18 15:08:38,088 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/les-supports-de-cours-me-sont-ils-communiques/: ContentClassifier.classify_content() takes 2 positional arguments but 4 were given
+2025-03-18 15:08:39,597 - __main__ - INFO - Traitement de l'URL 7/500: https://www.bioforce.org/question/comment-venir-jusquau-lieu-de-formation/
+2025-03-18 15:08:39,597 - __main__ - INFO - Traitement de https://www.bioforce.org/question/comment-venir-jusquau-lieu-de-formation/
+2025-03-18 15:08:43,559 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/question/comment-venir-jusquau-lieu-de-formation/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.bioforce.org/question/comment-venir-jusquau-lieu-de-formation/", waiting until "networkidle"
+
+2025-03-18 15:08:45,073 - __main__ - INFO - Traitement de l'URL 8/500: https://www.bioforce.org/question/quest-ce-quune-formation-bioforce-en-e-learning/
+2025-03-18 15:08:45,073 - __main__ - INFO - Traitement de https://www.bioforce.org/question/quest-ce-quune-formation-bioforce-en-e-learning/
+2025-03-18 15:08:45,077 - __main__ - ERROR - Erreur lors du scraping: BrowserContext.new_page: Target page, context or browser has been closed
+2025-03-18 15:08:45,084 - __main__ - ERROR - Erreur lors de la fermeture des ressources: BrowserContext.close: Target page, context or browser has been closed
+2025-03-18 15:08:45,085 - __main__ - INFO - Temps d'exécution total: 56.34 secondes

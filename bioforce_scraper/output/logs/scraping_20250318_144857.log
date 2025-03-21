@@ -1,0 +1,50 @@
+2025-03-18 14:49:00,785 - bioforce_scraper.integration.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io
+2025-03-18 14:49:00,785 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-18 14:49:01,477 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-18 14:49:01,558 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE_ALL' existe déjà
+2025-03-18 14:49:01,578 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/test
+2025-03-18 14:49:01,649 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/test
+2025-03-18 14:49:01,751 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/test (1 chunks)
+2025-03-18 14:49:01,782 - bioforce_scraper.integration.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-18 14:49:01,796 - bioforce_scraper.integration.qdrant_connector - INFO - Suppression de 1 chunks existants pour https://www.bioforce.org/question/test
+2025-03-18 14:49:01,854 - bioforce_scraper.integration.qdrant_connector - INFO - Inséré lot 1/1 pour https://www.bioforce.org/question/test
+2025-03-18 14:49:01,959 - bioforce_scraper.integration.qdrant_connector - INFO - Document inséré avec succès: https://www.bioforce.org/question/test (1 chunks)
+2025-03-18 14:49:01,959 - __main__ - INFO - Test de connexion à Qdrant et d'upsert de documents réussi
+2025-03-18 14:49:01,960 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-18 14:49:02,003 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-18 14:49:02,498 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-18 14:49:02,498 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-18 14:49:02,498 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-18 14:49:03,206 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-18 14:49:03,210 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-18 14:49:03,801 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:49:03,828 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:04,071 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-18 14:49:04,077 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:04,359 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-18 14:49:04,363 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:04,680 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-18 14:49:04,684 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:06,586 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-18 14:49:06,675 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:07,127 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-18 14:49:07,142 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:07,442 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-18 14:49:07,448 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:07,695 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-18 14:49:07,696 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:08,313 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-18 14:49:08,342 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-18 14:49:08,342 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-18 14:49:08,345 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-18 14:49:08,345 - __main__ - INFO - Mode incrémental: True
+2025-03-18 14:49:08,347 - __main__ - INFO - Démarrage du scraping...
+2025-03-18 14:49:08,347 - __main__ - INFO - Récupération des URLs FAQ depuis le sitemap...
+2025-03-18 14:49:08,347 - bioforce_scraper.utils.sitemap_parser - INFO - Parsing du sitemap FAQ: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:49:08,963 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-18 14:49:08,988 - bioforce_scraper.utils.sitemap_parser - INFO - 232 URLs FAQ trouvées dans le sitemap
+2025-03-18 14:49:08,988 - __main__ - INFO - 232 URLs FAQ trouvées dans le sitemap.
+2025-03-18 14:49:09,076 - __main__ - INFO - 230 URLs FAQ ajoutées à la file d'attente pour traitement
+2025-03-18 14:49:09,077 - __main__ - ERROR - Erreur lors du scraping: 'BioforceScraperMain' object has no attribute 'is_allowed_by_robots'
+2025-03-18 14:49:09,644 - __main__ - INFO - Ressources libérées
+2025-03-18 14:49:09,645 - __main__ - INFO - Temps d'exécution total: 9.39 secondes

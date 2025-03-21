@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+playwright
+qdrant-client
+openai
+apscheduler
+langdetect
+python-dotenv
+python-multipart
+beautifulsoup4
+httpx

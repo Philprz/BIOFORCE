@@ -1,0 +1,196 @@
+2025-03-20 10:19:51,077 - bioforce_scraper.utils.content_tracker - INFO - Base de données initialisée: c:\BIOFORCE\BUILD\bioforce_scraper\output\data\content_history.db
+2025-03-20 10:19:51,078 - bioforce_scraper.integration.gpt_filter_integration - INFO - Initialisation du filtre GPT
+2025-03-20 10:19:51,697 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 10:19:51,698 - __main__ - INFO - Test de la connexion à Qdrant et de la génération d'embeddings...
+2025-03-20 10:19:52,093 - __main__ - INFO - Test de génération d'embeddings réussi (dimension: 1536)
+2025-03-20 10:19:52,174 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 10:19:52,245 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=0f89e8966b894bfe80486c2e8416b9fa
+2025-03-20 10:19:52,266 - bioforce_scraper.utils.qdrant_connector - INFO - Collection 'BIOFORCE' existe déjà
+2025-03-20 10:19:52,311 - bioforce_scraper.utils.qdrant_connector - INFO - Document inséré/mis à jour avec succès: ID=c772cf9b26d74f6690886cb6176ba411
+2025-03-20 10:19:52,311 - __main__ - INFO - Test de connexion à Qdrant et d'upsert de documents réussi
+2025-03-20 10:19:52,311 - __main__ - INFO - Initialisation du scraper Bioforce
+2025-03-20 10:19:52,351 - bioforce_scraper.utils.robots_parser - INFO - robots.txt parsé: 1 règles d'exclusion
+2025-03-20 10:19:52,940 - __main__ - INFO - Chargement de 0 URLs déjà connues
+2025-03-20 10:19:52,940 - __main__ - INFO - Récupération des URLs depuis le sitemap XML...
+2025-03-20 10:19:52,940 - bioforce_scraper.utils.sitemap_parser - INFO - Début de l'analyse du sitemap: https://www.bioforce.org/sitemap.xml
+2025-03-20 10:19:53,636 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/sitemap.xml
+2025-03-20 10:19:53,643 - bioforce_scraper.utils.sitemap_parser - INFO - Index de sitemap analysé: 9 sitemaps trouvés
+2025-03-20 10:19:55,584 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/post-sitemap.xml
+2025-03-20 10:19:55,671 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 582 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:56,015 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/projet-sitemap.xml
+2025-03-20 10:19:56,024 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 31 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:56,833 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/page-sitemap.xml
+2025-03-20 10:19:56,868 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 217 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:57,134 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/category-sitemap.xml
+2025-03-20 10:19:57,137 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 8 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:57,747 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-20 10:19:57,775 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 232 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:58,380 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/formation-sitemap.xml
+2025-03-20 10:19:58,400 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 123 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:58,686 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/author-sitemap.xml
+2025-03-20 10:19:58,693 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 0 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:59,028 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question_category-sitemap.xml
+2025-03-20 10:19:59,035 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 37 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:59,311 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/mission-sitemap.xml
+2025-03-20 10:19:59,317 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap analysé: 16 nouvelles URLs pertinentes trouvées
+2025-03-20 10:19:59,325 - bioforce_scraper.utils.sitemap_parser - INFO - Analyse du sitemap terminée: 1246 URLs pertinentes trouvées
+2025-03-20 10:19:59,326 - __main__ - INFO - File d'attente initialisée avec 1246 URLs depuis le sitemap
+2025-03-20 10:19:59,327 - __main__ - INFO - Mode incrémental: True
+2025-03-20 10:19:59,328 - __main__ - INFO - Démarrage du scraping...
+2025-03-20 10:19:59,329 - __main__ - INFO - Récupération des URLs FAQ depuis le sitemap...
+2025-03-20 10:19:59,330 - bioforce_scraper.utils.sitemap_parser - INFO - Parsing du sitemap FAQ: https://www.bioforce.org/question-sitemap.xml
+2025-03-20 10:19:59,788 - bioforce_scraper.utils.sitemap_parser - INFO - Sitemap récupéré avec succès: https://www.bioforce.org/question-sitemap.xml
+2025-03-20 10:19:59,809 - bioforce_scraper.utils.sitemap_parser - INFO - 232 URLs FAQ trouvées dans le sitemap
+2025-03-20 10:19:59,810 - __main__ - INFO - 232 URLs FAQ trouvées dans le sitemap.
+2025-03-20 10:20:00,283 - __main__ - INFO - 16 URLs FAQ ajoutées à la file d'attente pour traitement
+2025-03-20 10:20:00,285 - __main__ - INFO - Traitement de l'URL 1/500: https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:20:00,287 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:20:05,445 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/
+2025-03-20 10:20:05,446 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/what-should-i-do-to-secure-my-place-in-the-chosen-training/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:06,969 - __main__ - INFO - Traitement de l'URL 2/500: https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:20:06,969 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:20:08,386 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/
+2025-03-20 10:20:08,387 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/i-need-to-apply-for-a-visa-how-can-bioforce-help-me/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:09,907 - __main__ - INFO - Traitement de l'URL 3/500: https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:20:09,908 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:20:11,316 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-do-the-training-fees-include/
+2025-03-20 10:20:11,317 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/what-do-the-training-fees-include/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:12,840 - __main__ - INFO - Traitement de l'URL 4/500: https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:20:12,841 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:20:14,220 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/how-do-i-find-accommodation/
+2025-03-20 10:20:14,221 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/how-do-i-find-accommodation/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:15,740 - __main__ - INFO - Traitement de l'URL 5/500: https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:20:15,741 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:20:17,218 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/
+2025-03-20 10:20:17,218 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/how-do-i-get-to-bioforce-in-lyon-venissieux-france/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:18,748 - __main__ - INFO - Traitement de l'URL 6/500: https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:20:18,748 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:20:20,142 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/
+2025-03-20 10:20:20,143 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/should-i-bring-my-own-equipment/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:21,661 - __main__ - INFO - Traitement de l'URL 7/500: https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:20:21,661 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:20:23,056 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/
+2025-03-20 10:20:23,056 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/what-is-the-application-and-selection-process-for-open-training-courses/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:24,576 - __main__ - INFO - Traitement de l'URL 8/500: https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:20:24,578 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:20:26,042 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/
+2025-03-20 10:20:26,043 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/is-there-an-application-deadline-for-open-training-courses/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:27,566 - __main__ - INFO - Traitement de l'URL 9/500: https://www.bioforce.org/en/question/i-have-applied-online-for-an-open-training-course-what-is-the-next-step/
+2025-03-20 10:20:27,567 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/i-have-applied-online-for-an-open-training-course-what-is-the-next-step/
+2025-03-20 10:20:28,934 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/i-have-applied-online-for-an-open-training-course-what-is-the-next-step/
+2025-03-20 10:20:28,935 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/i-have-applied-online-for-an-open-training-course-what-is-the-next-step/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:30,461 - __main__ - INFO - Traitement de l'URL 10/500: https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-open-course-training/
+2025-03-20 10:20:30,461 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-open-course-training/
+2025-03-20 10:20:31,854 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-open-course-training/
+2025-03-20 10:20:31,855 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-open-course-training/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:33,373 - __main__ - INFO - Traitement de l'URL 11/500: https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy-for-open-training-courses/
+2025-03-20 10:20:33,373 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy-for-open-training-courses/
+2025-03-20 10:20:34,771 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy-for-open-training-courses/
+2025-03-20 10:20:34,772 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy-for-open-training-courses/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:36,286 - __main__ - INFO - Traitement de l'URL 12/500: https://www.bioforce.org/en/question/are-open-training-courses-available-as-distance-learning-courses/
+2025-03-20 10:20:36,287 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/are-open-training-courses-available-as-distance-learning-courses/
+2025-03-20 10:20:37,728 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/are-open-training-courses-available-as-distance-learning-courses/
+2025-03-20 10:20:37,728 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/are-open-training-courses-available-as-distance-learning-courses/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:39,256 - __main__ - INFO - Traitement de l'URL 13/500: https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy/
+2025-03-20 10:20:39,257 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy/
+2025-03-20 10:20:40,623 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy/
+2025-03-20 10:20:40,623 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/what-is-the-cancellation-and-refund-policy/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:42,134 - __main__ - INFO - Traitement de l'URL 14/500: https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-training/
+2025-03-20 10:20:42,135 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-training/
+2025-03-20 10:20:43,566 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-training/
+2025-03-20 10:20:43,566 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/will-i-receive-the-training-contents-after-the-training/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:45,087 - __main__ - INFO - Traitement de l'URL 15/500: https://www.bioforce.org/en/question/are-diploma-courses-available-as-distant-learning-trainings/
+2025-03-20 10:20:45,088 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/are-diploma-courses-available-as-distant-learning-trainings/
+2025-03-20 10:20:48,424 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/are-diploma-courses-available-as-distant-learning-trainings/
+2025-03-20 10:20:48,424 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/are-diploma-courses-available-as-distant-learning-trainings/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:49,937 - __main__ - INFO - Traitement de l'URL 16/500: https://www.bioforce.org/en/question/i-have-applied-online-for-an-individual-career-guidance-interview-what-is-the-next-step/
+2025-03-20 10:20:49,938 - __main__ - INFO - Traitement de https://www.bioforce.org/en/question/i-have-applied-online-for-an-individual-career-guidance-interview-what-is-the-next-step/
+2025-03-20 10:20:51,311 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/en/question/i-have-applied-online-for-an-individual-career-guidance-interview-what-is-the-next-step/
+2025-03-20 10:20:51,311 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/question/i-have-applied-online-for-an-individual-career-guidance-interview-what-is-the-next-step/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:52,839 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/learn/: unconverted data remains: +00:00
+2025-03-20 10:20:52,840 - __main__ - INFO - Traitement de l'URL 17/500: https://www.bioforce.org/learn/
+2025-03-20 10:20:52,841 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/
+2025-03-20 10:20:54,496 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:20:56,019 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/faq/: unconverted data remains: +00:00
+2025-03-20 10:20:56,020 - __main__ - INFO - Traitement de l'URL 18/500: https://www.bioforce.org/faq/
+2025-03-20 10:20:56,021 - __main__ - INFO - Traitement de https://www.bioforce.org/faq/
+2025-03-20 10:20:59,007 - __main__ - INFO - Traitement d'une page FAQ: https://www.bioforce.org/faq/
+2025-03-20 10:20:59,007 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/faq/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:00,521 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/learn/formations-humanitaires/: unconverted data remains: +00:00
+2025-03-20 10:21:00,523 - __main__ - INFO - Traitement de l'URL 19/500: https://www.bioforce.org/learn/formations-humanitaires/
+2025-03-20 10:21:00,523 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/formations-humanitaires/
+2025-03-20 10:21:02,046 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/formations-humanitaires/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:03,562 - __main__ - INFO - Traitement de l'URL 20/500: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/un-site-pour-tout-savoir-de-lengagement-solidaire/
+2025-03-20 10:21:03,563 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/un-site-pour-tout-savoir-de-lengagement-solidaire/
+2025-03-20 10:21:05,661 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/un-site-pour-tout-savoir-de-lengagement-solidaire/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:07,189 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/learn/les-engagements-bioforce/: unconverted data remains: +00:00
+2025-03-20 10:21:07,190 - __main__ - INFO - Traitement de l'URL 21/500: https://www.bioforce.org/learn/les-engagements-bioforce/
+2025-03-20 10:21:07,190 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/les-engagements-bioforce/
+2025-03-20 10:21:09,075 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/les-engagements-bioforce/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:10,596 - __main__ - INFO - Traitement de l'URL 22/500: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/coordinateurs-de-formations-de-poles/
+2025-03-20 10:21:10,597 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/coordinateurs-de-formations-de-poles/
+2025-03-20 10:21:12,656 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/coordinateurs-de-formations-de-poles/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:14,171 - __main__ - INFO - Traitement de l'URL 23/500: https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/formateurs-associes/
+2025-03-20 10:21:14,171 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/formateurs-associes/
+2025-03-20 10:21:16,250 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/les-engagements-bioforce/apprenez-avec-des-humanitaires/formateurs-associes/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:17,763 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/partners/: unconverted data remains: +00:00
+2025-03-20 10:21:17,763 - __main__ - INFO - Traitement de l'URL 24/500: https://www.bioforce.org/en/learn/partners/
+2025-03-20 10:21:17,763 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/partners/
+2025-03-20 10:21:19,183 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/partners/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:20,701 - __main__ - INFO - Traitement de l'URL 25/500: https://www.bioforce.org/en/learn/
+2025-03-20 10:21:20,702 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/
+2025-03-20 10:21:22,161 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:23,676 - __main__ - INFO - Traitement de l'URL 26/500: https://www.bioforce.org/en/learn/bioforce-commitments/
+2025-03-20 10:21:23,678 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/bioforce-commitments/
+2025-03-20 10:21:25,326 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/bioforce-commitments/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:26,842 - __main__ - INFO - Traitement de l'URL 27/500: https://www.bioforce.org/en/learn/humanitarian-training-courses/
+2025-03-20 10:21:26,843 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/humanitarian-training-courses/
+2025-03-20 10:21:28,337 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/humanitarian-training-courses/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:29,855 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/learn/actualites/: unconverted data remains: +00:00
+2025-03-20 10:21:29,857 - __main__ - INFO - Traitement de l'URL 28/500: https://www.bioforce.org/learn/actualites/
+2025-03-20 10:21:29,858 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/actualites/
+2025-03-20 10:21:31,290 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/actualites/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:32,813 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/: unconverted data remains: +00:00
+2025-03-20 10:21:32,815 - __main__ - INFO - Traitement de l'URL 29/500: https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/
+2025-03-20 10:21:32,816 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/
+2025-03-20 10:21:34,700 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/humanitarian-training-courses/train-your-teams/turnkey-solutions/our-available-courses/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:36,215 - __main__ - INFO - Traitement de l'URL 30/500: https://www.bioforce.org/en/learn/centres/europe/conferences/
+2025-03-20 10:21:36,215 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/centres/europe/conferences/
+2025-03-20 10:21:37,929 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/centres/europe/conferences/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:39,461 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/actualites/: unconverted data remains: +00:00
+2025-03-20 10:21:39,462 - __main__ - INFO - Traitement de l'URL 31/500: https://www.bioforce.org/en/learn/actualites/
+2025-03-20 10:21:39,463 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/actualites/
+2025-03-20 10:21:40,862 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/actualites/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:42,381 - __main__ - INFO - Traitement de l'URL 32/500: https://www.bioforce.org/en/learn/application-individual-career-guidance/
+2025-03-20 10:21:42,382 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/application-individual-career-guidance/
+2025-03-20 10:21:44,311 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/application-individual-career-guidance/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:45,830 - __main__ - INFO - Traitement de l'URL 33/500: https://www.bioforce.org/en/learn/application-open-training-course/
+2025-03-20 10:21:45,831 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/application-open-training-course/
+2025-03-20 10:21:47,185 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/application-open-training-course/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:48,700 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/application-apl/: unconverted data remains: +00:00
+2025-03-20 10:21:48,701 - __main__ - INFO - Traitement de l'URL 34/500: https://www.bioforce.org/en/learn/application-apl/
+2025-03-20 10:21:48,701 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/application-apl/
+2025-03-20 10:21:50,173 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/application-apl/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:51,690 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/: unconverted data remains: +00:00
+2025-03-20 10:21:51,691 - __main__ - INFO - Traitement de l'URL 35/500: https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/
+2025-03-20 10:21:51,691 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/
+2025-03-20 10:21:53,119 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/humanitarian-training-courses/apl/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:54,639 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/: unconverted data remains: +00:00
+2025-03-20 10:21:54,641 - __main__ - INFO - Traitement de l'URL 36/500: https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/
+2025-03-20 10:21:54,642 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/
+2025-03-20 10:21:56,091 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/bioforce-commitments/count-on-us/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:21:57,600 - __main__ - INFO - Traitement de l'URL 37/500: https://www.bioforce.org/en/learn/centres/
+2025-03-20 10:21:57,601 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/centres/
+2025-03-20 10:21:59,115 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/centres/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:22:00,634 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/centres/europe/bioreseau/: unconverted data remains: +00:00
+2025-03-20 10:22:00,636 - __main__ - INFO - Traitement de l'URL 38/500: https://www.bioforce.org/en/learn/centres/europe/bioreseau/
+2025-03-20 10:22:00,636 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/centres/europe/bioreseau/
+2025-03-20 10:22:03,873 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/centres/europe/bioreseau/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:22:05,393 - __main__ - WARNING - Erreur lors de la comparaison des dates pour https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/: unconverted data remains: +00:00
+2025-03-20 10:22:05,394 - __main__ - INFO - Traitement de l'URL 39/500: https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/
+2025-03-20 10:22:05,394 - __main__ - INFO - Traitement de https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/
+2025-03-20 10:22:06,851 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/en/learn/bioforce-commitments/ready-for-the-field/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:22:08,363 - __main__ - INFO - Traitement de l'URL 40/500: https://www.bioforce.org/learn/candidature-entretien-individuel/
+2025-03-20 10:22:08,364 - __main__ - INFO - Traitement de https://www.bioforce.org/learn/candidature-entretien-individuel/
+2025-03-20 10:22:10,461 - __main__ - ERROR - Erreur lors du traitement de https://www.bioforce.org/learn/candidature-entretien-individuel/: 'GPTFilterIntegration' object has no attribute 'process_html_content'
+2025-03-20 10:22:10,912 - __main__ - ERROR - Erreur lors de la fermeture des ressources: BrowserContext.close: Target page, context or browser has been closed

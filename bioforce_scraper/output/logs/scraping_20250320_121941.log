@@ -1,0 +1,56 @@
+2025-03-20 12:19:41,907 - bioforce_scraper.utils.qdrant_connector - INFO - Connecté à Qdrant: https://09615e3e-47b2-4b5f-adcc-4e1b2d339957.eu-central-1-0.aws.cloud.qdrant.io, collection: BIOFORCE
+2025-03-20 12:19:41,910 - check_duplicates - INFO - Vérification des doublons dans la collection BIOFORCE...
+2025-03-20 12:19:41,911 - check_duplicates - INFO - Récupération de tous les documents...
+2025-03-20 12:19:42,086 - check_duplicates - INFO - Récupérés 100 documents
+2025-03-20 12:19:42,146 - check_duplicates - INFO - Récupérés 200 documents
+2025-03-20 12:19:42,192 - check_duplicates - INFO - Récupérés 300 documents
+2025-03-20 12:19:42,247 - check_duplicates - INFO - Récupérés 400 documents
+2025-03-20 12:19:42,327 - check_duplicates - INFO - Récupérés 500 documents
+2025-03-20 12:19:42,368 - check_duplicates - INFO - Récupérés 600 documents
+2025-03-20 12:19:42,422 - check_duplicates - INFO - Récupérés 700 documents
+2025-03-20 12:19:42,479 - check_duplicates - INFO - Récupérés 800 documents
+2025-03-20 12:19:42,561 - check_duplicates - INFO - Récupérés 900 documents
+2025-03-20 12:19:42,607 - check_duplicates - INFO - Récupérés 1000 documents
+2025-03-20 12:19:42,652 - check_duplicates - INFO - Récupérés 1100 documents
+2025-03-20 12:19:42,736 - check_duplicates - INFO - Récupérés 1200 documents
+2025-03-20 12:19:42,786 - check_duplicates - INFO - Récupérés 1300 documents
+2025-03-20 12:19:42,836 - check_duplicates - INFO - Récupérés 1400 documents
+2025-03-20 12:19:42,884 - check_duplicates - INFO - Récupérés 1500 documents
+2025-03-20 12:19:42,932 - check_duplicates - INFO - Récupérés 1600 documents
+2025-03-20 12:19:42,998 - check_duplicates - INFO - Récupérés 1700 documents
+2025-03-20 12:19:43,045 - check_duplicates - INFO - Récupérés 1800 documents
+2025-03-20 12:19:43,096 - check_duplicates - INFO - Récupérés 1900 documents
+2025-03-20 12:19:43,146 - check_duplicates - INFO - Récupérés 2000 documents
+2025-03-20 12:19:43,202 - check_duplicates - INFO - Récupérés 2100 documents
+2025-03-20 12:19:43,257 - check_duplicates - INFO - Récupérés 2200 documents
+2025-03-20 12:19:43,311 - check_duplicates - INFO - Récupérés 2300 documents
+2025-03-20 12:19:43,363 - check_duplicates - INFO - Récupérés 2396 documents
+2025-03-20 12:19:43,364 - check_duplicates - INFO - Récupérés 2396 documents au total
+2025-03-20 12:19:43,364 - check_duplicates - INFO - Recherche des doublons exacts (même URL)...
+2025-03-20 12:19:43,366 - check_duplicates - INFO - Trouvé 417 URLs avec doublons exacts
+2025-03-20 12:19:43,366 - check_duplicates - INFO - Recherche des documents avec titres identiques...
+2025-03-20 12:19:43,368 - check_duplicates - INFO - Trouvé 267 titres dupliqués
+2025-03-20 12:19:43,368 - check_duplicates - INFO - Génération du rapport...
+2025-03-20 12:19:43,371 - check_duplicates - INFO - Rapport écrit dans duplicates_report.txt
+2025-03-20 12:19:43,374 - check_duplicates - INFO - Nombre de documents en doublon à supprimer: 1616
+2025-03-20 12:19:43,374 - check_duplicates - INFO - Suppression des doublons exacts...
+2025-03-20 12:19:43,406 - check_duplicates - INFO - Supprimés 100/1616 documents en doublon
+2025-03-20 12:19:43,440 - check_duplicates - INFO - Supprimés 200/1616 documents en doublon
+2025-03-20 12:19:43,466 - check_duplicates - INFO - Supprimés 300/1616 documents en doublon
+2025-03-20 12:19:43,493 - check_duplicates - INFO - Supprimés 400/1616 documents en doublon
+2025-03-20 12:19:43,519 - check_duplicates - INFO - Supprimés 500/1616 documents en doublon
+2025-03-20 12:19:43,549 - check_duplicates - INFO - Supprimés 600/1616 documents en doublon
+2025-03-20 12:19:43,578 - check_duplicates - INFO - Supprimés 700/1616 documents en doublon
+2025-03-20 12:19:43,607 - check_duplicates - INFO - Supprimés 800/1616 documents en doublon
+2025-03-20 12:19:43,646 - check_duplicates - INFO - Supprimés 900/1616 documents en doublon
+2025-03-20 12:19:43,678 - check_duplicates - INFO - Supprimés 1000/1616 documents en doublon
+2025-03-20 12:19:43,707 - check_duplicates - INFO - Supprimés 1100/1616 documents en doublon
+2025-03-20 12:19:43,735 - check_duplicates - INFO - Supprimés 1200/1616 documents en doublon
+2025-03-20 12:19:43,762 - check_duplicates - INFO - Supprimés 1300/1616 documents en doublon
+2025-03-20 12:19:43,811 - check_duplicates - INFO - Supprimés 1400/1616 documents en doublon
+2025-03-20 12:19:43,844 - check_duplicates - INFO - Supprimés 1500/1616 documents en doublon
+2025-03-20 12:19:43,871 - check_duplicates - INFO - Supprimés 1600/1616 documents en doublon
+2025-03-20 12:19:43,892 - check_duplicates - INFO - Supprimés 1616/1616 documents en doublon
+2025-03-20 12:19:43,893 - check_duplicates - INFO - Supprimés 1616 documents en doublon
+2025-03-20 12:19:43,893 - check_duplicates - INFO - Nombre de documents restants dans la collection: 780
+2025-03-20 12:19:43,893 - check_duplicates - INFO - Opération terminée

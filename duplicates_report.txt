@@ -1,0 +1,123 @@
+=== RAPPORT DE DÉTECTION DE DOUBLONS ===
+
+Nombre total de documents: 2396
+
+=== DOUBLONS EXACTS (MÊME URL): 417 URLS ===
+Nombre total de documents en doublon exact: 1616
+
+Échantillon de 10 doublons exacts:
+
+1. URL: https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+   Nombre d'instances: 5
+   IDs: 001a5cee-ad8d-4f33-9404-b99740c6cf9f, 30a55cb2-4493-4d94-801d-e2256831de4d, 7fd90963-26fb-45e6-a088-d125184ccf30, c35c8a5e-a43d-43ce-b95c-b5eb1c450312, c9aeffd4-fec2-4af7-a78d-25b6df3b6ff5
+
+2. URL: https://www.bioforce.org/wp-content/uploads/2020/05/Note_explicative_demande_recevabilite_VAE.pdf
+   Nombre d'instances: 14
+   IDs: 0028d2c0-dce9-4006-bfa9-c0cda4b72825, 03d1f102-01fd-410d-9242-4b80da796bf8, 173facce-8956-4b13-9598-53c8614f89e2, 1e5da5dd-f941-4c8d-9c06-00ac43198e41, 34520499-127a-4d66-847d-cd6cc537339a...
+
+3. URL: https://bioforce.org/faq/
+   Nombre d'instances: 4
+   IDs: 00789329-76e4-41f8-8bbf-ead7e67a2278, 7d6c6ed9-99db-426e-b266-0fb9d9aba8ab, 9d7f1677-0b14-4539-8a37-dac3a4cf16d0, c5766401-7388-4103-92fa-dffc1e3a1ee3
+
+4. URL: https://www.bioforce.org/en/learn/bioforce-commitments/your-first-mission/
+   Nombre d'instances: 5
+   IDs: 00baaf9a-628f-4568-ad27-10b871b4be9f, 6a51ab55-157a-4511-904f-482a2acc6254, c3f51f89-f567-4063-9f52-16cb29945bd1, c8cd95cb-e46f-4826-8621-702eada891da, d9024d4f-3e2f-491c-a4b9-c6a241837121
+
+5. URL: https://www.bioforce.org/formation/profil-experimente-gestion-administrative-et-juridique-dune-mission-humanitaire/
+   Nombre d'instances: 6
+   IDs: 00dc9494-6185-42ed-b3bf-39dd0423677c, 43108eab-38d5-430f-9001-33fef000b34b, 43de04d2-37d8-42db-9441-b1544b86494e, 4d6f44c3-1c24-435a-8fef-fd177b2da663, 65fe0a9d-b599-453c-9e92-556d6cc26094...
+
+6. URL: https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+   Nombre d'instances: 7
+   IDs: 00e937ef-0ee5-432c-bebc-e3bea15db696, 4c7c572e-03c7-44ad-b137-4fdc7fe60f72, 524ec11f-d4a5-4ffc-b786-cc4b4f5ac9e5, 54abf134-f48b-4dc7-8f92-39cb66e501b9, 980300ff-f731-44a7-9123-307ca42bb784...
+
+7. URL: https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+   Nombre d'instances: 7
+   IDs: 01257dee-defe-41af-8a15-b519fff12117, 1fce6820-83e5-464a-9c22-730d3fe1a09f, 2714e29d-e374-4225-9abd-c147611bd9d3, 760d1ea5-084b-4af0-ab33-1cf9b266183b, 84e98755-6a6f-4594-9dce-03ecda1f4b03...
+
+8. URL: https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+   Nombre d'instances: 12
+   IDs: 0133be53-5e23-4d50-86fa-444a50e579ba, 14825a5a-3932-45ac-ba11-6db2d91e1b48, 2f0c55ee-3373-46fa-b769-bc632be10822, 34b30439-810f-4728-aae8-44bc391711ab, 395e5b8d-5a65-4cd1-b786-51866ddcea7b...
+
+9. URL: https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+   Nombre d'instances: 7
+   IDs: 013b4e74-7402-4197-9f9d-f34fcefbcbc2, 335554be-874b-4fe4-acac-42037301d41e, 38f46f6b-d998-4fe5-96f0-a7aae89d1f09, 6719d32c-8149-4c6a-8582-183786e6057a, 8adb3e15-53d4-49b8-bc26-b42ca1f19b0a...
+
+10. URL: https://www.bioforce.org/learn/centres/reunions-dinformation/
+   Nombre d'instances: 4
+   IDs: 0150887d-042d-46a6-ad90-7b9ea3eef0e0, 98c0836c-d698-4a67-9ec9-404bc76ed079, 9b9f212b-a24f-4696-bc83-a6873f5fb984, bff3bc6f-e3dd-458b-86b2-2b52fe9dbe47
+
+=== DOUBLONS POTENTIELS (MÊME TITRE): 267 TITRES ===
+Nombre total de documents avec titre identique: 1956
+
+Échantillon de 10 titres dupliqués:
+
+1. Titre: Responsable Logistique de l'action humanitaire | parcours Alternance - Bioforce
+   Nombre d'instances: 5
+   Exemples d'URLs:
+     1. https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+     2. https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+     3. https://www.bioforce.org/formation/responsable-logistique-de-laction-humanitaire-parcours-alternance/
+
+2. Titre: Note Explicative Demande Recevabilite Vae
+   Nombre d'instances: 14
+   Exemples d'URLs:
+     1. https://www.bioforce.org/wp-content/uploads/2020/05/Note_explicative_demande_recevabilite_VAE.pdf
+     2. https://www.bioforce.org/wp-content/uploads/2020/05/Note_explicative_demande_recevabilite_VAE.pdf
+     3. https://www.bioforce.org/wp-content/uploads/2020/05/Note_explicative_demande_recevabilite_VAE.pdf
+
+3. Titre: Foire Aux Questions - Bioforce
+   Nombre d'instances: 14
+   Exemples d'URLs:
+     1. https://bioforce.org/faq/
+     2. https://www.bioforce.org/faq/
+     3. https://www.bioforce.org/faq/
+
+4. Titre: Concevoir et piloter un projet humanitaire - Bioforce
+   Nombre d'instances: 36
+   Exemples d'URLs:
+     1. https://www.bioforce.org/formation/concevoir-et-piloter-un-projet-humanitaire/#competence-2
+     2. https://www.bioforce.org/formation/concevoir-et-piloter-un-projet-humanitaire/
+     3. https://www.bioforce.org/formation/concevoir-et-piloter-un-projet-humanitaire/#competence-3
+
+5. Titre: Your first mission - Bioforce
+   Nombre d'instances: 5
+   Exemples d'URLs:
+     1. https://www.bioforce.org/en/learn/bioforce-commitments/your-first-mission/
+     2. https://www.bioforce.org/en/learn/bioforce-commitments/your-first-mission/
+     3. https://www.bioforce.org/en/learn/bioforce-commitments/your-first-mission/
+
+6. Titre: Coordonner la gestion administrative et juridique d’une mission humanitaire - Bioforce
+   Nombre d'instances: 6
+   Exemples d'URLs:
+     1. https://www.bioforce.org/formation/profil-experimente-gestion-administrative-et-juridique-dune-mission-humanitaire/
+     2. https://www.bioforce.org/formation/profil-experimente-gestion-administrative-et-juridique-dune-mission-humanitaire/
+     3. https://www.bioforce.org/formation/profil-experimente-gestion-administrative-et-juridique-dune-mission-humanitaire/
+
+7. Titre: Responsable de projets Protection de l'enfance en situation d'urgence - Bioforce
+   Nombre d'instances: 16
+   Exemples d'URLs:
+     1. https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/
+     2. https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence/#filterAdvenced
+     3. https://www.bioforce.org/formation/responsable-de-projets-protection-de-lenfance-en-situation-durgence-profil-experimente/
+
+8. Titre: La certification humanitaire Responsable RH et Finances - Bioforce
+   Nombre d'instances: 11
+   Exemples d'URLs:
+     1. https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+     2. https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+     3. https://www.bioforce.org/learn/les-certifications-humanitaires-bioforce/la-certification-humanitaire-responsable-rh-et-finances/
+
+9. Titre: 2025 Bioforce Coordprogrammehumanitaire
+   Nombre d'instances: 12
+   Exemples d'URLs:
+     1. https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+     2. https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+     3. https://www.bioforce.org/wp-content/uploads/2020/06/2025_Bioforce_CoordProgrammeHumanitaire.pdf
+
+10. Titre: Découvrez les métiers humanitaires - Bioforce
+   Nombre d'instances: 7
+   Exemples d'URLs:
+     1. https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+     2. https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
+     3. https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/decouvrez-les-metiers-humanitaires/
