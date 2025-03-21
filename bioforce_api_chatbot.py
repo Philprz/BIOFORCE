@@ -563,4 +563,4 @@ async def debug_api(request: dict = Body(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("bioforce_api_chatbot:app", host="0.0.0.0", port=8000, reload=True)
