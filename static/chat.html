@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioforce - Espace Candidat</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #ef7d00;
+            --primary-dark: #d06c00;
+            --secondary-color: #2c3e50;
+            --background-color: #f4f6f9;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .content-section {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .card p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            flex-grow: 1;
+        }
+        
+        .status-line {
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-indicator.status-complete {
+            background-color: #28a745;
+        }
+        
+        .status-indicator.status-incomplete {
+            background-color: #ffc107;
+        }
+        
+        .status-indicator.status-error {
+            background-color: #dc3545;
+        }
+        
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+        
+        .action-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        .chat-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        #bioforcebot-container {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            
+            .footer-links a {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://bioforce.org/wp-content/themes/bioforce/assets/img/logo-bioforce.svg" alt="Bioforce Logo" class="logo">
+        <div class="nav-links">
+            <a href="#" class="active">Mon profil</a>
+            <a href="#">Mes candidatures</a>
+            <a href="#">Support</a>
+            <a href="#">Infos</a>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero-section">
+            <h1>Bienvenue dans votre espace candidat</h1>
+            <p>Consultez vos candidatures, complétez votre dossier et suivez vos formations avec Bioforce.</p>
+        </section>
+        
+        <section class="content-section">
+            <h2 class="section-title">Mes candidatures</h2>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h2>CTC Centre de Formation Bioforce Europe</h2>
+                    <p>Votre candidature a été reçue. Vous devez maintenant compléter votre dossier et procéder au paiement des frais de sélection de 60€.</p>
+                    <div class="status-line">
+                        <div class="status-indicator status-incomplete"></div>
+                        <span>Candidature en cours</span>
+                    </div>
+                    <a href="#" class="action-button">Compléter mon dossier</a>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Besoin d'aide ?</h2>
+            
+            <div class="chat-container">
+                <div id="bioforcebot-container"></div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">© 2025 Bioforce. Tous droits réservés.</div>
+            <div class="footer-links">
+                <a href="#">Mentions légales</a>
+                <a href="#">Politique de confidentialité</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="/static/bioforcebot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser le chatbot
+            const bot = new BioforceBot({
+                apiUrl: window.location.origin
+            });
+            
+            bot.init('bioforcebot-container', 'espace_candidat');
+            
+            // Ouvrir automatiquement le chatbot
+            setTimeout(() => {
+                bot.open();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

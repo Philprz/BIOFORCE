@@ -2,7 +2,7 @@
 
 class BioforceBot {
     constructor(options = {}) {
-        this.apiUrl = options.apiUrl || 'https://bioforce-admin.onrender.com';
+        this.apiUrl = options.apiUrl || 'https://bioforce-bot.onrender.com';
         this.userId = options.userId || this._generateUserId();
         this.container = null;
         this.messages = [];
@@ -518,8 +518,8 @@ class BioforceBot {
                 const refEl = document.createElement('div');
                 refEl.className = 'bioforcebot-reference';
                 refEl.innerHTML = `
-                    <div class="bioforcebot-reference-question">${ref.question}</div>
-                    <a href="${ref.url}" class="bioforcebot-reference-link" target="_blank">Voir plus d'informations</a>
+                    <div class="bioforcebot-reference-question">${ref.question || ref.title || "Information"}</div>
+                    <a href="${ref.source || "#"}" class="bioforcebot-reference-link" target="_blank">Voir plus d'informations</a>
                 `;
                 referencesList.appendChild(refEl);
             });

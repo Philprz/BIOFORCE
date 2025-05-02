@@ -56,7 +56,101 @@ SCHEDULER_ENABLED=true
 REMINDER_ENABLED=true
 ```
 
-## Déploiement sur Render
+## Déploiement sur Render# BioforceBot
+
+Un chatbot d'assistance aux candidats Bioforce basé sur FastAPI, Qdrant et OpenAI.
+
+## Présentation
+
+BioforceBot est un chatbot conçu pour accompagner les candidats "tièdes" dans leur processus de candidature pour les formations Bioforce. Il offre trois fonctionnalités principales :
+
+1. **Assistance à la navigation** dans l'espace candidat
+2. **Réponses automatisées** aux questions fréquentes sur les formations et le processus d'admission
+3. **Relances personnalisées** pour encourager les candidats à finaliser leur candidature
+
+Ce chatbot utilise la technique RAG (Retrieval-Augmented Generation) pour fournir des réponses précises et contextualisées aux questions des candidats.
+
+## Architecture technique
+
+- **Backend** : FastAPI (Python)
+- **Base de connaissances** : Qdrant (base de données vectorielle)
+- **Génération de réponses** : OpenAI GPT-4o-mini
+- **Interface utilisateur** : JavaScript natif
+
+## Installation
+
+### Prérequis
+
+- Python 3.10+
+- Pip
+- Un compte OpenAI avec une clé API
+- Un compte Qdrant (cloud ou installation locale)
+
+### Installation des dépendances
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configuration
+
+Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+
+```
+# OpenAI
+OPENAI_API_KEY=votre_clé_api_openai
+
+# Qdrant
+QDRANT_URL=votre_url_qdrant
+QDRANT_API_KEY=votre_clé_api_qdrant
+QDRANT_COLLECTION=BIOFORCE
+
+# Configuration API
+API_HOST=0.0.0.0
+API_PORT=8000
+```
+
+## Utilisation
+
+### Démarrer l'API
+
+```bash
+python app.py
+```
+
+L'API sera accessible à l'adresse http://localhost:8000.
+
+### Interface d'administration
+
+Une interface d'administration est disponible à l'adresse http://localhost:8000/admin/.
+
+### Interface de démonstration
+
+Une interface de démonstration du chatbot est disponible à l'adresse http://localhost:8000/static/chat.html.
+
+## Déploiement
+
+Le chatbot peut être déployé sur Render avec les paramètres suivants :
+
+- **Runtime** : Python 3.10
+- **Build Command** : `pip install -r requirements.txt`
+- **Start Command** : `gunicorn -k uvicorn.workers.UvicornWorker bioforce_api_chatbot:app`
+
+## Structure du projet
+
+- `bioforce_api_chatbot.py` : API FastAPI principale
+- `app.py` : Script de lancement de l'API
+- `static/bioforcebot.js` : Interface JavaScript du chatbot
+- `static/admin/index.html` : Interface d'administration
+- `static/chat.html` : Interface de démonstration
+
+## Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
+
+## Licence
+
+Ce projet est sous licence MIT.
 
 1. Créez un nouveau Web Service sur Render
 2. Connectez votre dépôt Git
