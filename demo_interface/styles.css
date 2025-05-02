@@ -52,7 +52,7 @@ nav ul li a {
 }
 
 nav ul li a.active {
-    color: #FF5733;
+    color: #e74324;
 }
 
 nav ul li a.active::after {
@@ -62,7 +62,7 @@ nav ul li a.active::after {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #FF5733;
+    background-color: #e74324;
 }
 
 .search-user {
@@ -103,7 +103,7 @@ nav ul li a.active::after {
 /* Hero section */
 .hero-section {
     display: flex;
-    background: linear-gradient(90deg, #FF5733 0%, #FF5733 50%, transparent 50%);
+    background: linear-gradient(90deg, #e74324 0%, #e74324 50%, transparent 50%);
     min-height: 400px;
     position: relative;
 }
@@ -126,7 +126,7 @@ nav ul li a.active::after {
 .btn-primary {
     display: inline-block;
     background-color: white;
-    color: #FF5733;
+    color: #e74324;
     padding: 12px 30px;
     border-radius: 30px;
     text-decoration: none;
@@ -187,7 +187,7 @@ nav ul li a.active::after {
 }
 
 .application-summary h2 {
-    color: #FF5733;
+    color: #e74324;
     margin-bottom: 20px;
     font-weight: 500;
 }
@@ -253,7 +253,7 @@ footer {
 }
 
 .chatbot-header {
-    background-color: #FF5733;
+    background-color: #e74324;
     color: white;
     padding: 15px;
     display: flex;
@@ -330,7 +330,7 @@ footer {
 }
 
 .chat-input button {
-    background-color: #FF5733;
+    background-color: #e74324;
     color: white;
     border: none;
     padding: 0 20px;
@@ -358,7 +358,7 @@ footer {
 .profile-avatar {
     width: 80px;
     height: 80px;
-    background-color: #FF5733;
+    background-color: #e74324;
     border-radius: 10px;
     color: white;
     display: flex;
@@ -380,7 +380,7 @@ footer {
 .edit-profile {
     margin-left: auto;
     padding: 8px 20px;
-    background-color: #FF5733;
+    background-color: #e74324;
     color: white;
     border-radius: 5px;
     text-decoration: none;
@@ -504,7 +504,7 @@ footer {
 .candidature-icon {
     width: 40px;
     height: 40px;
-    background-color: #FF5733;
+    background-color: #e74324;
     border-radius: 5px;
     color: white;
     display: flex;
@@ -516,7 +516,7 @@ footer {
 
 .complete-btn {
     padding: 8px 20px;
-    background-color: #FF5733;
+    background-color: #e74324;
     color: white;
     border-radius: 5px;
     text-decoration: none;
@@ -561,8 +561,8 @@ footer {
 }
 
 .action-tab.active {
-    border-bottom-color: #FF5733;
-    color: #FF5733;
+    border-bottom-color: #e74324;
+    color: #e74324;
     font-weight: 500;
 }
 
@@ -612,7 +612,7 @@ footer {
 
 .document-name i {
     margin-right: 10px;
-    color: #FF5733;
+    color: #e74324;
 }
 
 .document-actions {
@@ -628,7 +628,7 @@ footer {
 }
 
 .upload-btn {
-    background-color: #FF5733;
+    background-color: #e74324;
     color: white;
     border: none;
 }
@@ -643,7 +643,7 @@ footer {
 @media screen and (max-width: 1024px) {
     .hero-section {
         flex-direction: column;
-        background: #FF5733;
+        background: #e74324;
     }
     
     .hero-image {
