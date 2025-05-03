@@ -237,7 +237,7 @@ class BioforceBot {
                 border-top: 1px solid #eee;
                 max-height: 120px;
                 overflow-y: auto;
-                display: none;
+                display: block;
             }
 
             .bioforcebot-references-header {
@@ -504,26 +504,29 @@ class BioforceBot {
     _displayReferences(references) {
         const referencesContainer = this.container.querySelector('.bioforcebot-references');
         const referencesList = this.container.querySelector('.bioforcebot-references-list');
-
+    
         referencesList.innerHTML = '';
-
+        
+        console.log("References received:", references); // Ajoutez ce log pour déboguer
+        
         if (references && references.length > 0) {
             referencesContainer.style.display = 'block';
-
+    
             references.forEach(ref => {
                 const refEl = document.createElement('div');
                 refEl.className = 'bioforcebot-reference';
-
-                const titleText = ref.title || "Information";
+    
+                // Vérification des propriétés pour éviter les erreurs
+                const titleText = ref.title || ref.question || "Information";
                 const sourceUrl = ref.source || "#";
-
+    
                 refEl.innerHTML = `
                     <div class="bioforcebot-reference-question">${titleText}</div>
                     <a href="${sourceUrl}" class="bioforcebot-reference-link" target="_blank">
                         ${sourceUrl.includes('bioforce.org') ? sourceUrl.replace('https://bioforce.org/', '') : 'Source externe'}
                     </a>
                 `;
-
+    
                 referencesList.appendChild(refEl);
             });
         } else {
@@ -610,8 +613,6 @@ class BioforceBot {
                 context: this.context
             };
     
-            console.log("Request data:", JSON.stringify(requestData));
-    
             const response = await fetch(`${this.apiUrl}/chat`, {
                 method: 'POST',
                 headers: {
@@ -627,11 +628,17 @@ class BioforceBot {
             }
     
             const data = await response.json();
-            console.log("Response received:", data);
+            console.log("Response received:", data); // Pour vérifier le format de la réponse
     
             this._addMessage('assistant', data.message.content);
             this.context = data.context || {};
-            this._displayReferences(data.references || []);
+            
+            // S'assurer que les références sont bien passées à la fonction d'affichage
+            if (data.references && Array.isArray(data.references)) {
+                this._displayReferences(data.references);
+            } else {
+                this._displayReferences([]);
+            }
     
         } catch (error) {
             console.error('Error:', error);
