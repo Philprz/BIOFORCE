@@ -1,4 +1,4 @@
-class BioforceBot {
+class BioforceBotOptimized {
     constructor(options = {}) {
         this.apiUrl = options.apiUrl || 'http://localhost:8000';
         this.userId = options.userId || this._generateUserId();
@@ -7,9 +7,19 @@ class BioforceBot {
         this.context = {};
         this.isOpen = false;
         this.isLoading = false;
+        this.websocket = null;
+        this.websocketId = null;
+        this.context = {
+            "fee_info": {
+                "selection_fee_eur": "60€",
+                "selection_fee_cfa": "20000 CFA",
+                "selection_process": "Les frais de sélection sont à payer après avoir rempli le formulaire de candidature."
+            }
+        };
         this.welcomeMessages = {
             'default': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?",
-            'espace_candidat': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de l'espace candidat. Je peux vous aider à naviguer dans votre espace, répondre à vos questions sur les formations ou vous assister dans votre candidature."
+            'espace_candidat': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de l'espace candidat. Je peux vous aider à naviguer dans votre espace, répondre à vos questions sur les formations ou vous assister dans votre candidature.",
+            'paiement': "Bonjour ! Je vois que vous êtes en cours de candidature. Puis-je vous aider à finaliser le paiement des frais de sélection de 60€/20000 CFA ?"
         };
     }
 
@@ -28,10 +38,8 @@ class BioforceBot {
         const welcomeMessage = this.welcomeMessages[mode] || this.welcomeMessages.default;
         this._addMessage('assistant', welcomeMessage);
         this._setupEventListeners();
-        
-        console.log("BioforceBot initialized with API URL:", this.apiUrl);
     }
-
+    //############## Fin modification
     _createInterface() {
         this.container.innerHTML = `
             <div class="bioforcebot-wrapper">
@@ -593,7 +601,7 @@ class BioforceBot {
             this.websocket = null;
         }
     }
-
+    //############## Fin modification   
     async sendMessage(text) {
         if (this.isLoading) return;
     
@@ -602,15 +610,14 @@ class BioforceBot {
         this._showTypingIndicator();
     
         try {
-            console.log("Sending message to API:", text);
-            
             const requestData = {
                 user_id: this.userId,
                 messages: this.messages,
                 context: this.context
             };
     
-            console.log("Request data:", JSON.stringify(requestData));
+            // Afficher les données de la requête pour le débogage
+            console.log("Envoi de la requête:", JSON.stringify(requestData));
     
             const response = await fetch(`${this.apiUrl}/chat`, {
                 method: 'POST',
@@ -623,27 +630,50 @@ class BioforceBot {
             this._removeTypingIndicator();
     
             if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
+                const errorText = await response.text();
+                console.error(`Erreur HTTP ${response.status}: ${errorText}`);
+                throw new Error(`Erreur ${response.status}: ${errorText || 'Erreur de communication avec le serveur'}`);
             }
     
             const data = await response.json();
-            console.log("Response received:", data);
+            console.log("Réponse reçue:", data);
+    
+            // Vérifier que data.message existe
+            if (!data.message || !data.message.content) {
+                console.error("Format de réponse invalide:", data);
+                throw new Error("Format de réponse invalide");
+            }
     
             this._addMessage('assistant', data.message.content);
             this.context = data.context || {};
             this._displayReferences(data.references || []);
     
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Erreur:', error);
             this._removeTypingIndicator();
             this._addMessage('assistant', "Désolé, j'ai rencontré un problème technique. Veuillez réessayer ou contacter directement l'équipe Bioforce.");
         } finally {
             this.isLoading = false;
         }
     }
+
+    setContext(context) {
+        this.context = {...this.context, ...context};
+    }
+
+    suggestQuestion(question) {
+        if (!this.isOpen) {
+            this.open();
+        }
+
+        const inputText = this.container.querySelector('.bioforcebot-input-text');
+        inputText.value = question;
+        inputText.focus();
+    }
 }
 
-// Export pour utilisation dans le navigateur
-if (typeof window !== 'undefined') {
-    window.BioforceBot = BioforceBot;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = BioforceBotOptimized;
+} else {
+    window.BioforceBotOptimized = BioforceBotOptimized;
 }

@@ -791,14 +791,14 @@ async def admin_status():
         logger.error(f"Erreur de vérification du statut: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Endpoint de chat simplifié à ajouter dans bioforce_api_chatbot.py
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
-    Point d'entrée simplifié pour le chat sans enrichissement asynchrone
+    Point d'entrée simplifié pour le chat
     """
     try:
-        logger.critical(f"[/chat] Début du traitement d'une requête de chat: {request.user_id}")
-        logger.info(f"[/chat] Messages reçus: {len(request.messages)}")
+        logger.info(f"[/chat] Début du traitement d'une requête de chat: {request.user_id}")
         
         messages = request.messages
         
@@ -812,7 +812,8 @@ async def chat(request: ChatRequest):
         
         # Détection des questions sur les frais
         is_fee_question = False
-        if last_user_message and any(term in last_user_message.lower() for term in ["frais", "coût", "tarif", "prix", "payer", "€", "euro"]):
+        if last_user_message and any(term in last_user_message.lower() for term in 
+                                    ["frais", "coût", "tarif", "prix", "payer", "€", "euro"]):
             is_fee_question = True
             logger.info("[/chat] Question sur les frais détectée")
         
@@ -844,10 +845,8 @@ async def chat(request: ChatRequest):
                     "source": ref.get("source_url", ref.get("url", "Non disponible")),
                     "title": ref.get("title", ref.get("question", "Information")),
                     "score": ref.get("score", 0)
-                } for ref in references
-            ],
-            "has_enrichment_pending": False,
-            "websocket_id": None
+                } for ref in references[:3]  # Limiter à 3 références
+            ]
         }
         
         logger.info(f"[/chat] Réponse prête à être envoyée, longueur: {len(rag_content)}")
@@ -857,6 +856,7 @@ async def chat(request: ChatRequest):
         logger.error(f"[/chat] Erreur dans /chat: {e}")
         logger.error(f"[/chat] Stack trace: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/qdrant-stats")
 async def qdrant_stats():
     """Retourne des statistiques sur les collections Qdrant"""
@@ -915,7 +915,8 @@ async def health_check():
 async def run_diagnosis():
     """Endpoint pour diagnostiquer les différents composants du système"""
     results = {
-        "env_variables": {k: v for k, v in os.environ.items() if not k.lower().contains("key")},
+        "env_variables": {k: v[:5] + "..." if "key" in k.lower() and v else v 
+                          for k, v in os.environ.items() if "secret" not in k.lower()},
         "python_version": sys.version,
         "working_directory": os.getcwd(),
         "tests": {}
