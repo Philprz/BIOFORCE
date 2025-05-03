@@ -870,7 +870,7 @@ async def qdrant_stats():
         }
         
         if COLLECTION_NAME in collection_names:
-            info = await qdrant_client.get_collection(collection_name=COLLECTION_NAME)
+            await qdrant_client.get_collection(collection_name=COLLECTION_NAME)
             count = await qdrant_client.count(collection_name=COLLECTION_NAME)
             
             stats["faq_collection"] = {
@@ -882,9 +882,9 @@ async def qdrant_stats():
         
         full_collection = os.getenv('QDRANT_COLLECTION_ALL', 'BIOFORCE_ALL')
         if full_collection in collection_names:
-            info = await qdrant_client.get_collection(collection_name=full_collection)
+            await qdrant_client.get_collection(collection_name=full_collection)
             count = await qdrant_client.count(collection_name=full_collection)
-            logger.info(f"Collection {info} contient {count.count} points")
+            
             stats["full_site_collection"] = {
                 "points_count": count.count,
                 "vector_size": 1536,
