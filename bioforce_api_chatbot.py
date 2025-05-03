@@ -1,20 +1,21 @@
-from fastapi import FastAPI, HTTPException, Body, Request
+from fastapi import FastAPI, HTTPException, Request, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 import os
-import json
 import logging
 import traceback
+import time
+import hashlib
+import asyncio
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.http import models
 from dotenv import load_dotenv
-import uvicorn
 from pathlib import Path
 
 # Chargement des variables d'environnement
@@ -32,18 +33,24 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 QDRANT_URL = os.getenv('QDRANT_URL')
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
 COLLECTION_NAME = os.getenv('QDRANT_COLLECTION', 'BIOFORCE')
+OPENAI_ASSISTANT_ID = os.getenv('OPENAI_ASSISTANT_ID')
+USE_OPENAI_ASSISTANT = os.getenv('USE_OPENAI_ASSISTANT', 'true').lower() == 'true'
 
-# Vérification des variables essentielles
+# Validation des variables essentielles
 if not QDRANT_URL:
     logger.error("Variable d'environnement QDRANT_URL non définie")
     raise ValueError("QDRANT_URL doit être défini dans les variables d'environnement")
 
-if not QDRANT_API_KEY:
-    logger.warning("Variable d'environnement QDRANT_API_KEY non définie")
-
 if not OPENAI_API_KEY:
     logger.error("Variable d'environnement OPENAI_API_KEY non définie")
     raise ValueError("OPENAI_API_KEY doit être défini dans les variables d'environnement")
+
+if USE_OPENAI_ASSISTANT and not OPENAI_ASSISTANT_ID:
+    logger.warning("OPENAI_ASSISTANT_ID non défini, désactivation de l'assistant")
+    USE_OPENAI_ASSISTANT = False
+
+if not QDRANT_API_KEY:
+    logger.warning("Variable d'environnement QDRANT_API_KEY non définie")
 
 # Initialisation des clients
 logger.info(f"Initialisation du client OpenAI avec API_KEY: {OPENAI_API_KEY[:5]}..." if OPENAI_API_KEY else "API_KEY non définie")
@@ -51,7 +58,119 @@ openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 logger.info(f"Initialisation du client Qdrant avec URL: {QDRANT_URL}")
 logger.info(f"Qdrant API_KEY présente: {'Oui' if QDRANT_API_KEY else 'Non'}")
-qdrant_client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+qdrant_client = AsyncQdrantClient(
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
+    prefer_grpc=False
+)
+
+# Cache pour les réponses enrichies
+enriched_responses_cache = {}
+# Durée de validité du cache (24 heures)
+CACHE_VALIDITY_PERIOD = 24 * 60 * 60
+
+# Initialisation de l'application FastAPI
+app = FastAPI(
+    title="BioforceBot API",
+    description="API pour le chatbot d'assistance aux candidats Bioforce",
+    version="1.0.0"
+)
+
+# Configuration CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=86400,
+)
+
+# Configuration des dossiers statiques
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+TEMPLATES_DIR = BASE_DIR / "templates"
+
+try:
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    logger.info(f"Dossier statique configuré: {STATIC_DIR}")
+except Exception as e:
+    logger.warning(f"Erreur lors de la configuration du dossier statique: {str(e)}")
+
+try:
+    templates = Jinja2Templates(directory=TEMPLATES_DIR)
+    logger.info(f"Dossier templates configuré: {TEMPLATES_DIR}")
+except Exception as e:
+    logger.warning(f"Erreur lors de la configuration des templates: {str(e)}")
+
+# Classe pour les messages de chat
+class ChatMessage(BaseModel):
+    role: str = "user"
+    content: str
+
+# Classe pour les requêtes de chat
+class ChatRequest(BaseModel):
+    user_id: str
+    messages: List[ChatMessage]
+    context: Dict[str, Any] = {}
+
+# Classe pour les réponses de chat
+class ChatResponse(BaseModel):
+    message: ChatMessage
+    context: Dict[str, Any] = {}
+    references: List[Dict[str, Any]] = []
+    has_enrichment_pending: bool = False
+    websocket_id: Optional[str] = None
+
+# Gestionnaire de connexions WebSocket
+websocket_connections = {}
+
+# Fonction pour générer une clé de cache à partir d'un message
+def generate_cache_key(message: str) -> str:
+    """Génère une clé de cache à partir d'un message en utilisant un hash."""
+    normalized_message = message.lower().strip()
+    return hashlib.md5(normalized_message.encode('utf-8')).hexdigest()
+
+# Fonction pour vérifier si deux messages sont similaires
+def are_messages_similar(message1: str, message2: str, threshold: float = 0.8) -> bool:
+    """Détermine si deux messages sont similaires en fonction d'un seuil."""
+    words1 = set(message1.lower().split())
+    words2 = set(message2.lower().split())
+    if not words1 or not words2:
+        return False
+    common_words = words1.intersection(words2)
+    similarity = len(common_words) / max(len(words1), len(words2))
+    return similarity >= threshold
+
+# Fonction pour trouver une réponse similaire dans le cache
+def find_similar_cached_response(message: str) -> Optional[Dict[str, Any]]:
+    """Recherche une réponse à une question similaire dans le cache."""
+    now = time.time()
+
+    exact_key = generate_cache_key(message)
+    if exact_key in enriched_responses_cache:
+        cache_entry = enriched_responses_cache[exact_key]
+        if now - cache_entry["timestamp"] < CACHE_VALIDITY_PERIOD:
+            return cache_entry
+
+    for key, entry in enriched_responses_cache.items():
+        if now - entry["timestamp"] < CACHE_VALIDITY_PERIOD:
+            if are_messages_similar(message, entry["original_query"]):
+                return entry
+
+    return None
+
+# Fonction pour ajouter une réponse au cache
+def add_to_cache(message: str, rag_response: str, enriched_response: str):
+    """Ajoute une réponse au cache."""
+    key = generate_cache_key(message)
+    enriched_responses_cache[key] = {
+        "original_query": message,
+        "rag_response": rag_response,
+        "enriched_response": enriched_response,
+        "timestamp": time.time()
+    }
 
 # Fonction pour initialiser la collection Qdrant
 async def initialize_qdrant_collection():
@@ -109,43 +228,6 @@ async def initialize_qdrant_collection():
         logger.error(f"Type d'erreur: {type(e).__name__}")
         logger.error(f"Stack trace: {traceback.format_exc()}")
 
-# Initialisation de l'application FastAPI
-app = FastAPI(
-    title="BioforceBot API",
-    description="API pour le chatbot d'assistance aux candidats Bioforce",
-    version="1.0.0"
-)
-
-# Configuration des dossiers pour les fichiers statiques et les templates
-BASE_DIR = Path(__file__).resolve().parent
-STATIC_DIR = BASE_DIR / "static"
-TEMPLATES_DIR = BASE_DIR / "templates"
-
-# Configuration pour servir les fichiers statiques
-try:
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    logger.info(f"Dossier statique configuré: {STATIC_DIR}")
-except Exception as e:
-    logger.warning(f"Erreur lors de la configuration du dossier statique: {str(e)}")
-
-# Configuration des templates
-try:
-    templates = Jinja2Templates(directory=TEMPLATES_DIR)
-    logger.info(f"Dossier templates configuré: {TEMPLATES_DIR}")
-except Exception as e:
-    logger.warning(f"Erreur lors de la configuration des templates: {str(e)}")
-
-# Configuration CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"],
-    max_age=86400,
-)
-
 # Événement de démarrage pour initialiser la collection
 @app.on_event("startup")
 async def startup_event():
@@ -156,29 +238,7 @@ async def startup_event():
     await initialize_qdrant_collection()
     logger.info("=== INITIALISATION TERMINÉE ===")
 
-# Modèles de données
-class ChatMessage(BaseModel):
-    role: str = "user"
-    content: str
-
-class ChatRequest(BaseModel):
-    user_id: str
-    messages: List[ChatMessage]
-    context: Dict[str, Any] = {}
-
-class ChatResponse(BaseModel):
-    message: ChatMessage
-    context: Dict[str, Any] = {}
-    references: List[Dict[str, Any]] = []
-
-class SearchRequest(BaseModel):
-    query: str
-    limit: int = 5
-
-class SearchResponse(BaseModel):
-    results: List[Dict[str, Any]]
-
-# Fonctions utilitaires
+# Fonction pour générer un embedding
 async def generate_embedding(text: str) -> List[float]:
     """Génère un embedding pour le texte donné"""
     try:
@@ -195,6 +255,7 @@ async def generate_embedding(text: str) -> List[float]:
         logger.error(f"Stack trace: {traceback.format_exc()}")
         raise
 
+# Fonction pour rechercher dans Qdrant
 async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
     """Recherche dans la base de connaissances"""
     try:
@@ -265,6 +326,7 @@ async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, An
         logger.error(f"Stack trace: {traceback.format_exc()}")
         return []
 
+# Fonction pour formater le contexte
 async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     """Formate les résultats de recherche en contexte pour le LLM"""
     context = "Informations pertinentes de la base de connaissances de Bioforce:\n\n"
@@ -283,67 +345,295 @@ async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
 
     return context
 
-async def get_llm_response(messages, context=""):
-    """
-    Obtient une réponse du modèle de langage OpenAI
-    """
-    try:
-        system_message = {
+# Fonction pour obtenir une réponse rapide via RAG
+async def get_rag_response(messages, context=""):
+    """Génère une réponse rapide basée sur le RAG."""
+    last_message = None
+    for msg in reversed(messages):
+        if msg.role == "user":
+            last_message = msg.content
+            break
+
+    if not last_message:
+        return "Je n'ai pas compris votre question. Pouvez-vous reformuler ?", []
+
+    # Rechercher dans Qdrant pour obtenir le contexte pertinent
+    qdrant_results = await search_knowledge_base(last_message)
+
+    # Formater le contexte pour le LLM
+    context_text = ""
+    if qdrant_results:
+        context_text = await format_context_from_results(qdrant_results)
+
+    system_message = {
+        "role": "system",
+        "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation humanitaire qui propose des formations.
+                   Votre rôle est d'aider les candidats avec leur dossier de candidature et de répondre à leurs questions
+                   sur les formations, le processus de sélection, et les modalités d'inscription.
+                   Soyez concis, précis et avenant dans vos réponses. Si vous ne connaissez pas la réponse à une question,
+                   proposez au candidat de contacter directement l'équipe Bioforce."""
+    }
+
+    api_messages = [system_message]
+
+    for msg in messages:
+        api_messages.append({"role": msg.role, "content": msg.content})
+
+    if context_text:
+        api_messages.append({
             "role": "system",
-            "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation humanitaire qui propose des formations.
-                       Votre rôle est d'aider les candidats avec leur dossier de candidature et de répondre à leurs questions
-                       sur les formations, le processus de sélection, et les modalités d'inscription.
-                       Soyez concis, précis et avenant dans vos réponses. Si vous ne connaissez pas la réponse à une question,
-                       proposez au candidat de contacter directement l'équipe Bioforce."""
-        }
+            "content": f"Informations supplémentaires pouvant être utiles pour répondre à la question: {context_text}"
+        })
 
-        api_messages = [system_message]
-
-        for msg in messages:
-            if isinstance(msg, ChatMessage):
-                api_messages.append({"role": msg.role, "content": msg.content})
-            elif isinstance(msg, dict):
-                api_messages.append(msg)
-            else:
-                logger.warning(f"Format de message non reconnu: {type(msg)}")
-
-        if context:
-            api_messages.append({
-                "role": "system",
-                "content": f"Informations supplémentaires pouvant être utiles pour répondre à la question: {context}"
-            })
-
-        logger.info(f"Envoi de la requête au modèle LLM avec {len(api_messages)} messages")
-
+    try:
         response = await openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o-mini",  # Modèle plus léger pour une réponse rapide
             messages=api_messages,
             temperature=0.7,
             max_tokens=500
         )
 
         content = response.choices[0].message.content
-        logger.info(f"Réponse reçue du LLM ({len(content)} caractères)")
+        return content, qdrant_results
+    except Exception as e:
+        logger.error(f"Erreur lors de l'appel au LLM: {str(e)}")
+        return "Je rencontre des difficultés techniques. Veuillez réessayer ou contacter l'équipe Bioforce.", []
 
-        return content, []
+# Fonction pour obtenir une réponse enrichie à partir de l'assistant OpenAI
+async def get_enriched_response(messages, context=""):
+    """Obtient une réponse enrichie à partir de l'assistant OpenAI."""
+    try:
+        # Récupérer le dernier message de l'utilisateur
+        last_message = None
+        for msg in reversed(messages):
+            if isinstance(msg, dict):
+                if msg.get("role") == "user":
+                    last_message = msg.get("content")
+                    break
+            elif hasattr(msg, 'role') and msg.role == "user":
+                last_message = msg.content
+                break
+
+        if not last_message:
+            return "Je n'ai pas pu analyser votre question."
+
+        # Vérifier d'abord le cache
+        cached_response = find_similar_cached_response(last_message)
+        if cached_response:
+            return cached_response["enriched_response"]
+
+        if not USE_OPENAI_ASSISTANT or not OPENAI_ASSISTANT_ID:
+            logger.warning("Assistant OpenAI non configuré, utilisation du modèle standard")
+            # Utiliser le modèle standard si l'assistant n'est pas configuré
+            system_message = {
+                "role": "system",
+                "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation qui forme des professionnels 
+                           pour le secteur humanitaire. Fournissez des informations détaillées et précises sur les 
+                           formations, le processus de candidature et les options de financement."""
+            }
+
+            api_messages = [system_message]
+            for msg in messages:
+                if isinstance(msg, dict):
+                    api_messages.append(msg)
+                else:
+                    api_messages.append({"role": msg.role, "content": msg.content})
+
+            if context:
+                api_messages.append({
+                    "role": "system",
+                    "content": f"Informations supplémentaires: {context}"
+                })
+
+            response = await openai_client.chat.completions.create(
+                model="gpt-4",  # Modèle plus complet pour une réponse enrichie
+                messages=api_messages,
+                temperature=0.5,
+                max_tokens=800
+            )
+
+            return response.choices[0].message.content
+
+        # Si rien dans le cache, interroger l'assistant OpenAI
+        # Étape 1: Créer un thread
+        thread = await openai_client.beta.threads.create()
+
+        # Étape 2: Ajouter les messages au thread
+        for msg in messages:
+            if isinstance(msg, dict):
+                await openai_client.beta.threads.messages.create(
+                    thread_id=thread.id,
+                    role=msg.get("role", "user"),
+                    content=msg.get("content", "")
+                )
+            else:
+                await openai_client.beta.threads.messages.create(
+                    thread_id=thread.id,
+                    role=msg.role,
+                    content=msg.content
+                )
+
+        # Ajouter le contexte si disponible
+        if context:
+            await openai_client.beta.threads.messages.create(
+                thread_id=thread.id,
+                role="user",
+                content=f"Informations supplémentaires: {context}"
+            )
+
+        # Étape 3: Lancer le traitement via l'assistant
+        run = await openai_client.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=OPENAI_ASSISTANT_ID
+        )
+
+        # Étape 4: Attendre la fin de l'exécution avec un délai maximum
+        max_wait_time = 20  # 20 secondes maximum
+        start_time = time.time()
+
+        while True:
+            run_status = await openai_client.beta.threads.runs.retrieve(
+                thread_id=thread.id,
+                run_id=run.id
+            )
+
+            if run_status.status in ["completed", "failed", "cancelled"]:
+                break
+
+            # Vérifier si le délai d'attente est dépassé
+            if time.time() - start_time > max_wait_time:
+                logger.warning("Délai d'attente dépassé pour l'assistant OpenAI")
+                await openai_client.beta.threads.runs.cancel(
+                    thread_id=thread.id,
+                    run_id=run.id
+                )
+                break
+
+            await asyncio.sleep(1)
+
+        # Étape 5: Lire la réponse
+        assistant_response = "Je n'ai pas pu obtenir d'informations actualisées pour le moment."
+
+        if run_status.status == "completed":
+            assistant_messages = await openai_client.beta.threads.messages.list(thread_id=thread.id)
+
+            # Obtenir la dernière réponse de l'assistant
+            for message in assistant_messages.data:
+                if message.role == "assistant":
+                    assistant_response = message.content[0].text.value
+                    break
+
+        return assistant_response
 
     except Exception as e:
-        error_type = type(e).__name__
-        error_msg = str(e)
-        logger.error(f"Erreur lors de l'appel au LLM: {error_type} - {error_msg}")
+        logger.error(f"Erreur lors de l'enrichissement: {str(e)}")
+        return "Je n'ai pas pu obtenir d'informations supplémentaires pour le moment."
 
-        fallback_message = "Désolé, j'ai rencontré un problème technique. "
+# Fonction pour comparer les réponses et générer un complément
+def generate_complement(rag_response, enriched_response):
+    """Compare les réponses RAG et enrichie pour générer un complément si nécessaire."""
+    # Extraire les phrases des deux réponses
+    def extract_sentences(text):
+        return [s.strip() for s in text.split('.') if s.strip()]
 
-        if "API key" in error_msg.lower():
-            fallback_message += "Il semble y avoir un problème avec la clé API. Veuillez contacter le support."
-        elif "rate limit" in error_msg.lower():
-            fallback_message += "Nos services sont actuellement très sollicités. Veuillez réessayer dans quelques instants."
-        elif "timeout" in error_msg.lower():
-            fallback_message += "La connexion semble lente. Veuillez réessayer votre question."
-        else:
-            fallback_message += "Veuillez réessayer ou contacter l'équipe Bioforce si le problème persiste."
+    rag_sentences = set(extract_sentences(rag_response.lower()))
+    enriched_sentences = extract_sentences(enriched_response.lower())
 
-        return fallback_message, []
+    # Identifier les phrases uniques dans la réponse enrichie
+    new_information = []
+    for sentence in enriched_sentences:
+        is_new = True
+        for rag_sentence in rag_sentences:
+            if are_messages_similar(sentence, rag_sentence, threshold=0.7):
+                is_new = False
+                break
+
+        if is_new and len(sentence) > 20:  # Ignorer les phrases trop courtes
+            new_information.append(sentence)
+
+    # S'il y a de nouvelles informations, créer un complément
+    if new_information:
+        complement = "Voici des informations complémentaires basées sur les dernières actualités:\n\n"
+        complement += ". ".join(new_information[:3])  # Limiter à 3 nouvelles phrases
+        complement += "."
+        return complement
+
+    return None
+
+# WebSocket endpoint
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    await websocket.accept()
+    websocket_connections[client_id] = websocket
+
+    try:
+        while True:
+            # Maintenir la connexion ouverte
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        if client_id in websocket_connections:
+            del websocket_connections[client_id]
+
+# Traitement de l'enrichissement en arrière-plan
+async def process_enrichment(messages, rag_response, websocket_id, user_id):
+    try:
+        # Récupérer le dernier message de l'utilisateur
+        last_message = None
+        for msg in reversed(messages):
+            if isinstance(msg, dict):
+                if msg.get("role") == "user":
+                    last_message = msg.get("content")
+                    break
+            elif hasattr(msg, 'role') and msg.role == "user":
+                last_message = msg.content
+                break
+
+        if not last_message:
+            return
+
+        # Vérifier si une réponse similaire existe dans le cache
+        cached_response = find_similar_cached_response(last_message)
+        if cached_response and websocket_id in websocket_connections:
+            await websocket_connections[websocket_id].send_json({
+                "type": "enrichment",
+                "content": cached_response["enriched_response"]
+            })
+            return
+
+        # Obtenir une réponse enrichie
+        enriched_response = await get_enriched_response(messages)
+
+        # Ajouter au cache
+        add_to_cache(last_message, rag_response, enriched_response)
+
+        # Comparer les réponses pour générer un complément
+        complement = generate_complement(rag_response, enriched_response)
+
+        # Envoyer le complément via WebSocket si disponible
+        if complement and websocket_id in websocket_connections:
+            await websocket_connections[websocket_id].send_json({
+                "type": "enrichment",
+                "content": complement
+            })
+        # Envoyer également une notification "pas de nouvelles informations" si aucun complément
+        elif websocket_id in websocket_connections:
+            await websocket_connections[websocket_id].send_json({
+                "type": "no_enrichment",
+                "content": "Je n'ai pas trouvé d'informations complémentaires récentes sur ce sujet."
+            })
+
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement de l'enrichissement: {str(e)}")
+        # Essayer d'envoyer une notification d'erreur
+        if websocket_id in websocket_connections:
+            try:
+                await websocket_connections[websocket_id].send_json({
+                    "type": "error",
+                    "content": "Je n'ai pas pu obtenir d'informations complémentaires pour le moment."
+                })
+            except Exception as e:
+                # Vous pouvez journaliser l'erreur pour en savoir plus
+                print(f"Une erreur est survenue: {e}")
 
 # Routes API
 @app.get("/")
@@ -459,96 +749,51 @@ async def admin_status():
         logger.error(f"Erreur de vérification du statut: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/admin/{path:path}")
-async def admin_static(path: str):
-    """Sert les fichiers statiques de l'interface d'administration"""
-    try:
-        file_path = STATIC_DIR / "admin" / path
-        if file_path.exists() and file_path.is_file():
-            return FileResponse(file_path)
-        else:
-            logger.warning(f"Fichier non trouvé: {file_path}")
-            raise HTTPException(status_code=404, detail="Fichier non trouvé")
-    except Exception as e:
-        logger.error(f"Erreur lors de la récupération du fichier statique: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
     """
-    Point d'entrée principal pour le chat
+    Point d'entrée principal pour le chat avec approche hybride
     """
     try:
         messages = request.messages
 
-        last_message = None
-        for msg in reversed(messages):
-            if msg.role == "user":
-                last_message = msg.content
-                break
+        # Génération d'un websocket_id unique pour cette session
+        websocket_id = f"{request.user_id}_{int(time.time())}"
 
-        if not last_message:
-            raise HTTPException(status_code=400, detail="Aucun message utilisateur trouvé")
+        # Phase 1 : Obtention rapide d'une réponse via RAG
+        rag_content, references = await get_rag_response(messages)
 
-        logger.info(f"Traitement de la requête chat: '{last_message[:50]}...' (tronqué)")
-
-        context = ""
-        qdrant_results = []
-
-        try:
-            logger.info("Recherche de contexte dans Qdrant...")
-            qdrant_results = await search_knowledge_base(last_message)
-
-            if qdrant_results:
-                logger.info(f"Contexte trouvé: {len(qdrant_results)} résultats")
-                context = await format_context_from_results(qdrant_results)
-            else:
-                logger.warning("Aucun résultat trouvé dans Qdrant")
-        except Exception as e:
-            logger.error(f"Erreur lors de la requête Qdrant: {str(e)}")
-            logger.info("Poursuite du traitement sans contexte")
-
-        response_content, references = await get_llm_response(messages, context)
-
-        formatted_references = []
-        for result in qdrant_results:
-            ref = {
-                "score": result.get("score", 0),
-                "source": result.get("source_url", result.get("url", "Non disponible"))
-            }
-
-            if "question" in result:
-                ref["question"] = result["question"]
-                ref["answer"] = result.get("answer", "")
-
-            if "title" in result:
-                ref["title"] = result["title"]
-
-            if "category" in result:
-                ref["category"] = result["category"]
-
-            formatted_references.append(ref)
-
-        return {
+        # Préparer la réponse initiale
+        response = {
             "message": {
                 "role": "assistant",
-                "content": response_content
+                "content": rag_content
             },
-            "references": formatted_references
+            "context": request.context,
+            "references": [
+                {
+                    "source": ref.get("source_url", ref.get("url", "Non disponible")),
+                    "title": ref.get("title", ref.get("question", "Information")),
+                    "score": ref.get("score", 0)
+                } for ref in references
+            ],
+            "has_enrichment_pending": True,
+            "websocket_id": websocket_id
         }
+
+        # Phase 2 : Lancer l'enrichissement en arrière-plan
+        background_tasks.add_task(
+            process_enrichment,
+            messages,
+            rag_content,
+            websocket_id,
+            request.user_id
+        )
+
+        return response
+
     except Exception as e:
         logger.error(f"Erreur dans /chat: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/search", response_model=SearchResponse)
-async def search(request: SearchRequest):
-    """Endpoint de recherche dans la base de connaissances"""
-    try:
-        results = await search_knowledge_base(request.query, request.limit)
-        return SearchResponse(results=results)
-
-    except Exception as e:
-        logger.error(f"Erreur lors de la recherche: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
@@ -556,45 +801,6 @@ async def health_check():
     """Vérifie l'état de l'API"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
-@app.post("/debug")
-async def debug_api(request: dict = Body(...)):
-    """Endpoint de débogage pour tester les appels API sans logique métier"""
-    try:
-        logger.info(f"Request data: {json.dumps(request, default=str)}")
-
-        openai_status = "unknown"
-        try:
-            response = await openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": "Hello"}],
-                max_tokens=10
-            )
-            openai_status = "connected"
-            openai_response = response.choices[0].message.content
-        except Exception as e:
-            openai_status = f"error: {str(e)}"
-            openai_response = None
-
-        qdrant_status = "unknown"
-        try:
-            collections = await qdrant_client.get_collections()
-            qdrant_status = "connected"
-            qdrant_response = collections.collections
-        except Exception as e:
-            qdrant_status = f"error: {str(e)}"
-            qdrant_response = None
-
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "request_received": True,
-            "openai_status": openai_status,
-            "openai_response": openai_response,
-            "qdrant_status": qdrant_status,
-            "qdrant_response": qdrant_response
-        }
-    except Exception as e:
-        logger.error(f"Erreur de débogage: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run("bioforce_api_chatbot:app", host="0.0.0.0", port=8000, reload=True)

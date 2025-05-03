@@ -1,2 +1,9 @@
-.qodo
+# Fichiers d'environnement
 .env
+.env.local
+.env.*.local
+
+# Éviter les fichiers contenant potentiellement des secrets
+*.env
+secrets.json
+config/keys.json

@@ -18,20 +18,20 @@
             --text-light: #666666;
             --border-color: #e0e0e0;
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             font-family: 'Open Sans', Arial, sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
         }
-        
+
         header {
             background-color: var(--primary-color);
             color: white;
@@ -41,17 +41,17 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         header h1 {
             font-size: 1.5rem;
             font-weight: 600;
             margin: 0;
         }
-        
+
         .header-actions {
             display: flex;
         }
-        
+
         .header-actions button {
             background: none;
             border: 1px solid white;
@@ -63,30 +63,30 @@
             font-weight: 500;
             transition: background-color 0.2s;
         }
-        
+
         .header-actions button:hover {
             background-color: rgba(255,255,255,0.1);
         }
-        
+
         main {
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 3fr;
             gap: 1.5rem;
         }
-        
+
         .navigation {
             background-color: var(--card-color);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             padding: 1.5rem;
         }
-        
+
         .nav-item {
             display: flex;
             align-items: center;
@@ -98,16 +98,16 @@
             color: var(--text-color);
             text-decoration: none;
         }
-        
+
         .nav-item.active, .nav-item:hover {
             background-color: rgba(239, 125, 0, 0.1);
             color: var(--primary-color);
         }
-        
+
         .nav-item svg {
             margin-right: 0.5rem;
         }
-        
+
         .section-header {
             font-size: 1.2rem;
             color: var(--text-light);
@@ -116,34 +116,34 @@
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border-color);
         }
-        
+
         .section-header:first-child {
             margin-top: 0;
         }
-        
+
         .system-info {
             font-size: 0.9rem;
             color: var(--text-light);
             margin-top: 2rem;
         }
-        
+
         .system-info p {
             margin-bottom: 0.3rem;
         }
-        
+
         .dashboard-content {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
-        
+
         .card {
             background-color: var(--card-color);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             padding: 1.5rem;
         }
-        
+
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -153,54 +153,54 @@
             font-size: 1.2rem;
             font-weight: 600;
         }
-        
+
         .card-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
-        
+
         .status-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin-bottom: 1rem;
         }
-        
+
         .status-item {
             display: flex;
             align-items: center;
         }
-        
+
         .status-indicator {
             width: 12px;
             height: 12px;
             border-radius: 50%;
             margin-right: 0.5rem;
         }
-        
+
         .status-indicator.ok {
             background-color: var(--success-color);
         }
-        
+
         .status-indicator.error {
             background-color: var(--danger-color);
         }
-        
+
         .status-indicator.warning {
             background-color: var(--warning-color);
         }
-        
+
         .status-text {
             font-size: 0.9rem;
         }
-        
+
         .actions-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
-        
+
         .action-button {
             display: flex;
             align-items: center;
@@ -214,29 +214,29 @@
             font-weight: 500;
             transition: background-color 0.2s;
         }
-        
+
         .action-button:hover {
             background-color: var(--primary-dark);
         }
-        
+
         .action-button svg {
             margin-right: 0.5rem;
         }
-        
+
         .action-button.secondary {
             background-color: var(--secondary-color);
         }
-        
+
         .scraping-options {
             display: flex;
             align-items: center;
             margin-bottom: 0.5rem;
         }
-        
+
         .scraping-options input[type="checkbox"] {
             margin-right: 0.5rem;
         }
-        
+
         .logs-container {
             background-color: #1e1e1e;
             color: #f8f8f8;
@@ -248,28 +248,28 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        
+
         .collection-stats {
             background-color: #f9f9f9;
             border-radius: 4px;
             padding: 1rem;
             margin-bottom: 1rem;
         }
-        
+
         .collection-stats.error {
             background-color: #ffebee;
             color: var(--danger-color);
         }
-        
+
         .stats-label {
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-        
+
         .stats-value {
             font-family: monospace;
         }
-        
+
         .refresh-button {
             display: flex;
             align-items: center;
@@ -284,32 +284,32 @@
             transition: background-color 0.2s;
             margin-top: 1rem;
         }
-        
+
         .refresh-button:hover {
             background-color: #1a2733;
         }
-        
+
         .refresh-button svg {
             margin-right: 0.5rem;
         }
-        
+
         .github-container {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-        
+
         .repo-info {
             display: flex;
             align-items: center;
             margin-bottom: 0.5rem;
         }
-        
+
         .repo-info svg {
             margin-right: 0.5rem;
             fill: var(--secondary-color);
         }
-        
+
         .update-button {
             display: flex;
             align-items: center;
@@ -324,15 +324,143 @@
             transition: background-color 0.2s;
             margin-top: 0.5rem;
         }
-        
+
         .update-button:hover {
             background-color: #1a2733;
         }
-        
+
         .system-logs {
             display: flex;
             flex-direction: column;
             gap: 1rem;
+        }
+
+        /* Styles pour le bouton toggle */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Styles pour les champs de formulaire */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Styles pour la section de test */
+        .assistant-test-container {
+            margin-top: 15px;
+        }
+
+        .test-results {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .test-status {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .test-status.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .test-status.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .test-status.loading {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .response-container {
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-family: 'Roboto Mono', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .timing-info {
+            font-size: 12px;
+            color: var(--text-light);
         }
     </style>
 </head>
@@ -343,7 +471,7 @@
             <button id="refresh-status">Actualiser</button>
         </div>
     </header>
-    
+
     <main>
         <div class="dashboard-grid">
             <div class="navigation">
@@ -381,7 +509,7 @@
                     </svg>
                     Logs
                 </a>
-                
+
                 <div class="section-header">Informations système</div>
                 <div class="system-info">
                     <p>Version: <span id="version">1.0.0</span></p>
@@ -390,7 +518,7 @@
                     <p>Date: <span id="date">2 mai 2025</span></p>
                 </div>
             </div>
-            
+
             <div class="dashboard-content">
                 <div class="card" id="server-status">
                     <div class="card-header">État du serveur</div>
@@ -408,7 +536,7 @@
                             <div class="status-text" id="qdrant-status-text">Erreur de connexion</div>
                         </div>
                     </div>
-                    
+
                     <div class="card-grid">
                         <div>
                             <div class="stats-label">Statistiques générales</div>
@@ -436,7 +564,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <button class="refresh-button" id="verify-services">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 2v6h-6"></path>
@@ -447,10 +575,10 @@
                         Vérifier l'état des services
                     </button>
                 </div>
-                
+
                 <div class="card" id="scraping-card">
                     <div class="card-header">Scraping de données</div>
-                    
+
                     <div class="card-grid">
                         <div>
                             <div class="stats-label">Scraping FAQ</div>
@@ -481,21 +609,21 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="section-header">Logs de scraping</div>
                     <div class="logs-container" id="scraping-logs">
                         Aucun log de scraping disponible.
                     </div>
                 </div>
-                
+
                 <div class="card" id="database-card">
                     <div class="card-header">Base de connaissances Qdrant</div>
-                    
+
                     <div class="stats-label">Statistiques des collections</div>
                     <div class="collection-stats error" id="qdrant-stats">
                         Erreur: Échec de fetch
                     </div>
-                    
+
                     <div class="actions-grid">
                         <button class="action-button" id="verify-connection">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -513,10 +641,10 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="card" id="github-card">
                     <div class="card-header">GitHub</div>
-                    
+
                     <div class="github-container">
                         <div>
                             <div class="repo-info">
@@ -533,7 +661,7 @@
                                 <span id="last-commit">Dernière mise à jour : </span>
                             </div>
                         </div>
-                        
+
                         <button class="update-button" id="github-update">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 2v6h-6"></path>
@@ -544,26 +672,68 @@
                             Mettre à jour depuis GitHub
                         </button>
                     </div>
-                    
+
                     <div class="section-header">Logs de mise à jour</div>
                     <div class="logs-container" id="github-logs">
                         Aucun log de mise à jour disponible.
                     </div>
                 </div>
-                
+
                 <div class="card" id="system-logs-card">
                     <div class="card-header">Logs du système</div>
-                    
+
                     <div class="system-logs">
                         <div class="logs-container" id="system-logs">
                             Aucun log système disponible.
                         </div>
                     </div>
                 </div>
+
+                <div class="card" id="assistant-card">
+                    <div class="card-header">Configuration de l'assistant</div>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-indicator error" id="assistant-indicator"></div>
+                            <div class="status-text" id="assistant-status-text">Assistant désactivé</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="assistant-toggle">Activer l'assistant</label>
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="assistant-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="assistant-id">ID de l'assistant</label>
+                        <input type="text" id="assistant-id" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="timeout">Timeout (secondes)</label>
+                        <input type="number" id="timeout" class="form-control" value="30">
+                    </div>
+                    <button class="action-button" id="save-assistant-config">Enregistrer la configuration</button>
+                </div>
+
+                <div class="card" id="assistant-test-card">
+                    <div class="card-header">Test de l'assistant</div>
+                    <div class="form-group">
+                        <label for="test-message">Message de test</label>
+                        <textarea id="test-message" class="form-control"></textarea>
+                    </div>
+                    <button class="action-button" id="test-assistant">Tester l'assistant</button>
+                    <div class="assistant-test-container" id="test-results" style="display: none;">
+                        <div class="test-status" id="test-status">Test en cours...</div>
+                        <div class="response-container" id="response-container"></div>
+                        <div class="timing-info" id="timing-info"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
-    
+
     <script>
         // Éléments DOM
         const serverIndicator = document.getElementById('server-indicator');
@@ -580,7 +750,7 @@
         const scrapingLogsElement = document.getElementById('scraping-logs');
         const systemLogsElement = document.getElementById('system-logs');
         const githubLogsElement = document.getElementById('github-logs');
-        
+
         // Boutons d'action
         const startScrapingButton = document.getElementById('start-scraping');
         const launchFaqScrapingButton = document.getElementById('launch-faq-scraping');
@@ -588,28 +758,42 @@
         const verifyConnectionButton = document.getElementById('verify-connection');
         const optimizeCollectionsButton = document.getElementById('optimize-collections');
         const githubUpdateButton = document.getElementById('github-update');
-        
+
         // Checkboxes
         const forceFaqUpdateCheckbox = document.getElementById('force-faq-update');
         const forceFullUpdateCheckbox = document.getElementById('force-full-update');
-        
+
+        // Éléments DOM pour l'assistant
+        const assistantIndicator = document.getElementById('assistant-indicator');
+        const assistantStatusText = document.getElementById('assistant-status-text');
+        const assistantToggle = document.getElementById('assistant-toggle');
+        const assistantIdInput = document.getElementById('assistant-id');
+        const timeoutInput = document.getElementById('timeout');
+        const saveAssistantConfigButton = document.getElementById('save-assistant-config');
+        const testMessageInput = document.getElementById('test-message');
+        const testAssistantButton = document.getElementById('test-assistant');
+        const testResults = document.getElementById('test-results');
+        const testStatus = document.getElementById('test-status');
+        const responseContainer = document.getElementById('response-container');
+        const timingInfo = document.getElementById('timing-info');
+
         // Formater la date actuelle
         const dateParts = new Date().toISOString().split('T');
         const datePart = dateParts[0];
         const timePart = dateParts[1].substring(0, 8);
         lastUpdateElement.textContent = `${datePart} ${timePart}`;
-        
+
         // URL de l'API
         const apiBaseUrl = window.location.origin;
-        
+
         // Fonction pour mettre à jour le statut
         async function updateStatus() {
             try {
                 refreshIndicator.textContent = "(rafraîchissement...)";
-                
+
                 const response = await fetch(`${apiBaseUrl}/admin/status`);
                 const data = await response.json();
-                
+
                 // Mettre à jour l'indicateur du serveur
                 if (data.server_status === 'ok') {
                     serverIndicator.className = 'status-indicator ok';
@@ -618,7 +802,7 @@
                     serverIndicator.className = 'status-indicator error';
                     serverStatusText.textContent = data.server_message;
                 }
-                
+
                 // Mettre à jour l'indicateur du scraping
                 if (data.scraping_status === 'ready' || data.scraping_status === 'running') {
                     scrapingIndicator.className = 'status-indicator ok';
@@ -627,7 +811,7 @@
                     scrapingIndicator.className = 'status-indicator error';
                     scrapingStatusText.textContent = data.scraping_message;
                 }
-                
+
                 // Mettre à jour l'indicateur de Qdrant
                 if (data.qdrant_status === 'connected') {
                     qdrantIndicator.className = 'status-indicator ok';
@@ -639,13 +823,13 @@
                     qdrantIndicator.className = 'status-indicator error';
                     qdrantStatusText.textContent = data.qdrant_message;
                 }
-                
+
                 // Mettre à jour la date de dernière mise à jour
                 const now = new Date();
                 const formattedDate = `${now.toISOString().split('T')[0]} ${now.toTimeString().substring(0, 8)}`;
                 lastUpdateElement.textContent = formattedDate;
                 refreshIndicator.textContent = "(succès)";
-                
+
             } catch (error) {
                 console.error('Erreur lors de la mise à jour du statut:', error);
                 serverIndicator.className = 'status-indicator error';
@@ -653,39 +837,39 @@
                 refreshIndicator.textContent = "(échec)";
             }
         }
-        
+
         // Fonction pour vérifier les statistiques Qdrant
         async function checkQdrantStats() {
             try {
                 const response = await fetch(`${apiBaseUrl}/qdrant-stats`);
-                
+
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
-                
+
                 // Mettre à jour l'élément des statistiques Qdrant
                 qdrantStatsElement.classList.remove('error');
                 qdrantStatsElement.innerHTML = `
                     <div>Collection BIOFORCE: ${data.faq_collection?.points_count || 0} points</div>
                     <div>Vecteurs: taille ${data.faq_collection?.vector_size || 1536}, distance ${data.faq_collection?.vector_distance || 'Cosine'}</div>
                 `;
-                
+
             } catch (error) {
                 console.error('Erreur lors de la récupération des statistiques Qdrant:', error);
                 qdrantStatsElement.classList.add('error');
                 qdrantStatsElement.textContent = `Erreur: ${error.message}`;
             }
         }
-        
+
         // Fonction pour lancer le scraping FAQ
         async function launchFaqScraping() {
             try {
                 launchFaqScrapingButton.disabled = true;
-                
+
                 const forceUpdate = forceFaqUpdateCheckbox.checked;
-                
+
                 const response = await fetch(`${apiBaseUrl}/scrape/faq`, {
                     method: 'POST',
                     headers: {
@@ -693,16 +877,16 @@
                     },
                     body: JSON.stringify({ force_update: forceUpdate })
                 });
-                
+
                 const data = await response.json();
-                
+
                 // Mettre à jour les logs de scraping
                 scrapingLogsElement.innerHTML += `\n[${new Date().toISOString()}] Scraping FAQ lancé: ${data.message}\n`;
                 scrapingLogsElement.scrollTop = scrapingLogsElement.scrollHeight;
-                
+
                 // Mettre à jour le statut
                 updateStatus();
-                
+
             } catch (error) {
                 console.error('Erreur lors du lancement du scraping FAQ:', error);
                 scrapingLogsElement.innerHTML += `\n[${new Date().toISOString()}] Erreur: ${error.message}\n`;
@@ -711,14 +895,14 @@
                 launchFaqScrapingButton.disabled = false;
             }
         }
-        
+
         // Fonction pour lancer le scraping complet
         async function launchFullScraping() {
             try {
                 launchFullScrapingButton.disabled = true;
-                
+
                 const forceUpdate = forceFullUpdateCheckbox.checked;
-                
+
                 const response = await fetch(`${apiBaseUrl}/scrape/full`, {
                     method: 'POST',
                     headers: {
@@ -726,16 +910,16 @@
                     },
                     body: JSON.stringify({ force_update: forceUpdate })
                 });
-                
+
                 const data = await response.json();
-                
+
                 // Mettre à jour les logs de scraping
                 scrapingLogsElement.innerHTML += `\n[${new Date().toISOString()}] Scraping complet lancé: ${data.message}\n`;
                 scrapingLogsElement.scrollTop = scrapingLogsElement.scrollHeight;
-                
+
                 // Mettre à jour le statut
                 updateStatus();
-                
+
             } catch (error) {
                 console.error('Erreur lors du lancement du scraping complet:', error);
                 scrapingLogsElement.innerHTML += `\n[${new Date().toISOString()}] Erreur: ${error.message}\n`;
@@ -744,30 +928,167 @@
                 launchFullScrapingButton.disabled = false;
             }
         }
-        
+
+        // Fonction pour vérifier le statut de l'assistant
+        async function checkAssistantStatus() {
+            try {
+                const response = await fetch(`${apiBaseUrl}/admin/assistant-status`);
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Mettre à jour l'interface utilisateur
+                if (data.enabled) {
+                    assistantIndicator.className = 'status-indicator ok';
+                    assistantStatusText.textContent = `Assistant actif: ${data.assistant_id}`;
+                    assistantToggle.checked = true;
+                } else {
+                    assistantIndicator.className = 'status-indicator warning';
+                    assistantStatusText.textContent = 'Assistant désactivé';
+                    assistantToggle.checked = false;
+                }
+
+                // Remplir les champs de configuration
+                assistantIdInput.value = data.assistant_id || '';
+                timeoutInput.value = data.timeout || 30;
+
+            } catch (error) {
+                console.error('Erreur lors de la vérification du statut de l\'assistant:', error);
+                assistantIndicator.className = 'status-indicator error';
+                assistantStatusText.textContent = 'Erreur de vérification du statut';
+            }
+        }
+
+        // Fonction pour mettre à jour la configuration de l'assistant
+        async function updateAssistantConfig() {
+            try {
+                saveAssistantConfigButton.disabled = true;
+
+                const config = {
+                    enabled: assistantToggle.checked,
+                    assistant_id: assistantIdInput.value.trim(),
+                    timeout: parseInt(timeoutInput.value, 10)
+                };
+
+                const response = await fetch(`${apiBaseUrl}/admin/update-assistant-config`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Mettre à jour le statut
+                checkAssistantStatus();
+
+                // Afficher un message de confirmation
+                alert('Configuration de l\'assistant mise à jour avec succès');
+
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la configuration:', error);
+                alert(`Erreur: ${error.message}`);
+            } finally {
+                saveAssistantConfigButton.disabled = false;
+            }
+        }
+
+        // Fonction pour tester l'assistant
+        async function testAssistant() {
+            try {
+                const message = testMessageInput.value.trim();
+
+                if (!message) {
+                    alert('Veuillez entrer un message pour tester l\'assistant');
+                    return;
+                }
+
+                // Afficher la section des résultats
+                testResults.style.display = 'block';
+                testStatus.className = 'test-status loading';
+                testStatus.textContent = 'Test en cours...';
+                responseContainer.textContent = '';
+                timingInfo.textContent = '';
+
+                // Désactiver le bouton pendant le test
+                testAssistantButton.disabled = true;
+
+                // Enregistrer le temps de début
+                const startTime = Date.now();
+
+                // Envoyer la requête de test
+                const response = await fetch(`${apiBaseUrl}/admin/test-assistant`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                // Calculer le temps écoulé
+                const endTime = Date.now();
+                const elapsedTime = (endTime - startTime) / 1000; // en secondes
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Afficher les résultats
+                testStatus.className = 'test-status success';
+                testStatus.textContent = 'Test réussi';
+                responseContainer.textContent = data.response;
+                timingInfo.textContent = `Temps de réponse: ${elapsedTime.toFixed(2)} secondes`;
+
+            } catch (error) {
+                console.error('Erreur lors du test de l\'assistant:', error);
+                testStatus.className = 'test-status error';
+                testStatus.textContent = `Erreur: ${error.message}`;
+            } finally {
+                testAssistantButton.disabled = false;
+            }
+        }
+
         // Événements
         refreshButton.addEventListener('click', () => {
             updateStatus();
             checkQdrantStats();
         });
-        
+
         verifyServicesButton.addEventListener('click', () => {
             updateStatus();
         });
-        
+
         launchFaqScrapingButton.addEventListener('click', launchFaqScraping);
-        
+
         launchFullScrapingButton.addEventListener('click', launchFullScraping);
-        
+
         startScrapingButton.addEventListener('click', () => {
             launchFaqScraping();
         });
-        
+
         verifyConnectionButton.addEventListener('click', () => {
             updateStatus();
             checkQdrantStats();
         });
-        
+
+        assistantToggle.addEventListener('change', function() {
+            assistantStatusText.textContent = this.checked ? 'Assistant actif (changements non sauvegardés)' : 'Assistant désactivé (changements non sauvegardés)';
+            assistantIndicator.className = 'status-indicator warning';
+        });
+
+        saveAssistantConfigButton.addEventListener('click', updateAssistantConfig);
+        testAssistantButton.addEventListener('click', testAssistant);
+
         // Navigation
         const navItems = document.querySelectorAll('.nav-item');
         for (const item of navItems) {
@@ -776,16 +1097,17 @@
                 for (const navItem of navItems) {
                     navItem.classList.remove('active');
                 }
-                
+
                 // Ajouter la classe active à l'élément cliqué
                 this.classList.add('active');
             });
         }
-        
+
         // Initialisation
         updateStatus();
         checkQdrantStats();
-        
+        checkAssistantStatus();
+
         // Date actuelle pour l'affichage
         document.getElementById('date').textContent = new Date().toLocaleDateString();
     </script>

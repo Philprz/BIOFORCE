@@ -1,16 +1,15 @@
-// Fichier: bioforcebot.js
-
-class BioforceBot {
+class BioforceBotOptimized {
     constructor(options = {}) {
-        this.apiUrl = options.apiUrl || 'https://bioforce-bot.onrender.com';
+        this.apiUrl = options.apiUrl || 'http://localhost:8000';
         this.userId = options.userId || this._generateUserId();
         this.container = null;
         this.messages = [];
         this.context = {};
         this.isOpen = false;
         this.isLoading = false;
-        
-        // Messages de bienvenue selon le contexte
+        this.websocket = null;
+        this.websocketId = null;
+
         this.welcomeMessages = {
             'default': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?",
             'espace_candidat': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de l'espace candidat. Je peux vous aider à naviguer dans votre espace, répondre à vos questions sur les formations ou vous assister dans votre candidature.",
@@ -23,26 +22,19 @@ class BioforceBot {
     }
 
     init(containerId, mode = 'default') {
-        // Création du container
         this.container = document.getElementById(containerId);
         if (!this.container) {
             console.error(`Container with id "${containerId}" not found`);
             return;
         }
 
-        // Initialisation de l'interface
         this._createInterface();
-        
-        // Ajout du message de bienvenue
         const welcomeMessage = this.welcomeMessages[mode] || this.welcomeMessages.default;
         this._addMessage('assistant', welcomeMessage);
-
-        // Événements
         this._setupEventListeners();
     }
 
     _createInterface() {
-        // Structure principale
         this.container.innerHTML = `
             <div class="bioforcebot-wrapper">
                 <div class="bioforcebot-header">
@@ -83,7 +75,6 @@ class BioforceBot {
             </button>
         `;
 
-        // Ajout des styles CSS
         const style = document.createElement('style');
         style.textContent = `
             .bioforcebot-wrapper {
@@ -102,16 +93,16 @@ class BioforceBot {
                 display: none;
                 border: 1px solid #e0e0e0;
             }
-            
+
             .bioforcebot-header {
                 display: flex;
                 align-items: center;
                 padding: 12px 15px;
-                background: #ef7d00; /* Orange Bioforce */
+                background: #ef7d00;
                 color: white;
                 border-bottom: 1px solid #d06c00;
             }
-            
+
             .bioforcebot-logo {
                 width: 30px;
                 height: 30px;
@@ -120,19 +111,19 @@ class BioforceBot {
                 border-radius: 50%;
                 padding: 2px;
             }
-            
+
             .bioforcebot-logo img {
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
             }
-            
+
             .bioforcebot-title {
                 flex-grow: 1;
                 font-weight: bold;
                 font-family: 'Open Sans', Arial, sans-serif;
             }
-            
+
             .bioforcebot-toggle-btn, .bioforcebot-send-btn {
                 background: none;
                 border: none;
@@ -140,27 +131,27 @@ class BioforceBot {
                 color: white;
                 padding: 5px;
             }
-            
+
             .bioforcebot-toggle-btn svg, .bioforcebot-send-btn svg {
                 fill: white;
             }
-            
+
             .bioforcebot-body {
                 flex-grow: 1;
                 overflow-y: auto;
                 padding: 15px;
-                background-color: #f7f7f7; /* Fond légèrement grisé */
+                background-color: #f7f7f7;
                 background-image: url('https://bioforce.org/wp-content/themes/bioforce/assets/img/pattern-dots.png');
                 background-repeat: repeat;
                 background-size: 200px;
                 background-blend-mode: overlay;
             }
-            
+
             .bioforcebot-messages {
                 display: flex;
                 flex-direction: column;
             }
-            
+
             .bioforcebot-message {
                 margin-bottom: 10px;
                 max-width: 80%;
@@ -169,8 +160,9 @@ class BioforceBot {
                 line-height: 1.4;
                 font-family: 'Open Sans', Arial, sans-serif;
                 box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                position: relative;
             }
-            
+
             .bioforcebot-message.user {
                 align-self: flex-end;
                 background: #eff8ff;
@@ -178,15 +170,69 @@ class BioforceBot {
                 color: #2c3e50;
                 border: 1px solid #d0e8ff;
             }
-            
+
             .bioforcebot-message.assistant {
                 align-self: flex-start;
                 background: #ffffff;
                 border-bottom-left-radius: 4px;
                 color: #333333;
-                border-left: 3px solid #ef7d00; /* Bordure orange Bioforce */
+                border-left: 3px solid #ef7d00;
             }
-            
+
+            .bioforcebot-message.enrichment {
+                align-self: flex-start;
+                background: #f0f7ff;
+                border-bottom-left-radius: 4px;
+                color: #333333;
+                border-left: 3px solid #2196F3;
+                margin-top: -5px;
+            }
+
+            .bioforcebot-typing {
+                align-self: flex-start;
+                background: #f5f5f5;
+                padding: 10px 15px;
+                border-radius: 18px;
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .bioforcebot-typing-dots {
+                display: flex;
+                align-items: center;
+            }
+
+            .bioforcebot-typing-dot {
+                width: 8px;
+                height: 8px;
+                background-color: #999;
+                border-radius: 50%;
+                margin: 0 2px;
+                animation: typing 1.4s infinite ease-in-out;
+            }
+
+            .bioforcebot-typing-dot:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .bioforcebot-typing-dot:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .bioforcebot-typing-dot:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+
+            @keyframes typing {
+                0%, 60%, 100% {
+                    transform: translateY(0);
+                }
+                30% {
+                    transform: translateY(-5px);
+                }
+            }
+
             .bioforcebot-references {
                 padding: 10px 15px;
                 background: #f9f9f9;
@@ -195,7 +241,7 @@ class BioforceBot {
                 overflow-y: auto;
                 display: none;
             }
-            
+
             .bioforcebot-references-header {
                 font-weight: bold;
                 margin-bottom: 5px;
@@ -203,7 +249,7 @@ class BioforceBot {
                 color: #666;
                 font-family: 'Open Sans', Arial, sans-serif;
             }
-            
+
             .bioforcebot-reference {
                 margin-bottom: 8px;
                 padding-bottom: 8px;
@@ -211,13 +257,13 @@ class BioforceBot {
                 font-size: 12px;
                 font-family: 'Open Sans', Arial, sans-serif;
             }
-            
+
             .bioforcebot-reference-question {
                 font-weight: bold;
                 margin-bottom: 3px;
-                color: #ef7d00; /* Orange Bioforce */
+                color: #ef7d00;
             }
-            
+
             .bioforcebot-reference-link {
                 color: #0099cc;
                 text-decoration: none;
@@ -225,22 +271,22 @@ class BioforceBot {
                 margin-top: 5px;
                 font-size: 11px;
             }
-            
+
             .bioforcebot-reference-link:hover {
                 text-decoration: underline;
             }
-            
+
             .bioforcebot-footer {
                 padding: 10px 15px;
                 border-top: 1px solid #eee;
                 background: white;
             }
-            
+
             .bioforcebot-input {
                 display: flex;
                 align-items: center;
             }
-            
+
             .bioforcebot-input-text {
                 flex-grow: 1;
                 border: 1px solid #ddd;
@@ -252,13 +298,13 @@ class BioforceBot {
                 outline: none;
                 transition: border-color 0.2s;
             }
-            
+
             .bioforcebot-input-text:focus {
-                border-color: #ef7d00; /* Orange Bioforce */
+                border-color: #ef7d00;
             }
-            
+
             .bioforcebot-send-btn {
-                color: #ef7d00; /* Orange Bioforce */
+                color: #ef7d00;
                 margin-left: 10px;
                 width: 40px;
                 height: 40px;
@@ -270,21 +316,21 @@ class BioforceBot {
                 border: 1px solid #ef7d00;
                 transition: background 0.2s;
             }
-            
+
             .bioforcebot-send-btn:hover {
                 background: #ef7d00;
             }
-            
+
             .bioforcebot-send-btn:hover svg {
                 fill: white;
             }
-            
+
             .bioforcebot-send-btn svg {
                 fill: #ef7d00;
                 width: 20px;
                 height: 20px;
             }
-            
+
             .bioforcebot-bubble {
                 position: fixed;
                 bottom: 20px;
@@ -292,7 +338,7 @@ class BioforceBot {
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                background: #ef7d00; /* Orange Bioforce */
+                background: #ef7d00;
                 border: none;
                 box-shadow: 0 5px 10px rgba(0,0,0,0.15);
                 cursor: pointer;
@@ -302,102 +348,47 @@ class BioforceBot {
                 z-index: 999;
                 transition: transform 0.3s, box-shadow 0.3s;
             }
-            
+
             .bioforcebot-bubble:hover {
                 transform: scale(1.05);
                 box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             }
-            
+
             .bioforcebot-bubble svg {
                 fill: white;
                 width: 30px;
                 height: 30px;
             }
-            
-            .bioforcebot-typing {
-                display: flex;
-                align-items: center;
-                margin-top: 5px;
-                margin-bottom: 10px;
-                font-size: 12px;
-                color: #888;
-            }
-            
-            .bioforcebot-typing-indicator {
-                display: flex;
-                margin-left: 5px;
-            }
-            
-            .bioforcebot-typing-dot {
-                background-color: #888;
-                border-radius: 50%;
-                width: 5px;
-                height: 5px;
-                margin: 0 2px;
-                animation: typing-dot 1.4s infinite ease-in-out;
-            }
-            
-            .bioforcebot-typing-dot:nth-child(1) {
-                animation-delay: 0s;
-            }
-            
-            .bioforcebot-typing-dot:nth-child(2) {
-                animation-delay: 0.2s;
-            }
-            
-            .bioforcebot-typing-dot:nth-child(3) {
-                animation-delay: 0.4s;
-            }
-            
-            @keyframes typing-dot {
-                0%, 60%, 100% {
-                    transform: translateY(0);
-                }
-                30% {
-                    transform: translateY(-5px);
-                }
-            }
-            
-            /* Média Queries pour la responsive */
+
             @media (max-width: 480px) {
                 .bioforcebot-wrapper {
-                    width: calc(100% - 40px);
-                    height: calc(100% - 80px);
-                    bottom: 70px;
+                    width: 100%;
+                    bottom: 0;
+                    right: 0;
+                    border-radius: 0;
+                    height: 100vh;
                 }
-                
+
                 .bioforcebot-bubble {
                     bottom: 10px;
                     right: 10px;
                 }
             }
-            
-            .bioforcebot-admin-link {
-                color: #0099cc;
-                text-decoration: none;
-            }
-            
-            .bioforcebot-admin-link:hover {
-                text-decoration: underline;
-            }
         `;
-        
+
         document.head.appendChild(style);
     }
 
     _setupEventListeners() {
-        // Bouton d'ouverture du chatbot
         const bubble = this.container.querySelector('.bioforcebot-bubble');
         bubble.addEventListener('click', () => this.open());
-        
-        // Bouton de fermeture du chatbot
+
         const toggleBtn = this.container.querySelector('.bioforcebot-toggle-btn');
         toggleBtn.addEventListener('click', () => this.close());
-        
-        // Envoi de message
+
         const sendBtn = this.container.querySelector('.bioforcebot-send-btn');
         const inputText = this.container.querySelector('.bioforcebot-input-text');
-        
+
         const sendMessage = () => {
             const text = inputText.value.trim();
             if (text) {
@@ -405,9 +396,9 @@ class BioforceBot {
                 inputText.value = '';
             }
         };
-        
+
         sendBtn.addEventListener('click', sendMessage);
-        
+
         inputText.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -419,13 +410,12 @@ class BioforceBot {
     open() {
         const wrapper = this.container.querySelector('.bioforcebot-wrapper');
         const bubble = this.container.querySelector('.bioforcebot-bubble');
-        
+
         wrapper.style.display = 'flex';
         bubble.style.display = 'none';
-        
+
         this.isOpen = true;
-        
-        // Focus sur l'input
+
         const inputText = this.container.querySelector('.bioforcebot-input-text');
         inputText.focus();
     }
@@ -433,70 +423,81 @@ class BioforceBot {
     close() {
         const wrapper = this.container.querySelector('.bioforcebot-wrapper');
         const bubble = this.container.querySelector('.bioforcebot-bubble');
-        
+
         wrapper.style.display = 'none';
         bubble.style.display = 'flex';
-        
+
         this.isOpen = false;
+
+        this._closeWebSocketConnection();
     }
 
-    _addMessage(role, content) {
+    _addMessage(role, content, messageType = 'default') {
         const messagesContainer = this.container.querySelector('.bioforcebot-messages');
-        
-        // Créer élément de message
+
         const messageEl = document.createElement('div');
         messageEl.className = `bioforcebot-message ${role}`;
-        
-        // Support pour les liens HTML (seulement pour les messages du bot)
+
+        if (messageType !== 'default') {
+            messageEl.classList.add(messageType);
+        }
+
         if (role === 'assistant' && content.includes('<a href=')) {
             messageEl.innerHTML = content;
         } else {
-            messageEl.textContent = content;
+            let formattedContent = this._formatMessage(content);
+            messageEl.innerHTML = formattedContent;
         }
-        
-        // Ajouter à la liste
+
         messagesContainer.appendChild(messageEl);
-        
-        // Scroll vers le bas
-        this.container.querySelector('.bioforcebot-body').scrollTop = messagesContainer.scrollHeight;
-        
-        // Ajouter aux messages stockés (toujours stocker le texte brut pour l'API)
-        if (role === 'assistant' && content.includes('<a href=')) {
-            // Stocker une version texte pour l'API
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = content;
-            this.messages.push({ role, content: tempDiv.textContent });
-        } else {
-            this.messages.push({ role, content });
+        this._scrollToBottom();
+
+        if (role === 'user' || (role === 'assistant' && messageType === 'default')) {
+            if (role === 'assistant' && content.includes('<a href=')) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+                this.messages.push({ role, content: tempDiv.textContent });
+            } else {
+                this.messages.push({ role, content });
+            }
         }
+    }
+
+    _formatMessage(content) {
+        let formatted = content;
+        formatted = formatted.replace(/\n/g, '<br>');
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        return formatted;
+    }
+
+    _scrollToBottom() {
+        const messagesContainer = this.container.querySelector('.bioforcebot-messages');
+        const body = this.container.querySelector('.bioforcebot-body');
+        body.scrollTop = messagesContainer.scrollHeight;
     }
 
     _showTypingIndicator() {
         const messagesContainer = this.container.querySelector('.bioforcebot-messages');
-        
-        // Créer indicateur de frappe
+
         const typingEl = document.createElement('div');
-        typingEl.className = 'bioforcebot-typing assistant';
+        typingEl.className = 'bioforcebot-typing';
+        typingEl.id = 'bioforcebot-typing';
+
         typingEl.innerHTML = `
-            BioforceBot est en train d'écrire
-            <div class="bioforcebot-typing-indicator">
+            <div class="bioforcebot-typing-dots">
                 <div class="bioforcebot-typing-dot"></div>
                 <div class="bioforcebot-typing-dot"></div>
                 <div class="bioforcebot-typing-dot"></div>
             </div>
         `;
-        
-        typingEl.id = 'bioforcebot-typing-indicator';
-        
-        // Ajouter à la liste
+
         messagesContainer.appendChild(typingEl);
-        
-        // Scroll vers le bas
-        this.container.querySelector('.bioforcebot-body').scrollTop = messagesContainer.scrollHeight;
+        this._scrollToBottom();
     }
 
     _removeTypingIndicator() {
-        const typingIndicator = this.container.querySelector('#bioforcebot-typing-indicator');
+        const typingIndicator = this.container.querySelector('#bioforcebot-typing');
         if (typingIndicator) {
             typingIndicator.remove();
         }
@@ -505,63 +506,112 @@ class BioforceBot {
     _displayReferences(references) {
         const referencesContainer = this.container.querySelector('.bioforcebot-references');
         const referencesList = this.container.querySelector('.bioforcebot-references-list');
-        
-        // Vider les références actuelles
+
         referencesList.innerHTML = '';
-        
+
         if (references && references.length > 0) {
-            // Afficher le conteneur de références
             referencesContainer.style.display = 'block';
-            
-            // Ajouter chaque référence
+
             references.forEach(ref => {
                 const refEl = document.createElement('div');
                 refEl.className = 'bioforcebot-reference';
+
+                const titleText = ref.title || "Information";
+                const sourceUrl = ref.source || "#";
+
                 refEl.innerHTML = `
-                    <div class="bioforcebot-reference-question">${ref.question || ref.title || "Information"}</div>
-                    <a href="${ref.source || "#"}" class="bioforcebot-reference-link" target="_blank">Voir plus d'informations</a>
+                    <div class="bioforcebot-reference-question">${titleText}</div>
+                    <a href="${sourceUrl}" class="bioforcebot-reference-link" target="_blank">
+                        ${sourceUrl.includes('bioforce.org') ? sourceUrl.replace('https://bioforce.org/', '') : 'Source externe'}
+                    </a>
                 `;
+
                 referencesList.appendChild(refEl);
             });
         } else {
-            // Masquer le conteneur si pas de références
             referencesContainer.style.display = 'none';
+        }
+    }
+
+    _setupWebSocketConnection(websocketId) {
+        this._closeWebSocketConnection();
+
+        this.websocketId = websocketId;
+
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsBase = this.apiUrl.replace(/^https?:/, wsProtocol);
+        const wsUrl = `${wsBase}/ws/${websocketId}`;
+
+        try {
+            this.websocket = new WebSocket(wsUrl);
+
+            this.websocket.onopen = () => {
+                console.log('WebSocket connection established');
+                this._addMessage(
+                    'assistant',
+                    "Je recherche actuellement des informations complémentaires en ligne pour enrichir ma réponse...",
+                    'notification'
+                );
+            };
+
+            this.websocket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.type === 'enrichment') {
+                        this._addMessage('assistant', data.content, 'enrichment');
+                        this._scrollToBottom();
+                    } else if (data.type === 'no_enrichment') {
+                        this._addMessage(
+                            'assistant',
+                            "J'ai vérifié les informations les plus récentes et je confirme que ma réponse précédente est à jour.",
+                            'notification'
+                        );
+                    } else if (data.type === 'error') {
+                        console.error('Enrichment error:', data.content);
+                    }
+                } catch (e) {
+                    console.error('Error parsing WebSocket message:', e);
+                }
+            };
+
+            this.websocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            this.websocket.onclose = () => {
+                console.log('WebSocket connection closed');
+                this.websocket = null;
+            };
+
+        } catch (e) {
+            console.error('Error setting up WebSocket:', e);
+        }
+    }
+
+    _closeWebSocketConnection() {
+        if (this.websocket) {
+            this.websocket.close();
+            this.websocket = null;
         }
     }
 
     async sendMessage(text) {
         if (this.isLoading) return;
-        
+
         this.isLoading = true;
-        
-        // Vérifier si c'est une commande d'administration
-        if (text.toLowerCase() === "admin" || text.toLowerCase() === "/admin") {
-            this._addMessage('user', text);
-            
-            // Création d'un message avec un lien cliquable
-            const adminLink = "/admin";
-            const adminMessage = `Pour accéder à l'interface d'administration, veuillez cliquer sur ce lien : <a href="${adminLink}" target="_blank" style="color: #0099cc; text-decoration: underline; font-weight: bold;">Interface d'administration Bioforce</a>`;
-            
-            this._addMessage('assistant', adminMessage);
-            this.isLoading = false;
-            return;
-        }
-        
-        // Ajouter le message utilisateur
+
         this._addMessage('user', text);
-        
-        // Afficher l'indicateur de frappe
+
         this._showTypingIndicator();
-        
+
         try {
-            // Préparer la requête
             const requestData = {
                 user_id: this.userId,
                 messages: this.messages,
                 context: this.context
             };
-            
-            // Appeler l'API
+
             const response = await fetch(`${this.apiUrl}/chat`, {
                 method: 'POST',
                 headers: {
@@ -569,59 +619,54 @@ class BioforceBot {
                 },
                 body: JSON.stringify(requestData)
             });
-            
+
+            this._removeTypingIndicator();
+
             if (!response.ok) {
                 throw new Error('Erreur lors de la communication avec le serveur');
             }
-            
+
             const data = await response.json();
-            
-            // Supprimer l'indicateur de frappe
-            this._removeTypingIndicator();
-            
-            // Ajouter la réponse
+
             this._addMessage('assistant', data.message.content);
-            
-            // Mettre à jour le contexte
+
             this.context = data.context || {};
-            
-            // Afficher les références
+
             this._displayReferences(data.references);
-            
+
+            if (data.has_enrichment_pending && data.websocket_id) {
+                this._setupWebSocketConnection(data.websocket_id);
+            }
+
         } catch (error) {
             console.error('Erreur:', error);
-            
-            // Supprimer l'indicateur de frappe
+
             this._removeTypingIndicator();
-            
-            // Ajouter un message d'erreur
+
             this._addMessage('assistant', "Désolé, j'ai rencontré un problème. Veuillez réessayer ou contacter directement l'équipe Bioforce.");
-            
+
         } finally {
             this.isLoading = false;
         }
     }
 
-    // Méthodes publiques pour l'intégration
-    
     setContext(context) {
         this.context = {...this.context, ...context};
     }
-    
+
     suggestQuestion(question) {
         if (!this.isOpen) {
             this.open();
         }
-        
+
         const inputText = this.container.querySelector('.bioforcebot-input-text');
         inputText.value = question;
         inputText.focus();
     }
 }
 
-// Exportation pour utilisation dans d'autres fichiers
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = BioforceBot;
+    module.exports = BioforceBotOptimized;
 } else {
-    window.BioforceBot = BioforceBot;
+    window.BioforceBotOptimized = BioforceBotOptimized;
 }
