@@ -73,7 +73,9 @@ CACHE_VALIDITY_PERIOD = 24 * 60 * 60
 app = FastAPI(
     title="BioforceBot API",
     description="API pour le chatbot d'assistance aux candidats Bioforce",
-    version="1.0.0"
+    version="1.0.0",
+    root_path="/",
+    websocket_keepalive=30
 )
 
 # Configuration CORS
@@ -585,14 +587,18 @@ def generate_complement(rag_response, enriched_response):
 # WebSocket endpoint
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    logger.info(f"Tentative de connexion WebSocket pour client_id: {client_id}")
     await websocket.accept()
     websocket_connections[client_id] = websocket
+    logger.info(f"Connexion WebSocket acceptée pour client_id: {client_id}")
 
     try:
         while True:
             # Maintenir la connexion ouverte
-            await websocket.receive_text()
+            data = await websocket.receive_text()
+            logger.debug(f"Message WebSocket reçu: {data}")
     except WebSocketDisconnect:
+        logger.info(f"Déconnexion WebSocket pour client_id: {client_id}")
         if client_id in websocket_connections:
             del websocket_connections[client_id]
 
@@ -822,7 +828,7 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
             "has_enrichment_pending": True,
             "websocket_id": websocket_id
         }
-
+        logger.info(f"Ajout de la tâche d'enrichissement pour websocket_id: {websocket_id}")
         # Phase 2 : Lancer l'enrichissement en arrière-plan
         background_tasks.add_task(
             process_enrichment,
@@ -831,7 +837,7 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
             websocket_id,
             request.user_id
         )
-
+        logger.info("Tâche d'enrichissement ajoutée avec succès")
         return response
 
     except Exception as e:

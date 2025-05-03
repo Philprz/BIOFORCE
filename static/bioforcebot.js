@@ -547,7 +547,7 @@ class BioforceBotOptimized {
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsBase = this.apiUrl.replace(/^https?:/, wsProtocol);
         const wsUrl = `${wsBase}/ws/${websocketId}`;
-
+        console.log(`Tentative de connexion WebSocket à ${wsUrl}`);
         try {
             this.websocket = new WebSocket(wsUrl);
 
