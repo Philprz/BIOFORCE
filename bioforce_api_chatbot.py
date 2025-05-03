@@ -884,7 +884,7 @@ async def qdrant_stats():
         if full_collection in collection_names:
             info = await qdrant_client.get_collection(collection_name=full_collection)
             count = await qdrant_client.count(collection_name=full_collection)
-            logger.info(f"Collection {info.name} contient {count.count} points")
+            logger.info(f"Collection {info} contient {count.count} points")
             stats["full_site_collection"] = {
                 "points_count": count.count,
                 "vector_size": 1536,
