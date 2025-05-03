@@ -203,7 +203,7 @@ async def test_qdrant_connection():
         return False
 
 async def process_chat_request():
-    user_query = "Comment puis-je m'inscrire à une formation humanitaire?"
+    user_query = "Quel est le montant des frais de sélection pour une candidature ?"
     
     logger.info("--- TEST DE CHATBOT ---")
     logger.info("Requête: %s", user_query)

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -778,28 +778,27 @@ async def admin_status():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
+async def chat(request: ChatRequest):
     """
-    Point d'entrée principal pour le chat avec approche hybride
+    Point d'entrée simplifié pour le chat sans enrichissement asynchrone
     """
     try:
         messages = request.messages
 
-        # Détection spécifique des questions sur les frais
+        # Détection des questions sur les frais
         last_user_message = None
         for msg in reversed(messages):
             if msg.role == "user":
                 last_user_message = msg.content.lower()
                 break
 
+        # Réponse spécifique pour les questions sur les frais
         is_fee_question = False
         if last_user_message and any(term in last_user_message for term in ["frais", "coût", "tarif", "prix", "payer", "€", "euro"]):
             is_fee_question = True
+            logger.info("Question sur les frais détectée")
 
-        # Génération d'un websocket_id unique pour cette session
-        websocket_id = f"{request.user_id}_{int(time.time())}"
-
-        # Utiliser une réponse plus précise si c'est une question sur les frais
+        # Utiliser une réponse prédéfinie pour les questions sur les frais
         if is_fee_question:
             rag_content = "Les frais de sélection pour une candidature chez Bioforce sont de 60€ (ou 20000 CFA pour l'Afrique). Ces frais sont à payer après avoir rempli le formulaire de candidature et avant l'évaluation de votre dossier."
             references = [{
@@ -808,10 +807,10 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
                 "score": 0.95
             }]
         else:
-            # Approche RAG standard pour les autres questions
+            # Recherche standard pour les autres questions
             rag_content, references = await get_rag_response(messages)
 
-        # Préparer la réponse initiale
+        # Préparer la réponse
         response = {
             "message": {
                 "role": "assistant",
@@ -825,19 +824,11 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
                     "score": ref.get("score", 0)
                 } for ref in references
             ],
-            "has_enrichment_pending": True,
-            "websocket_id": websocket_id
+            # Les champs suivants ne sont plus utilisés
+            "has_enrichment_pending": False,
+            "websocket_id": None
         }
-        logger.info(f"Ajout de la tâche d'enrichissement pour websocket_id: {websocket_id}")
-        # Phase 2 : Lancer l'enrichissement en arrière-plan
-        background_tasks.add_task(
-            process_enrichment,
-            messages,
-            rag_content,
-            websocket_id,
-            request.user_id
-        )
-        logger.info("Tâche d'enrichissement ajoutée avec succès")
+
         return response
 
     except Exception as e:

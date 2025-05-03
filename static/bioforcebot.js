@@ -604,20 +604,20 @@ class BioforceBotOptimized {
 
     async sendMessage(text) {
         if (this.isLoading) return;
-
+    
         this.isLoading = true;
-
+    
         this._addMessage('user', text);
-
+    
         this._showTypingIndicator();
-
+    
         try {
             const requestData = {
                 user_id: this.userId,
                 messages: this.messages,
                 context: this.context
             };
-
+    
             const response = await fetch(`${this.apiUrl}/chat`, {
                 method: 'POST',
                 headers: {
@@ -625,32 +625,35 @@ class BioforceBotOptimized {
                 },
                 body: JSON.stringify(requestData)
             });
-
+    
             this._removeTypingIndicator();
-
+    
             if (!response.ok) {
                 throw new Error('Erreur lors de la communication avec le serveur');
             }
-
+    
             const data = await response.json();
-
+    
             this._addMessage('assistant', data.message.content);
-
+    
             this.context = data.context || {};
-
+    
             this._displayReferences(data.references);
-
+    
+            // Supprimez cette partie qui établit la connexion WebSocket
+            /*
             if (data.has_enrichment_pending && data.websocket_id) {
                 this._setupWebSocketConnection(data.websocket_id);
             }
-
+            */
+    
         } catch (error) {
             console.error('Erreur:', error);
-
+    
             this._removeTypingIndicator();
-
+    
             this._addMessage('assistant', "Désolé, j'ai rencontré un problème. Veuillez réessayer ou contacter directement l'équipe Bioforce.");
-
+    
         } finally {
             this.isLoading = false;
         }
