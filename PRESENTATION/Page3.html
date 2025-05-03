@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus sur les candidats "tièdes"</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+        }
+        .slide {
+            width: 1280px;
+            min-height: 720px;
+            overflow: hidden;
+            position: relative;
+            background-color: #f8fafc;
+        }
+        .header {
+            background: linear-gradient(90deg, #E84E1B 0%, #F26D42 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 0 0 30px 0;
+            width: fit-content;
+        }
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+        .bottom-accent {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, #E84E1B 0%, #F26D42 100%);
+        }
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            height: 350px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border-bottom: 5px solid #E84E1B;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+        .stat-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #E84E1B;
+            line-height: 1;
+        }
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        .definition-box {
+            background: #FFF5F0;
+            border-left: 6px solid #E84E1B;
+            padding: 1.5rem 2rem;
+            border-radius: 0 16px 16px 0;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide p-0">
+        <div class="header">
+            <h1 class="section-title">Les candidats "tièdes"</h1>
+        </div>
+        
+        <div class="p-12">
+            <div class="definition-box">
+                <div class="text-2xl font-semibold text-gray-800">
+                    <i class="fas fa-info-circle text-orange-600 mr-3"></i>
+                    Candidats ayant rempli le formulaire mais n'ayant pas finalisé le paiement des frais de sélection
+                </div>
+            </div>
+            
+            <div class="flex">
+                <!-- Visualisation -->
+                <div class="w-7/12 pr-8">
+                    <div class="chart-container">
+                        <canvas id="conversionFunnel"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Statistiques -->
+                <div class="w-5/12 pl-4">
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="stat-card">
+                            <div class="mb-2">
+                                <i class="fas fa-user-clock text-orange-500 text-4xl"></i>
+                            </div>
+                            <div class="stat-value">30%</div>
+                            <div class="stat-label">des candidatures sont "tièdes"</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="mb-2">
+                                <i class="fas fa-euro-sign text-orange-500 text-4xl"></i>
+                            </div>
+                            <div class="stat-value">60€</div>
+                            <div class="stat-label">frais de sélection non finalisés</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="mb-2">
+                                <i class="fas fa-chart-pie text-orange-500 text-4xl"></i>
+                            </div>
+                            <div class="stat-value">+40%</div>
+                            <div class="stat-label">potentiel de conversion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-accent"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('conversionFunnel').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Visiteurs site', 'Formulaires remplis', 'Candidats "tièdes"', 'Candidats effectifs'],
+                    datasets: [{
+                        label: 'Nombre de personnes',
+                        data: [5000, 2000, 600, 1400],
+                        backgroundColor: [
+                            'rgba(232, 78, 27, 0.3)',
+                            'rgba(232, 78, 27, 0.5)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(232, 78, 27, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(232, 78, 27, 1)',
+                            'rgba(232, 78, 27, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(232, 78, 27, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Entonnoir de conversion',
+                            color: '#E84E1B',
+                            font: {
+                                size: 20,
+                                family: 'Montserrat',
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+<nav class="p-4 bg-gray-100">
+    <a href="Page1.html" class="mr-4">Accueil</a>
+    <a href="Page2.html" class="mr-4">Présentation</a>
+    <a href="Page3.html" class="mr-4">Fonctionnalités</a>
+    <a href="Page4.html" class="mr-4">Architecture technique</a>
+    <a href="Page5.html" class="mr-4">Démonstration</a>
+    <a href="Page6.html" class="mr-4">Conclusion</a>
+    <a href="Page7.html" class="mr-4">Questions</a>
+    <a href="Page8.html" class="mr-4">Contact</a>
+    <a href="Page9.html" class="mr-4">Calendrier</a>
+    <a href="Page10.html">Calendrier</a>
+  </nav>
+</html>

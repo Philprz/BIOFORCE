@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIOFORCE IA Assistant - Présentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            background-color: #1a1a1a;
+        }
+        
+        .presentation-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background-color: #111;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        .control-button {
+            background-color: #E84E1B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-button:hover {
+            background-color: #d13a0a;
+            transform: translateY(-2px);
+        }
+        
+        .slide-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            flex: 1;
+        }
+        
+        .slide {
+            width: 1280px;
+            height: 720px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        .slide-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            z-index: 50;
+        }
+        
+        .fullscreen-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 50;
+            transition: all 0.2s ease;
+        }
+        
+        .fullscreen-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-indicator">Diapositive <span id="current-slide">1</span>/<span id="total-slides">10</span></div>
+        
+        <div class="fullscreen-toggle" onclick="toggleFullScreen()">
+            <i class="fas fa-expand"></i>
+        </div>
+        
+        <div class="slide-container">
+            <!-- Slide 1 - Page de titre -->
+            <div class="slide active" id="slide-1">
+                <div class="w-full h-full overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100">
+                    <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-orange-600 to-orange-500"></div>
+                    
+                    <div class="flex flex-col items-center justify-center h-full text-center px-12">
+                        <div class="w-40 h-40 rounded-full bg-gradient-to-br from-orange-600 to-orange-500 flex items-center justify-center mb-8 shadow-xl">
+                            <i class="fas fa-robot text-white text-7xl"></i>
+                        </div>
+                        
+                        <h1 class="text-7xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-orange-500 text-transparent bg-clip-text">BIOFORCE IA Assistant</h1>
+                        
+                        <div class="mt-12 bg-orange-50 text-orange-600 font-semibold px-8 py-3 rounded-full border-2 border-orange-200 shadow-md">
+                            <i class="fas fa-users mr-3"></i>Accompagnement intelligent des candidats
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-orange-600 to-orange-500"></div>
+                </div>
+            </div>
+
+            <!-- Slide 2 - Problématiques principales -->
+            <div class="slide" id="slide-2">
+                <div class="w-full h-full overflow-hidden relative bg-gray-50">
+                    <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-5 px-10 rounded-br-3xl">
+                        <h1 class="text-4xl font-bold">Problématiques principales</h1>
+                    </div>
+                    
+                    <div class="p-12">
+                        <div class="grid grid-cols-2 gap-12 h-full">
+                            <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-orange-500 relative">
+                                <div class="absolute top-4 right-4 bg-orange-500 text-white text-sm font-bold py-1 px-3 rounded-full">Priorité #1</div>
+                                <div class="w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center mb-6">
+                                    <i class="fas fa-user-clock text-5xl text-orange-500"></i>
+                                </div>
+                                <h2 class="text-3xl font-bold mb-4">Suivi insuffisant des candidats "tièdes"</h2>
+                                <p class="text-xl text-gray-600">
+                                    Candidats ayant rempli le formulaire mais n'ayant pas finalisé le paiement des frais de sélection
+                                </p>
+                                <div class="mt-6 flex items-center">
+                                    <span class="text-orange-500 text-3xl font-bold mr-2">30%</span>
+                                    <span class="text-gray-500">des candidatures non finalisées</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-orange-500 relative">
+                                <div class="absolute top-4 right-4 bg-orange-500 text-white text-sm font-bold py-1 px-3 rounded-full">Priorité #2</div>
+                                <div class="w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center mb-6">
+                                    <i class="fas fa-comments text-5xl text-orange-500"></i>
+                                </div>
+                                <h2 class="text-3xl font-bold mb-4">Réponses tardives aux questions fréquentes</h2>
+                                <p class="text-xl text-gray-600">
+                                    Délai de réponse trop long aux interrogations courantes des candidats potentiels
+                                </p>
+                                <div class="mt-6 flex items-center">
+                                    <span class="text-orange-500 text-3xl font-bold mr-2">2</span>
+                                    <span class="text-gray-500">personnes seulement dans l'équipe d'admission</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-orange-600 to-orange-500"></div>
+                </div>
+            </div>
+
+            <!-- Slide 3 - Les candidats "tièdes" -->
+            <div class="slide" id="slide-3">
+                <div class="w-full h-full overflow-hidden relative bg-gray-50">
+                    <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-5 px-10 rounded-br-3xl">
+                        <h1 class="text-4xl font-bold">Les candidats "tièdes"</h1>
+                    </div>
+                    
+                    <div class="p-12">
+                        <div class="bg-orange-50 border-l-6 border-orange-500 py-4 px-6 rounded-r-lg mb-8">
+                            <div class="text-2xl font-semibold text-gray-800 flex items-center">
+                                <i class="fas fa-info-circle text-orange-500 mr-3"></i>
+                                Candidats ayant rempli le formulaire mais n'ayant pas finalisé le paiement des frais de sélection
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="w-7/12 bg-white p-6 rounded-xl shadow-lg">
+                                <h3 class="text-xl font-bold text-orange-500 mb-4 text-center">Entonnoir de conversion</h3>
+                                <div class="h-80">
+                                    <canvas id="conversionChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div class="w-5/12 pl-8">
+                                <div class="grid grid-rows-3 gap-6 h-full">
+                                    <div class="bg-white rounded-xl shadow-lg p-6 border-b-4 border-orange-500">
+                                        <div class="flex items-center justify-center mb-3">
+                                            <i class="fas fa-user-clock text-4xl text-orange-500"></i>
+                                        </div>
+                                        <div class="text-5xl font-bold text-center text-orange-500">30%</div>
+                                        <div class="text-lg font-medium text-center text-gray-600">des candidatures sont "tièdes"</div>
+                                    </div>
+                                    
+                                    <div class="bg-white rounded-xl shadow-lg p-6 border-b-4 border-orange-500">
+                                        <div class="flex items-center justify-center mb-3">
+                                            <i class="fas fa-euro-sign text-4xl text-orange-500"></i>
+                                        </div>
+                                        <div class="text-5xl font-bold text-center text-orange-500">60€</div>
+                                        <div class="text-lg font-medium text-center text-gray-600">frais de sélection non finalisés</div>
+                                    </div>
+                                    
+                                    <div class="bg-white rounded-xl shadow-lg p-6 border-b-4 border-orange-500">
+                                        <div class="flex items-center justify-center mb-3">
+                                            <i class="fas fa-chart-line text-4xl text-orange-500"></i>
+                                        </div>
+                                        <div class="text-5xl font-bold text-center text-orange-500">+40%</div>
+                                        <div class="text-lg font-medium text-center text-gray-600">potentiel de conversion</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-orange-600 to-orange-500"></div>
+                </div>
+            </div>
+
+            <!-- Slide 4 - Impacts du problème -->
+            <div class="slide" id="slide-4">
+                <div class="w-full h-full overflow-hidden relative bg-gray-50">
+                    <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-5 px-10 rounded-br-3xl">
+                        <h1 class="text-4xl font-bold">Impacts du problème</h1>
+                    </div>
+                    
+                    <div class="p-12">
+                        <div class="grid grid-cols-2 gap-8 mb-8">
+                            <div class="bg-white rounded-xl shadow-lg p-8 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-32 h-32 rounded-full bg-orange-100 opacity-30 -mr-12 -mt-12"></div>
+                                <div class="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center mb-6">
+                                    <i class="fas fa-user-slash text-4xl text-orange-500"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold mb-2">Perte de candidats qualifiés</h2>
+                                <p class="text-gray-600 mb-4">Candidats qui abandonnent faute d'accompagnement</p>
+                                <div class="text-5xl font-bold text-orange-500">-30%</div>
+                                <div class="text-gray-500">de conversions potentielles</div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg p-8 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-32 h-32 rounded-full bg-orange-100 opacity-30 -mr-12 -mt-12"></div>
+                                <div class="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center mb-6">
+                                    <i class="fas fa-clock text-4xl text-orange-500"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold mb-2">Surcharge administrative</h2>
+                                <p class="text-gray-600 mb-4">Équipes submergées par les tâches répétitives</p>
+                                <div class="text-5xl font-bold text-orange-500">+40%</div>
+                                <div class="text-gray-500">de temps consacré aux questions basiques</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="bg-white rounded-xl shadow-lg p-8 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-32 h-32 rounded-full bg-orange-100 opacity-30 -mr-12 -mt-12"></div>
+                                <div class="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center mb-6">
+                                    <i class="fas fa-frown text-4xl text-orange-500"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold mb-2">Expérience utilisateur dégradée</h2>
+                                <p class="text-gray-600 mb-4">Frustration et abandons en cours de processus</p>
+                                <div class="text-5xl font-bold text-orange-500">25%</div>
+                                <div class="text-gray-500">de taux d'abandon sur l'espace candidat</div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg p-8 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-32 h-32 rounded-full bg-orange-100 opacity-30 -mr-12 -mt-12"></div>
+                                <div class="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center mb-6">
+                                    <i class="fas fa-chart-line text-4xl text-orange-500"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold mb-2">Opportunités manquées</h2>
+                                <p class="text-gray-600 mb-4">Potentiel inexploité dans le vivier de candidats</p>
+                                <div class="text-5xl font-bold text-orange-500">600+</div>
+                                <div class="text-gray-500">candidats "tièdes" non relancés efficacement</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-orange-600 to-orange-500"></div>
+                </div>
+            </div>
+
+            <!-- Slide 5 - Notre solution -->
+            <div class="slide" id="slide-5">
+                <div class="w-full h-full overflow-hidden relative bg-gray-50">
+                    <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-5 px-10 rounded-br-3xl">
+                        <h1 class="text-4xl font-bold">Notre Solution</h1>
+                    </div>
+                    
+                    <div class="p-10">
+                        <div class="flex items-center mb-8">
+                            <div class="w-32 h-32 rounded-full bg-gradient-to-r from-orange-600 to-orange-500 flex items-center justify-center shadow-lg mr-8">
+                                <i class="fas fa-robot text-white text-6xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-4xl font-bold mb-2">BIOFORCE IA Assistant</h2>
+                                <p class="text-xl text-gray-600">Un assistant intelligent pour accompagner vos candidats à chaque étape du processus</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+                            <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white p-4 flex items-center">
+                                <i class="fas fa-robot text-2xl mr-4"></i>
+                                <div>
+                                    <div class="font-bold">BIOFORCE IA Assistant</div>
+                                    <div class="text-sm opacity-80">Toujours disponible pour vous aider</div>
+                                </div>
+                            </div>
+                            <div class="p-6 bg-gray-50">
+                                <div class="bg-gray-200 p-3 rounded-lg w-max ml-auto mb-4 max-w-md">
+                                    Comment compléter mon dossier de candidature ?
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg w-max mb-4 max-w-md border-l-4 border-orange-500">
+                                    Bonjour ! Pour compléter votre dossier, cliquez sur le bouton "Compléter votre dossier" en haut à droite de l'écran.
+                                </div>
+                                <div class="bg-orange-50 p-3 rounded-lg w-max mb-4 max-w-md border-l-4 border-orange-500">
+                                    Vous pourrez alors ajouter les pièces justificatives manquantes et procéder au paiement des frais de sélection de 60€.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-6 mb-8">
+                            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-orange-500 text-center">
+                                <div class="w-16 h-16 rounded-full bg-orange-50 mx-auto flex items-center justify-center mb-4">
+                                    <i class="fas fa-compass text-orange-500 text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Assistance à la navigation</h3>
+                                <p class="text-gray-600">Guide interactif dans l'espace candidat</p>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-orange-500 text-center">
+                                <div class="w-16 h-16 rounded-full bg-orange-50 mx-auto flex items-center justify-center mb-4">
+                                    <i class="fas fa-comment-dots text-orange-500 text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Réponses automatisées</h3>
+                                <p class="text-gray-600">Base de connaissances intelligente</p>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-orange-500 text-center">
+                                <div class="w-16 h-16 rounded-full bg-orange-50 mx-auto flex items-center justify-center mb-4">
+                                    <i class="fas fa-bell text-orange-500 text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Relances personnalisées</h3>
+                                <p class="text-gray-600">Suivi proactif des candidats inactifs</p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="inline-block bg-gradient-to-r from-orange-600 to-orange-500 text-white px-8 py-3 rounded-full font-bold text-xl shadow-lg">
+                                <i class="fas fa-rocket mr-3"></i> Transformez vos candidats "tièdes" en candidats engagés
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-orange-600 to-orange-500"></div>
+                </div>
+            </div>
+
+            <!-- Slide 6 - Fonctionnalités clés -->
+            <div class="slide" id="slide-6">
+                <div class="w-full h-full overflow-hidden relative bg-gray-50">
+                    <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-5 px-10 rounded-br-3xl">
+                        <h1 class="text-4xl font-bold">Fonctionnalités clés</h1>
+                    </div>
+                    
+                    <div class="p-10">
+                        <div class="grid grid-cols-3 gap-8 mb-8">
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white p-6 text-center">
+                                    <i class="fas fa-compass text-4xl mb-2"></i>
+                                    <h3 class="text-2xl font-bold">Assistance à la navigation</h3>
+                                </div>
+                                <div class="p-6">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Guide interactif dans l'espace candidat</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Orientation vers les boutons et formulaires clés</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Instructions pas-à-pas personnalisées</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Réduction des abandons par frustration</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white p-6 text-center">
+                                    <i class="fas fa-comment-dots text-4xl mb-2"></i>
+                                    <h3 class="text-2xl font-bold">Réponses automatisées</h3>
+                                </div>
+                                <div class="p-6">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Base de connaissances intelligente</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Réponse immédiate 24h/24, 7j/7</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Reconnaissance du contexte utilisateur</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Traitement prioritaire des questions complexes</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-white p-6 text-center">
+                                    <i class="fas fa-bell text-4xl mb-2"></i>
+                                    <h3 class="text-2xl font-bold">Relances personnalisées</h3>
+                                </div>
+                                <div class="p-6">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Détection des candidats inactifs</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Messages contextualisés selon l'étape</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Suivi automatisé sans intervention manuelle</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check text-orange-500 mt-1 mr-3"></i>
+                                            <span>Conversion des candidats "tièdes" en actifs</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-orange-50 rounded-xl p-8 border border-orange-200">
+                            <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Technologies utilisées</h3>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <div class="bg-white px-4 py-2 rounded-full shadow-sm text-orange-600 border border-orange-200">
+                                    <i class="fas fa-bolt mr-2"></i> FastAPI
+                                </div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow-sm text-orange-600 border border-orange-200">
+                                    <i class="fas fa-database mr-2"></i> Base vectorielle Qdrant
+                                </div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow-sm text-orange-600 border border-orange-200">
+                                    <i class="fas fa-brain mr-2"></i> OpenAI LLM
+                                </div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow-sm text-orange-600 border border-orange-200">
+                                    <i class="fas fa-spider mr-2"></i> Extraction automatisée
+                                </div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow-sm text-orange-600 border border-orange-200">
+                                    <i class="fas fa-laptop-code mr-2"></i> Interface JavaScript
+                                </div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow-sm text-orange-600 border border-orange-200">
+                                    <i class="fas fa-lock mr-2"></i> Sécurité

@@ -203,7 +203,7 @@ async def test_qdrant_connection():
         return False
 
 async def process_chat_request():
-    user_query = "Quel est le montant des frais de sélection pour une candidature ?"
+    user_query = "Combien de temps faut-il pour recevoir une réponse après avoir soumis ma candidature ?"
     
     logger.info("--- TEST DE CHATBOT ---")
     logger.info("Requête: %s", user_query)

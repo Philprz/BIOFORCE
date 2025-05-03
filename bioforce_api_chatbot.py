@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import os
+import sys  
 import logging
 import traceback
 import time
@@ -23,7 +24,7 @@ load_dotenv()
 
 # Configuration du logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -233,10 +234,23 @@ async def initialize_qdrant_collection():
 # Événement de démarrage pour initialiser la collection
 @app.on_event("startup")
 async def startup_event():
+    # Logs existants
     logger.info("=== DÉMARRAGE DU CHATBOT BIOFORCE ===")
-    logger.info(f"Version: 1.0.0, Environnement: {os.getenv('ENVIRONMENT', 'production')}")
-    logger.info(f"URL Qdrant: {QDRANT_URL}")
-    logger.info(f"Collection: {COLLECTION_NAME}")
+    
+    # Logs de diagnostic pour l'environnement
+    logger.critical("=== INFORMATIONS ENVIRONNEMENT ===")
+    logger.critical(f"Python version: {sys.version}")
+    logger.critical(f"Variables d'environnement présentes: {', '.join(os.environ.keys())}")
+    logger.critical(f"Répertoire courant: {os.getcwd()}")
+    logger.critical(f"Contenu du répertoire: {os.listdir('.')}")
+    
+    # Vérification des dossiers spécifiques
+    logger.critical(f"Dossier static existe: {os.path.exists('static')}")
+    logger.critical(f"Dossier templates existe: {os.path.exists('templates')}")
+    
+    # Tests de connectivité
+    logger.critical("Test de ping Qdrant...")
+    
     await initialize_qdrant_collection()
     logger.info("=== INITIALISATION TERMINÉE ===")
 
@@ -783,6 +797,8 @@ async def chat(request: ChatRequest):
     Point d'entrée simplifié pour le chat sans enrichissement asynchrone
     """
     try:
+        print("DÉMARRAGE DE LA REQUÊTE CHAT")  # Log très simple qui devrait toujours s'afficher
+        logger.critical("Traitement d'une requête chat")  # Niveau CRITICAL pour être sûr que ça s'affiche
         messages = request.messages
 
         # Détection des questions sur les frais
@@ -840,7 +856,63 @@ async def chat(request: ChatRequest):
 async def health_check():
     """Vérifie l'état de l'API"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
-
+@app.get("/diagnosis")
+async def run_diagnosis():
+    """Endpoint pour diagnostiquer les différents composants du système"""
+    results = {
+        "env_variables": {k: v for k, v in os.environ.items() if not k.lower().contains("key")},
+        "python_version": sys.version,
+        "working_directory": os.getcwd(),
+        "tests": {}
+    }
+    
+    # Test OpenAI
+    try:
+        response = await openai_client.embeddings.create(
+            input="Test de diagnostic",
+            model="text-embedding-ada-002"
+        )
+        results["tests"]["openai"] = {
+            "status": "success",
+            "embedding_size": len(response.data[0].embedding)
+        }
+    except Exception as e:
+        results["tests"]["openai"] = {
+            "status": "error",
+            "message": str(e)
+        }
+    
+    # Test Qdrant
+    try:
+        collections = await qdrant_client.get_collections()
+        collection_names = [c.name for c in collections.collections]
+        results["tests"]["qdrant"] = {
+            "status": "success",
+            "collections": collection_names
+        }
+    except Exception as e:
+        results["tests"]["qdrant"] = {
+            "status": "error",
+            "message": str(e)
+        }
+    
+    # Test de recherche simple
+    try:
+        test_query = "délai réponse candidature"
+        search_results = await search_knowledge_base(test_query, limit=2)
+        results["tests"]["search"] = {
+            "status": "success",
+            "query": test_query,
+            "results_count": len(search_results),
+            "first_result": search_results[0] if search_results else None
+        }
+    except Exception as e:
+        results["tests"]["search"] = {
+            "status": "error",
+            "message": str(e)
+        }
+    
+    return results
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("bioforce_api_chatbot:app", host="0.0.0.0", port=8000, reload=True)
