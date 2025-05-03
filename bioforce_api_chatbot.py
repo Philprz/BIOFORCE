@@ -797,23 +797,25 @@ async def chat(request: ChatRequest):
     Point d'entrée simplifié pour le chat sans enrichissement asynchrone
     """
     try:
-        print("DÉMARRAGE DE LA REQUÊTE CHAT")  # Log très simple qui devrait toujours s'afficher
-        logger.critical("Traitement d'une requête chat")  # Niveau CRITICAL pour être sûr que ça s'affiche
+        logger.critical(f"[/chat] Début du traitement d'une requête de chat: {request.user_id}")
+        logger.info(f"[/chat] Messages reçus: {len(request.messages)}")
+        
         messages = request.messages
-
-        # Détection des questions sur les frais
+        
+        # Log du dernier message pour le débogage
         last_user_message = None
         for msg in reversed(messages):
             if msg.role == "user":
-                last_user_message = msg.content.lower()
+                last_user_message = msg.content
+                logger.info(f"[/chat] Dernier message utilisateur: '{last_user_message}'")
                 break
-
-        # Réponse spécifique pour les questions sur les frais
+        
+        # Détection des questions sur les frais
         is_fee_question = False
-        if last_user_message and any(term in last_user_message for term in ["frais", "coût", "tarif", "prix", "payer", "€", "euro"]):
+        if last_user_message and any(term in last_user_message.lower() for term in ["frais", "coût", "tarif", "prix", "payer", "€", "euro"]):
             is_fee_question = True
-            logger.info("Question sur les frais détectée")
-
+            logger.info("[/chat] Question sur les frais détectée")
+        
         # Utiliser une réponse prédéfinie pour les questions sur les frais
         if is_fee_question:
             rag_content = "Les frais de sélection pour une candidature chez Bioforce sont de 60€ (ou 20000 CFA pour l'Afrique). Ces frais sont à payer après avoir rempli le formulaire de candidature et avant l'évaluation de votre dossier."
@@ -822,10 +824,14 @@ async def chat(request: ChatRequest):
                 "title": "Frais de sélection et de formation",
                 "score": 0.95
             }]
+            logger.info("[/chat] Réponse prédéfinie pour les frais utilisée")
         else:
             # Recherche standard pour les autres questions
+            logger.info("[/chat] Appel à get_rag_response")
+            start_time = time.time()
             rag_content, references = await get_rag_response(messages)
-
+            logger.info(f"[/chat] Réponse RAG obtenue en {time.time() - start_time:.2f}s")
+        
         # Préparer la réponse
         response = {
             "message": {
@@ -840,18 +846,67 @@ async def chat(request: ChatRequest):
                     "score": ref.get("score", 0)
                 } for ref in references
             ],
-            # Les champs suivants ne sont plus utilisés
             "has_enrichment_pending": False,
             "websocket_id": None
         }
-
+        
+        logger.info(f"[/chat] Réponse prête à être envoyée, longueur: {len(rag_content)}")
         return response
-
+    
     except Exception as e:
-        logger.error(f"Erreur dans /chat: {e}")
+        logger.error(f"[/chat] Erreur dans /chat: {e}")
+        logger.error(f"[/chat] Stack trace: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/qdrant-stats")
+async def qdrant_stats():
+    """Retourne des statistiques sur les collections Qdrant"""
+    try:
+        collections = await qdrant_client.get_collections()
+        collection_names = [c.name for c in collections.collections]
+        
+        stats = {
+            "faq_collection": {},
+            "full_site_collection": {}
+        }
+        
+        if COLLECTION_NAME in collection_names:
+            info = await qdrant_client.get_collection(collection_name=COLLECTION_NAME)
+            count = await qdrant_client.count(collection_name=COLLECTION_NAME)
+            
+            stats["faq_collection"] = {
+                "points_count": count.count,
+                "vector_size": 1536,
+                "vector_distance": "Cosine",
+                "status": "ok"
+            }
+        
+        full_collection = os.getenv('QDRANT_COLLECTION_ALL', 'BIOFORCE_ALL')
+        if full_collection in collection_names:
+            info = await qdrant_client.get_collection(collection_name=full_collection)
+            count = await qdrant_client.count(collection_name=full_collection)
+            logger.info(f"Collection {info.name} contient {count.count} points")
+            stats["full_site_collection"] = {
+                "points_count": count.count,
+                "vector_size": 1536,
+                "vector_distance": "Cosine",
+                "status": "ok"
+            }
+        
+        return stats
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des statistiques Qdrant: {str(e)}")
+        return {"error": str(e)}
 
-
+@app.get("/admin/assistant-status")
+async def assistant_status():
+    """Retourne le statut de l'assistant OpenAI"""
+    return {
+        "enabled": USE_OPENAI_ASSISTANT,
+        "assistant_id": OPENAI_ASSISTANT_ID if USE_OPENAI_ASSISTANT else None,
+        "timeout": 30,
+        "status": "active" if USE_OPENAI_ASSISTANT else "disabled"
+    }
 @app.get("/health")
 async def health_check():
     """Vérifie l'état de l'API"""

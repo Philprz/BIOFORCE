@@ -606,9 +606,7 @@ class BioforceBotOptimized {
         if (this.isLoading) return;
     
         this.isLoading = true;
-    
         this._addMessage('user', text);
-    
         this._showTypingIndicator();
     
         try {
@@ -617,6 +615,9 @@ class BioforceBotOptimized {
                 messages: this.messages,
                 context: this.context
             };
+    
+            // Afficher les données de la requête pour le débogage
+            console.log("Envoi de la requête:", JSON.stringify(requestData));
     
             const response = await fetch(`${this.apiUrl}/chat`, {
                 method: 'POST',
@@ -629,31 +630,28 @@ class BioforceBotOptimized {
             this._removeTypingIndicator();
     
             if (!response.ok) {
-                throw new Error('Erreur lors de la communication avec le serveur');
+                const errorText = await response.text();
+                console.error(`Erreur HTTP ${response.status}: ${errorText}`);
+                throw new Error(`Erreur ${response.status}: ${errorText || 'Erreur de communication avec le serveur'}`);
             }
     
             const data = await response.json();
+            console.log("Réponse reçue:", data);
+    
+            // Vérifier que data.message existe
+            if (!data.message || !data.message.content) {
+                console.error("Format de réponse invalide:", data);
+                throw new Error("Format de réponse invalide");
+            }
     
             this._addMessage('assistant', data.message.content);
-    
             this.context = data.context || {};
-    
-            this._displayReferences(data.references);
-    
-            // Supprimez cette partie qui établit la connexion WebSocket
-            /*
-            if (data.has_enrichment_pending && data.websocket_id) {
-                this._setupWebSocketConnection(data.websocket_id);
-            }
-            */
+            this._displayReferences(data.references || []);
     
         } catch (error) {
             console.error('Erreur:', error);
-    
             this._removeTypingIndicator();
-    
-            this._addMessage('assistant', "Désolé, j'ai rencontré un problème. Veuillez réessayer ou contacter directement l'équipe Bioforce.");
-    
+            this._addMessage('assistant', "Désolé, j'ai rencontré un problème technique. Veuillez réessayer ou contacter directement l'équipe Bioforce.");
         } finally {
             this.isLoading = false;
         }
