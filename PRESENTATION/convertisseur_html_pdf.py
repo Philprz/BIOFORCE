@@ -1,12 +1,12 @@
 import pdfkit
 
+import os
+print("🔍 Dossier courant :", os.getcwd())
 
 # Chemin vers wkhtmltopdf.exe (à adapter si différent)
 WKHTMLTOPDF_PATH = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
 pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
-
-# Liste des fichiers HTML à convertir
-html_files = [f"Page{i}.html" for i in range(1, 11)]
+html_files = [os.path.join(os.path.dirname(__file__), f"Page{i}.html") for i in range(1, 11)]
 
 # Fichier de sortie
 output_pdf = "presentation.pdf"
