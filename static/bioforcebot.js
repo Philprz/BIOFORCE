@@ -9,7 +9,13 @@ class BioforceBotOptimized {
         this.isLoading = false;
         this.websocket = null;
         this.websocketId = null;
-
+        this.context = {
+            "fee_info": {
+                "selection_fee_eur": "60€",
+                "selection_fee_cfa": "20000 CFA",
+                "selection_process": "Les frais de sélection sont à payer après avoir rempli le formulaire de candidature."
+            }
+        };
         this.welcomeMessages = {
             'default': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?",
             'espace_candidat': "Bonjour ! Je suis BioforceBot, l'assistant virtuel de l'espace candidat. Je peux vous aider à naviguer dans votre espace, répondre à vos questions sur les formations ou vous assister dans votre candidature.",

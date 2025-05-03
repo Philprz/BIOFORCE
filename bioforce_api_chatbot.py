@@ -256,93 +256,108 @@ async def generate_embedding(text: str) -> List[float]:
         raise
 
 # Fonction pour rechercher dans Qdrant
-async def search_knowledge_base(query: str, limit: int = 5) -> List[Dict[str, Any]]:
+async def search_knowledge_base(query: str, limit: int = 15) -> List[Dict[str, Any]]:
     """Recherche dans la base de connaissances"""
     try:
         logger.info(f"Recherche pour la requête: '{query}' dans la collection {COLLECTION_NAME}")
 
         # Générer l'embedding de la requête
-        logger.debug("Génération de l'embedding pour la recherche...")
-        try:
-            vector = await generate_embedding(query)
-            logger.info(f"Embedding généré avec succès (taille: {len(vector)})")
-        except Exception as e:
-            logger.error(f"Erreur lors de la génération de l'embedding: {str(e)}")
-            logger.error(f"Type d'erreur: {type(e).__name__}")
-            logger.error(f"Stack trace: {traceback.format_exc()}")
-            raise
+        vector = await generate_embedding(query)
 
-        # Effectuer la recherche
-        logger.debug(f"Exécution de la recherche dans {COLLECTION_NAME} avec limite={limit}")
-        try:
-            search_result = await qdrant_client.search(
-                collection_name=COLLECTION_NAME,
-                query_vector=vector,
-                limit=limit,
-                with_payload=True
-            )
-            logger.info(f"Résultats trouvés: {len(search_result)}")
-        except Exception as e:
-            logger.error(f"Erreur lors de la recherche dans Qdrant: {str(e)}")
-            logger.error(f"Type d'erreur: {type(e).__name__}")
-            logger.error(f"Stack trace: {traceback.format_exc()}")
-            return []
-
-        # Formater les résultats
+        # Modifier la recherche pour considérer les deux collections
         results = []
-        try:
-            for scored_point in search_result:
-                result_data = {
-                    "score": scored_point.score,
-                }
 
-                payload = scored_point.payload
+        # Rechercher d'abord dans BIOFORCE (FAQ)
+        search_result_faq = await qdrant_client.search(
+            collection_name=COLLECTION_NAME,
+            query_vector=vector,
+            limit=limit,
+            with_payload=True,
+            score_threshold=0.2  # Abaisser le seuil pour obtenir plus de résultats
+        )
 
-                if "question" in payload:
-                    result_data["question"] = payload.get("question", "")
-                    result_data["answer"] = payload.get("answer", payload.get("reponse", ""))
-                if "title" in payload:
-                    result_data["title"] = payload.get("title", "")
-                    result_data["content"] = payload.get("content", "")
+        # Rechercher également dans BIOFORCE_ALL
+        search_result_all = await qdrant_client.search(
+            collection_name=os.getenv('QDRANT_COLLECTION_ALL', 'BIOFORCE_ALL'),
+            query_vector=vector,
+            limit=5,  # Moins de résultats pour les pages complètes
+            with_payload=True,
+            score_threshold=0.2
+        )
 
-                for field in ["category", "url", "source_url", "type", "language"]:
-                    if field in payload:
-                        result_data[field] = payload.get(field)
+        # Combiner les résultats
+        for scored_point in search_result_faq + search_result_all:
+            result_data = {
+                "score": scored_point.score,
+            }
 
-                results.append(result_data)
+            payload = scored_point.payload
 
-            logger.debug(f"Premier résultat score: {results[0]['score'] if results else 'aucun'}")
-        except Exception as e:
-            logger.error(f"Erreur lors du traitement des résultats: {str(e)}")
-            logger.error(f"Type d'erreur: {type(e).__name__}")
-            logger.error(f"Stack trace: {traceback.format_exc()}")
-            return []
+            # Traiter tous les types de données possibles
+            if "question" in payload:
+                result_data["question"] = payload.get("question", "")
+                result_data["answer"] = payload.get("answer", payload.get("reponse", ""))
+            elif "title" in payload:
+                result_data["title"] = payload.get("title", "")
+                result_data["content"] = payload.get("content", "")
+            elif "content" in payload and "title" not in payload:
+                # Extraire un titre à partir du contenu
+                content = payload.get("content", "")
+                first_line = content.split("\n")[0] if "\n" in content else content[:50]
+                result_data["title"] = first_line
+                result_data["content"] = content
 
-        return results
+            # Copier tous les champs de métadonnées
+            for field in ["category", "url", "source_url", "type", "language"]:
+                if field in payload:
+                    result_data[field] = payload.get(field)
 
+            results.append(result_data)
+
+        # Trier les résultats par score de pertinence
+        results.sort(key=lambda x: x.get("score", 0), reverse=True)
+
+        return results[:limit]  # Limiter le nombre total de résultats
     except Exception as e:
         logger.error(f"Erreur lors de la recherche: {str(e)}")
-        logger.error(f"Détails: collection={COLLECTION_NAME}, query='{query}', type d'erreur={type(e).__name__}")
-        logger.error(f"Stack trace: {traceback.format_exc()}")
         return []
+
+
 
 # Fonction pour formater le contexte
 async def format_context_from_results(results: List[Dict[str, Any]]) -> str:
     """Formate les résultats de recherche en contexte pour le LLM"""
     context = "Informations pertinentes de la base de connaissances de Bioforce:\n\n"
-
-    for i, result in enumerate(results):
+    
+    # Chercher explicitement des informations sur les frais de sélection
+    fees_info = None
+    for result in results:
+        content = result.get("content", "") or result.get("answer", "")
+        if isinstance(content, str) and ("frais de sélection" in content.lower() or 
+                                         "frais d'inscription" in content.lower() or 
+                                         "60€" in content or 
+                                         "20000 CFA" in content):
+            fees_info = f"Extrait concernant les frais: {content[:200]}...\n\n"
+            break
+    
+    if fees_info:
+        context += fees_info
+    
+    # Formater le reste des résultats
+    for i, result in enumerate(results[:5]):  # Limiter à 5 résultats pour le contexte
         context += f"Référence {i+1}:\n"
-
+        
         if "question" in result:
             context += f"Question: {result.get('question', 'Non disponible')}\n"
             context += f"Réponse: {result.get('answer', 'Non disponible')}\n"
         elif "title" in result:
             context += f"Titre: {result.get('title', 'Non disponible')}\n"
-            context += f"Contenu: {result.get('content', 'Non disponible')}\n"
-
-        context += f"Catégorie: {result.get('category', 'Non disponible')}\n\n"
-
+            # Extraire seulement les 200 premiers caractères du contenu pour plus de concision
+            content = result.get('content', 'Non disponible')
+            context += f"Extrait: {content[:200]}...\n"
+        
+        context += f"Source: {result.get('source_url', result.get('url', 'Non disponible'))}\n\n"
+    
     return context
 
 # Fonction pour obtenir une réponse rapide via RAG
@@ -366,12 +381,19 @@ async def get_rag_response(messages, context=""):
         context_text = await format_context_from_results(qdrant_results)
 
     system_message = {
-        "role": "system",
-        "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation humanitaire qui propose des formations.
-                   Votre rôle est d'aider les candidats avec leur dossier de candidature et de répondre à leurs questions
-                   sur les formations, le processus de sélection, et les modalités d'inscription.
-                   Soyez concis, précis et avenant dans vos réponses. Si vous ne connaissez pas la réponse à une question,
-                   proposez au candidat de contacter directement l'équipe Bioforce."""
+    "role": "system", 
+    "content": """Vous êtes l'assistant virtuel de Bioforce, une organisation humanitaire qui propose des formations.
+               Votre rôle est d'aider les candidats avec leur dossier de candidature et de répondre à leurs questions
+               sur les formations, le processus de sélection, et les modalités d'inscription.
+               
+               Informations importantes à connaître :
+               - Les frais de sélection pour une candidature sont de 60€ (ou 20000 CFA pour l'Afrique)
+               - Ces frais sont à payer après avoir rempli le formulaire de candidature
+               - Les candidats peuvent accéder à leur espace candidat pour suivre leur candidature
+               
+               Soyez concis, précis et avenant dans vos réponses. Utilisez les informations du contexte fourni
+               pour répondre aux questions. Si vous n'êtes pas sûr d'une information, précisez-le et
+               proposez au candidat de contacter directement l'équipe Bioforce."""
     }
 
     api_messages = [system_message]
@@ -757,11 +779,31 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
     try:
         messages = request.messages
 
+        # Détection spécifique des questions sur les frais
+        last_user_message = None
+        for msg in reversed(messages):
+            if msg.role == "user":
+                last_user_message = msg.content.lower()
+                break
+
+        is_fee_question = False
+        if last_user_message and any(term in last_user_message for term in ["frais", "coût", "tarif", "prix", "payer", "€", "euro"]):
+            is_fee_question = True
+
         # Génération d'un websocket_id unique pour cette session
         websocket_id = f"{request.user_id}_{int(time.time())}"
 
-        # Phase 1 : Obtention rapide d'une réponse via RAG
-        rag_content, references = await get_rag_response(messages)
+        # Utiliser une réponse plus précise si c'est une question sur les frais
+        if is_fee_question:
+            rag_content = "Les frais de sélection pour une candidature chez Bioforce sont de 60€ (ou 20000 CFA pour l'Afrique). Ces frais sont à payer après avoir rempli le formulaire de candidature et avant l'évaluation de votre dossier."
+            references = [{
+                "source": "https://bioforce.org/learn/frais-de-selection-et-de-formation/",
+                "title": "Frais de sélection et de formation",
+                "score": 0.95
+            }]
+        else:
+            # Approche RAG standard pour les autres questions
+            rag_content, references = await get_rag_response(messages)
 
         # Préparer la réponse initiale
         response = {
@@ -795,6 +837,7 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
     except Exception as e:
         logger.error(f"Erreur dans /chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/health")
 async def health_check():
