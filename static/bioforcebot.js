@@ -1,11 +1,24 @@
-// Configuration de l'API
+// Définition de l'URL d'administration (sans slash final)
 const API_URL = window.location.origin;
-const ADMIN_URL = 'https://bioforce.onrender.com/admin';  // Correction du chemin d'administration
-const USE_SIMULATION_FALLBACK = true;
+const ADMIN_PATH = 'admin'; // Sans slash au début ni à la fin
+const ADMIN_URL = normalizeUrl(API_URL, ADMIN_PATH);
 
 // Configuration de l'administration
 const ADMIN_PASSWORD = "bioforce2025"; 
-
+// Fonction utilitaire pour normaliser les URLs et éviter les doubles slashes
+function normalizeUrl(baseUrl, path) {
+    // Si baseUrl se termine par un slash et que path commence par un slash,
+    // on supprime le slash au début du path
+    if (baseUrl.endsWith('/') && path.startsWith('/')) {
+        path = path.substring(1);
+    } 
+    // Si baseUrl ne se termine pas par un slash et que path ne commence pas par un slash,
+    // on ajoute un slash entre les deux
+    else if (!baseUrl.endsWith('/') && !path.startsWith('/')) {
+        path = '/' + path;
+    }
+    return baseUrl + path;
+}
 // Éléments DOM
 const chatWidget = document.getElementById('chatbot-widget');
 const chatHeader = chatWidget.querySelector('.chat-header');
@@ -305,7 +318,13 @@ function checkAdminPassword() {
     
     if (adminPassword && adminPassword.value === ADMIN_PASSWORD) {
         hideAdminDialog();
-        window.open(ADMIN_URL, '_blank');
+        
+        // Utiliser la fonction normalizeUrl pour s'assurer qu'il n'y a pas de double slash
+        const adminUrl = normalizeUrl(window.location.origin, ADMIN_PATH);
+        console.log('Redirection vers:', adminUrl); // Pour le débogage
+        window.open(adminUrl, '_blank');
+        
+        addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
     } else if (adminPassword) {
         adminPassword.value = '';
         adminPassword.placeholder = 'Mot de passe incorrect';
