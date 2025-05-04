@@ -619,11 +619,13 @@ function hideAdminDialog() {
 
 // Fonction pour vérifier le mot de passe admin
 function checkAdminPassword() {
+    const adminPassword = document.getElementById('admin-password');
+    
     if (adminPassword && adminPassword.value === ADMIN_PASSWORD) {
         hideAdminDialog();
         
-        // Redirection vers l'interface d'administration (URL en dur)
-        window.open(ADMIN_URL, '_blank');
+        // URL en dur directement dans la fonction
+        window.open('https://bioforce.onrender.com/admin', '_blank');
         
         addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
     } else if (adminPassword) {
