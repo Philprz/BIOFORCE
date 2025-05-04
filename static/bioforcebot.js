@@ -1,6 +1,6 @@
 // Configuration de l'API
 const API_URL = window.location.origin;
-const ADMIN_URL = API_URL + '/admin';  // Correction du chemin d'administration
+const ADMIN_URL = API_URL + 'admin';  // Correction du chemin d'administration
 const USE_SIMULATION_FALLBACK = true;
 
 // Configuration de l'administration
