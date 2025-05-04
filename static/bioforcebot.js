@@ -609,10 +609,10 @@ class BioforceBot {
             
             const requestData = {
                 user_id: this.userId,
-                messages: this.messages,
+                messages: this.messages.slice(-2), // ne garde que les 2 derniers messages
                 context: this.context
             };
-    
+            console.log("PAYLOAD:", JSON.stringify(requestData));
             const response = await fetch(`${this.apiUrl}/chat`, {
                 method: 'POST',
                 headers: {

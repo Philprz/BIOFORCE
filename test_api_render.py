@@ -7,7 +7,7 @@ payload = {
     "messages": [
         {
             "role": "user",
-            "content": "Combien de temps faut-il pour recevoir une réponse après avoir soumis ma candidature ?"
+            "content": "Comment puis-je modifier mes informations personnelles dans mon espace candidat ?"
         }
     ],
     "context": {}

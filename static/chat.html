@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
     <style>
         :root {
-            --primary-color: #ff5613;
+            --primary-color: #ff8113;
             --primary-dark: #FF5733;    
             --secondary-color: #2c3e50;
             --background-color: #f4f6f9;
@@ -310,7 +310,14 @@
             });
             
             bot.init('bioforcebot-container', 'espace_candidat');
-            
+            // Remplacer la méthode sendMessage originale pour réinitialiser l'historique
+            const originalSendMessage = bot.sendMessage;
+            bot.sendMessage = function(text) {
+                // Réinitialiser l'historique des messages avant chaque envoi
+                bot.messages = [];
+                // Appeler la méthode originale
+                return originalSendMessage.call(this, text);
+            };
             // Ouvrir automatiquement le chatbot
             setTimeout(() => {
                 bot.open();
