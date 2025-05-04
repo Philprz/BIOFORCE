@@ -319,10 +319,8 @@ function checkAdminPassword() {
     if (adminPassword && adminPassword.value === ADMIN_PASSWORD) {
         hideAdminDialog();
         
-        // Utiliser la fonction normalizeUrl pour s'assurer qu'il n'y a pas de double slash
-        const adminUrl = normalizeUrl(window.location.origin, ADMIN_PATH);
-        console.log('Redirection vers:', adminUrl); // Pour le débogage
-        window.open(adminUrl, '_blank');
+        // Utiliser l'URL en dur
+        window.open(ADMIN_URL, '_blank');
         
         addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
     } else if (adminPassword) {
