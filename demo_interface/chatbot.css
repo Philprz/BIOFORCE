@@ -26,7 +26,7 @@
 }
 
 .chat-header {
-    background-color: #ff8113; /* Couleur officielle Bioforce */
+    background-color: #FF6C42; /* Couleur officielle Bioforce */
     color: white;
     padding: 15px;
     display: flex;
@@ -85,7 +85,7 @@
 
 .message.user {
     align-self: flex-end;
-    background-color: #ff8113; /* Couleur officielle Bioforce */
+    background-color: #FF6C42; /* Couleur officielle Bioforce */
     color: white;
     border-bottom-right-radius: 5px;
 }
@@ -107,11 +107,11 @@
 }
 
 .message.bot strong {
-    color: #ff8113; /* Couleur officielle Bioforce */
+    color: #FF6C42; /* Couleur officielle Bioforce */
 }
 
 .message.bot a {
-    color: #ff8113; /* Couleur officielle Bioforce */
+    color: #FF6C42; /* Couleur officielle Bioforce */
     text-decoration: none;
 }
 
@@ -136,7 +136,7 @@
 
 .admin-dialog h3 {
     margin-top: 0;
-    color: #ff8113;
+    color: #FF6C42;
 }
 
 .admin-dialog input {
@@ -167,7 +167,7 @@
 }
 
 .admin-dialog .login-btn {
-    background-color: #ff8113;
+    background-color: #FF6C42;
     color: white;
 }
 
@@ -222,7 +222,7 @@
 }
 
 .chat-input button {
-    background-color: #ff8113; /* Couleur officielle Bioforce */
+    background-color: #FF6C42; /* Couleur officielle Bioforce */
     color: white;
     border: none;
     border-radius: 20px;
@@ -232,7 +232,7 @@
 }
 
 .chat-input button:hover {
-    background-color: #e84c28; /* Version légèrement plus foncée pour le hover */
+    background-color: #FF6C42; /* Version légèrement plus foncée pour le hover */
 }
 
 .message.references {
