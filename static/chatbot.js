@@ -1,11 +1,11 @@
 // Configuration de l'API
 const API_URL = window.location.origin;
-const ADMIN_URL = API_URL + '/admin';
+const ADMIN_URL = window.location.origin + '/admin';  // Chemin correct
 const FORCE_SIMULATION_MODE = false;
 const USE_PRODUCTION_API = false;
 const USE_SIMULATION_FALLBACK = true;
-const ADMIN_PRODUCTION = 'https://bioforce-admin.onrender.com';    // URL de l'admin
-const USE_CORS_PROXY = true; // Désactivé car nous utilisons l'API locale
+const ADMIN_PRODUCTION = 'https://bioforce.onrender.com/static/admin/index.html';    // URL de l'admin
+const USE_CORS_PROXY = true; 
 const CORS_PROXY = 'https://corsproxy.io/?';  // Proxy CORS fiable
 
 // Configuration de l'administration

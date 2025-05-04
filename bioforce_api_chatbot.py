@@ -676,7 +676,28 @@ async def process_enrichment(messages, rag_response, websocket_id, user_id):
             except Exception as e:
                 # Vous pouvez journaliser l'erreur pour en savoir plus
                 print(f"Une erreur est survenue: {e}")
-
+# Classe pour les requêtes de contact
+class ContactRequest(BaseModel):
+    name: str
+    email: str
+    subject: str
+    message: str
+# Endpoint pour le formulaire de contact
+@app.post("/contact")
+async def contact(request: ContactRequest):
+    """Gère les messages envoyés via le formulaire de contact"""
+    try:
+        # Ici, vous pouvez implémenter l'envoi d'email ou le stockage en base de données
+        # Pour l'instant, on se contente de journaliser le message
+        logger.info(f"Message de contact reçu de {request.name} ({request.email}): {request.subject}")
+        
+        # Simuler un délai pour l'envoi
+        await asyncio.sleep(1)
+        
+        return {"status": "success", "message": "Message envoyé avec succès"}
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement du contact: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 # Routes API
 @app.get("/")
 async def root():
@@ -842,8 +863,8 @@ async def chat(request: ChatRequest):
             "context": request.context,
             "references": [
                 {
-                    "source": ref.get("source_url", ref.get("url", "Non disponible")),
-                    "title": ref.get("title", ref.get("question", "Information")),
+                    "url": ref.get("source_url", ref.get("url", "Non disponible")),
+                    "question": ref.get("title", ref.get("question", "Information")),
                     "score": ref.get("score", 0)
                 } for ref in references[:3]  # Limiter à 3 références
             ]
