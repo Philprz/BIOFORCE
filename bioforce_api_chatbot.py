@@ -704,7 +704,8 @@ async def root():
     """Redirige vers l'interface utilisateur du chatbot"""
     return RedirectResponse(url="/static/index.html")
 
-@app.get("/admin/")
+@app.get("/admin")  # Sans le slash final
+@app.get("/admin/")  # Garder aussi la version avec slash pour compatibilité
 async def admin_index(request: Request):
     """Page d'accueil de l'interface d'administration"""
     try:

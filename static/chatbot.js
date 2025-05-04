@@ -619,23 +619,38 @@ function hideAdminDialog() {
 
 // Fonction pour vérifier le mot de passe admin
 function checkAdminPassword() {
-    const adminPassword = document.getElementById('admin-password');
+    const password = document.getElementById('admin-password');
     
-    if (adminPassword && adminPassword.value === ADMIN_PASSWORD) {
+    if (password && password.value === ADMIN_PASSWORD) {
         hideAdminDialog();
         
-        // URL en dur directement dans la fonction
-        window.open('https://bioforce.onrender.com/admin', '_blank');
+        // Utiliser une URL absolue sans risque de manipulation
+        const cleanUrl = "https://bioforce.onrender.com/admin";
+        console.log("URL avant redirection:", cleanUrl);
+console.log("Document location:", window.location.href);
+        // Créer un élément a et simuler un clic - approche la plus fiable
+        const link = document.createElement('a');
+        link.href = cleanUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
         
+        // Message de succès
         addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
-    } else if (adminPassword) {
-        adminPassword.value = '';
-        adminPassword.placeholder = 'Mot de passe incorrect';
-        adminPassword.classList.add('error');
+        
+        // Ajouter le lien au document, cliquer, puis le retirer
+        document.body.appendChild(link);
+        setTimeout(() => {
+            link.click();
+            document.body.removeChild(link);
+        }, 100);
+    } else if (password) {
+        password.value = '';
+        password.placeholder = 'Mot de passe incorrect';
+        password.classList.add('error');
         
         setTimeout(() => {
-            adminPassword.placeholder = 'Mot de passe';
-            adminPassword.classList.remove('error');
+            password.placeholder = 'Mot de passe';
+            password.classList.remove('error');
         }, 2000);
     }
 }
