@@ -3,325 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bioforce - Espace Candidat</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
+    <title>BioforceBot - Chat</title>
+    <link rel="stylesheet" href="chatbot.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #ff8113;
-            --primary-dark: #FF5733;    
-            --secondary-color: #2c3e50;
-            --background-color: #f4f6f9;
-            --card-color: #ffffff;
-            --text-color: #333333;
-            --text-light: #666666;
-            --border-color: #e0e0e0;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
-            font-family: 'Open Sans', Arial, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: #f5f7fa;
+            overflow-x: hidden;
         }
-        
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            height: 40px;
-        }
-        
-        .nav-links {
-            display: flex;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin-left: 1.5rem;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-        
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-        
-        main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .hero-section {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-        
-        .hero-section h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-section p {
-            font-size: 1.2rem;
+        .chat-container {
             max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .content-section {
-            padding: 2rem;
+            margin: 40px auto;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            height: 70vh;
+            background-color: white;
         }
-        
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            width: 100%;
-            margin-bottom: 2rem;
-        }
-        
-        .card {
-            background-color: var(--card-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .card h2 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .card p {
-            margin-bottom: 1.5rem;
-            color: var(--text-light);
-            flex-grow: 1;
-        }
-        
-        .status-line {
+        .chat-header {
+            background-color: #E84424;
+            color: white;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
-            margin-top: auto;
-            font-size: 0.9rem;
         }
-        
-        .status-indicator {
-            width: 12px;
-            height: 12px;
+        .chat-header img {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            margin-right: 0.5rem;
+            margin-right: 15px;
         }
-        
-        .status-indicator.status-complete {
-            background-color: #28a745;
+        .chat-header h2 {
+            margin: 0;
+            font-size: 18px;
         }
-        
-        .status-indicator.status-incomplete {
-            background-color: #ffc107;
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            margin-right: 10px;
         }
-        
-        .status-indicator.status-error {
-            background-color: #dc3545;
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
         }
-        
-        .action-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--primary-color);
+        .input-container {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e9e9e9;
+            background-color: #f9f9f9;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .input-container button {
+            background-color: #E84424;
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
+            border-radius: 30px;
+            padding: 0 25px;
             font-weight: 500;
+            cursor: pointer;
             transition: background-color 0.2s;
-            text-decoration: none;
-            margin-top: 1rem;
         }
-        
-        .action-button:hover {
-            background-color: var(--primary-dark);
+        .input-container button:hover {
+            background-color: #E84424;
         }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            color: var(--secondary-color);
-        }
-        
-        .chat-container {
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        #bioforcebot-container {
-            width: 100%;
-            height: 600px;
-            position: relative;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        footer {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            margin-top: auto;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        .message {
+            margin-bottom: 20px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+        }
+        .message-user {
+            align-items: flex-end;
+        }
+        .message-bot {
+            align-items: flex-start;
+        }
+        .message-content {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-break: break-word;
+        }
+        .message-user .message-content {
+            background-color: #E84424;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .message-bot .message-content {
+            background-color: #f1f1f1;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .references {
+            font-size: 12px;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-top: 5px;
+            max-width: 80%;
+        }
+        .references-title {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .reference-item {
+            margin-bottom: 3px;
+        }
+        .reference-item a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .typing-indicator {
+            display: flex;
             align-items: center;
+            margin-bottom: 15px;
         }
-        
-        .footer-links {
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #bbb;
+            margin: 0 2px;
+            animation: typing 1.3s infinite;
+        }
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-5px); opacity: 1; }
+        }
+        .header-links {
             display: flex;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            background-color: #f5f7fa;
         }
-        
-        .footer-links a {
-            color: white;
+        .header-links a {
+            color: #666;
             text-decoration: none;
-            margin-left: 1.5rem;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            margin-left: 15px;
+            font-size: 14px;
         }
-        
-        .footer-links a:hover {
-            opacity: 1;
-        }
-        
-        .copyright {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        @media (max-width: 768px) {
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 0.5rem;
-                align-items: center;
-            }
-            
-            .footer-links a {
-                margin-left: 0;
-            }
+        .header-links a:hover {
+            color: #E84424;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="nav-links">
-            <a href="#" class="active">Mon profil</a>
-            <a href="#">Mes candidatures</a>
-            <a href="#">Support</a>
-            <a href="#">Infos</a>
+    <div class="header-links">
+        <a href="http://localhost:8000/admin" target="_blank">Administration</a>
+        <a href="index.html">Espace Candidat</a>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="status-dot"></div>
+            <h2>BioforceBot</h2>
         </div>
-    </header>
-    
-    <main>
-        <section class="hero-section">
-            <h1>Bienvenue dans votre espace candidat</h1>
-            <p>Consultez vos candidatures, complétez votre dossier et suivez vos formations avec Bioforce.</p>
-        </section>
         
-        <section class="content-section">
-            <h2 class="section-title">Mes candidatures</h2>
-            
-            <div class="card-grid">
-                <div class="card">
-                    <h2>CTC Centre de Formation Bioforce Europe</h2>
-                    <p>Votre candidature a été reçue. Vous devez maintenant compléter votre dossier et procéder au paiement des frais de sélection de 60€.</p>
-                    <div class="status-line">
-                        <div class="status-indicator status-incomplete"></div>
-                        <span>Candidature en cours</span>
-                    </div>
-                    <a href="#" class="action-button">Compléter mon dossier</a>
+        <div class="messages-container" id="messages-container">
+            <div class="message message-bot">
+                <div class="message-content">
+                    Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?
                 </div>
-            </div>
-            
-            <h2 class="section-title">Besoin d'aide ?</h2>
-            
-            <div class="chat-container">
-                <div id="bioforcebot-container"></div>
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="footer-content">
-            <div class="copyright">© 2025 Bioforce. Tous droits réservés.</div>
-            <div class="footer-links">
-                <a href="#">Mentions légales</a>
-                <a href="#">Politique de confidentialité</a>
-                <a href="#">Contact</a>
+                <div class="message-time">Aujourd'hui, à l'instant</div>
             </div>
         </div>
-    </footer>
-    
-    <script src="/static/bioforcebot.js"></script>
+        
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Tapez votre message ici..." autocomplete="off">
+            <button id="send-button">Envoyer</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialiser le chatbot
-            const bot = new BioforceBot({
-                apiUrl: window.location.origin
+            const messagesContainer = document.getElementById('messages-container');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            
+            // État initial du chat
+            let chatHistory = [{
+                role: "system",
+                content: "Vous êtes BioforceBot, l'assistant virtuel pour les candidats aux formations Bioforce."
+            }, {
+                role: "assistant",
+                content: "Bonjour ! Je suis BioforceBot, l'assistant virtuel de Bioforce. Comment puis-je vous aider aujourd'hui ?"
+            }];
+            
+            // Fonction pour ajouter un message au chat
+            function addMessage(content, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isUser ? 'message message-user' : 'message message-bot';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = content;
+                
+                const messageTime = document.createElement('div');
+                messageTime.className = 'message-time';
+                
+                // Créer une date formatée
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                messageTime.textContent = `Aujourd'hui, ${hours}:${minutes}`;
+                
+                messageDiv.appendChild(messageContent);
+                messageDiv.appendChild(messageTime);
+                messagesContainer.appendChild(messageDiv);
+                
+                // Scroll vers le bas pour voir le nouveau message
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Ajouter au chatHistory
+                chatHistory.push({
+                    role: isUser ? "user" : "assistant", 
+                    content: content
+                });
+            }
+            
+            // Fonction pour ajouter des références
+            function addReferences(references) {
+                if (!references || references.length === 0) return;
+                
+                const refsDiv = document.createElement('div');
+                refsDiv.className = 'references';
+                
+                const refsTitle = document.createElement('div');
+                refsTitle.className = 'references-title';
+                refsTitle.textContent = 'Sources:';
+                refsDiv.appendChild(refsTitle);
+                
+                references.forEach(ref => {
+                    const refItem = document.createElement('div');
+                    refItem.className = 'reference-item';
+                    
+                    if (ref.url) {
+                        const link = document.createElement('a');
+                        link.href = ref.url;
+                        link.textContent = ref.title || ref.url;
+                        link.target = '_blank';
+                        refItem.appendChild(link);
+                    } else {
+                        refItem.textContent = ref.title || 'Source';
+                    }
+                    
+                    refsDiv.appendChild(refItem);
+                });
+                
+                messagesContainer.appendChild(refsDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            // Fonction pour montrer l'indicateur de frappe
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'typing-indicator';
+                typingDiv.id = 'typing-indicator';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'typing-dot';
+                    typingDiv.appendChild(dot);
+                }
+                
+                messagesContainer.appendChild(typingDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            // Fonction pour cacher l'indicateur de frappe
+            function hideTypingIndicator() {
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+            
+            // Fonction pour envoyer un message
+            async function sendMessage() {
+                const messageText = messageInput.value.trim();
+                if (!messageText) return;
+                
+                // Ajouter le message de l'utilisateur
+                addMessage(messageText, true);
+                messageInput.value = '';
+                
+                // Montrer l'indicateur de frappe
+                showTypingIndicator();
+                
+                try {
+                    // Appel à l'API
+                    const response = await fetch('http://localhost:8000/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: 'demo-user',
+                            messages: chatHistory.filter(msg => msg.role !== 'system'),
+                            context: {}
+                        })
+                    });
+                    
+                    // Cacher l'indicateur de frappe
+                    hideTypingIndicator();
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Ajouter la réponse du bot
+                        addMessage(data.message.content);
+                        
+                        // Ajouter les références si disponibles
+                        if (data.references && data.references.length > 0) {
+                            addReferences(data.references);
+                        }
+                    } else {
+                        // Gérer l'erreur
+                        const errorData = await response.json().catch(() => ({ message: 'Erreur inconnue' }));
+                        addMessage(`Désolé, j'ai rencontré un problème: ${errorData.message || 'Erreur de communication avec le serveur'}`);
+                    }
+                } catch (error) {
+                    // Cacher l'indicateur de frappe en cas d'erreur
+                    hideTypingIndicator();
+                    
+                    // Afficher un message d'erreur
+                    console.error('Error:', error);
+                    addMessage('Désolé, je ne peux pas vous répondre actuellement. Veuillez vérifier que le serveur est bien démarré et réessayer.');
+                }
+            }
+            
+            // Événements
+            sendButton.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
             });
             
-            bot.init('bioforcebot-container', 'espace_candidat');
-            // Remplacer la méthode sendMessage originale pour réinitialiser l'historique
-            const originalSendMessage = bot.sendMessage;
-            bot.sendMessage = function(text) {
-                // Réinitialiser l'historique des messages avant chaque envoi
-                bot.messages = [];
-                // Appeler la méthode originale
-                return originalSendMessage.call(this, text);
-            };
-            // Ouvrir automatiquement le chatbot
-            setTimeout(() => {
-                bot.open();
-            }, 500);
+            // Focus sur le champ de saisie au chargement
+            messageInput.focus();
         });
     </script>
 </body>

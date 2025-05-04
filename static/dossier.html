@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioforce - Dossier de candidature</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="https://placehold.co/200x50/FF6C42/FFFFFF?text=bioforce" alt="Bioforce Logo" class="logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">mon profil</a></li>
+                <li><a href="candidatures.html" class="active">mes candidatures</a></li>
+                <li><a href="support.html">support</a></li>
+                <li><a href="faq.html">infos</a></li>
+            </ul>
+        </nav>
+        <div class="search-user">
+            <div class="search-box">
+                <input type="text" placeholder="Rechercher...">
+                <button type="button"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-profile">
+                <a href="#">utilisateur@exemple.fr</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="candidature-detail-container">
+        <div class="candidature-header-bar">
+            <div class="candidature-name">
+                <div class="candidature-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h2>Dossier de<br>Philippe PEREZ</h2>
+            </div>
+            <a href="#" class="complete-btn">Compléter votre dossier</a>
+        </div>
+
+        <div class="candidature-info-grid">
+            <div class="info-card">
+                <p class="info-card-label">Numéro de candidature</p>
+                <p class="info-card-value">00080932</p>
+            </div>
+            <div class="info-card">
+                <p class="info-card-label">Centre</p>
+                <p class="info-card-value">CTC Centre de Formation Bioforce Europe</p>
+            </div>
+            <div class="info-card">
+                <p class="info-card-label">Type de formation</p>
+                <p class="info-card-value">Diplômante</p>
+            </div>
+            <div class="info-card">
+                <p class="info-card-label">Intitulé de formation</p>
+                <p class="info-card-value">Coordinateur de Programme (spécialisation à définir) | Code UE-04</p>
+            </div>
+        </div>
+
+        <div class="action-tabs">
+            <div class="action-tab active">Candidature reçue</div>
+            <div class="action-tab">Suivi de candidature</div>
+            <div class="action-tab">Admis</div>
+            <div class="action-tab">Inscrit</div>
+            <div class="action-tab">Cashflow</div>
+            <div class="action-tab">Certification/Portfolio</div>
+        </div>
+
+        <div class="documents-section">
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span class="accordion-title">Informations sur votre candidature</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="info-row">
+                        <div class="info-label">Dossier de Philippe PEREZ</div>
+                        <div class="info-value"></div>
+                        <div class="edit-icon"><i class="fas fa-pen"></i></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Type de formation</div>
+                        <div class="info-value">Diplômante</div>
+                        <div class="edit-icon"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Intitulé de formation</div>
+                        <div class="info-value">Coordinateur de Programme (spécialisation à définir) | Code UE-04</div>
+                        <div class="edit-icon"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Statut du dossier</div>
+                        <div class="info-value">Candidature reçue</div>
+                        <div class="edit-icon"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span class="accordion-title">Financement et règlement de votre formation</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="info-row">
+                        <div class="info-label">Mode de paiement de la formation</div>
+                        <div class="info-value">À définir</div>
+                        <div class="edit-icon"><i class="fas fa-pen"></i></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Mode de financement envisagé</div>
+                        <div class="info-value">DJR 20240</div>
+                        <div class="edit-icon"><i class="fas fa-pen"></i></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Date de collection totale</div>
+                        <div class="info-value">N/A</div>
+                        <div class="edit-icon"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span class="accordion-title">Liste de documents à fournir</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="document-list">
+                        <div class="document-item">
+                            <div class="document-name">
+                                <i class="fas fa-file-pdf"></i>
+                                CV
+                            </div>
+                            <div class="document-actions">
+                                <button class="action-btn upload-btn">Charger</button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-name">
+                                <i class="fas fa-file-pdf"></i>
+                                Lettre de motivation
+                            </div>
+                            <div class="document-actions">
+                                <button class="action-btn upload-btn">Charger</button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-name">
+                                <i class="fas fa-file-pdf"></i>
+                                Copie de pièce d'identité
+                            </div>
+                            <div class="document-actions">
+                                <button class="action-btn upload-btn">Charger</button>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-name">
+                                <i class="fas fa-file-pdf"></i>
+                                Justificatif de paiement des frais de candidature (60€/20000 CFA)
+                            </div>
+                            <div class="document-actions">
+                                <button class="action-btn upload-btn">Charger</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">copyright bioforce</p>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div class="chat-container" id="chatbot-widget">
+        <div class="chat-header">
+            <h3>BioforceBot</h3>
+            <button id="minimize-chat" class="toggle-btn">−</button>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot">
+                <p>Je vois que vous consultez votre dossier de candidature. Il vous manque quelques documents à fournir, notamment le justificatif de paiement des frais de candidature. Puis-je vous aider à finaliser cette étape ?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tapez votre message...">
+            <button id="send-message">Envoyer</button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="/static/css/all.min.css">
+    <script src="chatbot.js"></script>
+</body>
+</html>

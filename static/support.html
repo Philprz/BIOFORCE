@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioforce - Support</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="https://placehold.co/200x50/e74324/FFFFFF?text=bioforce" alt="Bioforce Logo" class="logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">mon profil</a></li>
+                <li><a href="candidatures.html">mes candidatures</a></li>
+                <li><a href="support.html" class="active">support</a></li>
+                <li><a href="faq.html">infos</a></li>
+            </ul>
+        </nav>
+        <div class="search-user">
+            <div class="search-box">
+                <input type="text" placeholder="Rechercher...">
+                <button type="button"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-profile">
+                <a href="#">utilisateur@exemple.fr</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="support-container">
+        <h1>Support</h1>
+        
+        <div class="support-grid">
+            <div class="support-card">
+                <div class="support-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Nous contacter par email</h3>
+                <p>Pour toute question concernant votre candidature ou nos formations</p>
+                <a href="mailto:infoeurope@bioforce.org" class="support-link">infoeurope@bioforce.org</a>
+            </div>
+            
+            <div class="support-card">
+                <div class="support-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <h3>Nous contacter par téléphone</h3>
+                <p>Du lundi au vendredi de 9h à 17h</p>
+                <a href="tel:+33437413030" class="support-link">+33 (0)4 37 41 30 30</a>
+            </div>
+            
+            <div class="support-card">
+                <div class="support-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3>Prendre rendez-vous</h3>
+                <p>Entretien d'information avec un conseiller formation</p>
+                <a href="#" class="support-link">Réserver un créneau</a>
+            </div>
+            
+            <div class="support-card">
+                <div class="support-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3>Questions fréquentes</h3>
+                <p>Consultez notre FAQ pour trouver rapidement des réponses</p>
+                <a href="faq.html" class="support-link">Voir la FAQ</a>
+            </div>
+        </div>
+        
+        <div class="contact-form-container">
+            <h2>Formulaire de contact</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Nom complet</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Sujet</label>
+                    <select id="subject" name="subject" required>
+                        <option value="" disabled selected>Sélectionnez un sujet</option>
+                        <option value="candidature">Question sur ma candidature</option>
+                        <option value="formation">Information sur une formation</option>
+                        <option value="technique">Problème technique</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Envoyer</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">copyright bioforce</p>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div class="chat-container" id="chatbot-widget">
+        <div class="chat-header">
+            <h3>BioforceBot</h3>
+            <button id="minimize-chat" class="toggle-btn">−</button>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot">
+                <p>Bonjour ! Je vois que vous consultez notre page de support. Puis-je vous aider à résoudre un problème spécifique concernant votre candidature ?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tapez votre message...">
+            <button id="send-message">Envoyer</button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="/static/css/all.min.css">
+    <script src="chatbot.js"></script>
+</body>
+</html>

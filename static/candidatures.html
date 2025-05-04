@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioforce - Mes Candidatures</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="https://placehold.co/200x50/FF6C42/FFFFFF?text=bioforce" alt="Bioforce Logo" class="logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">mon profil</a></li>
+                <li><a href="candidatures.html" class="active">mes candidatures</a></li>
+                <li><a href="support.html">support</a></li>
+                <li><a href="faq.html">infos</a></li>
+            </ul>
+        </nav>
+        <div class="search-user">
+            <div class="search-box">
+                <input type="text" placeholder="Rechercher...">
+                <button type="button"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-profile">
+                <a href="#">utilisateur@exemple.fr</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="candidatures-container">
+        <h1>Mes candidatures</h1>
+        
+        <div class="filter-row">
+            <div class="filter-item">
+                <select>
+                    <option>Nom du dossier</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Numéro de candidature</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Statut du dossier de candidature</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Intitulé de formation</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Centre</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Date de début</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Date de fin</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <select>
+                    <option>Type de formation</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="candidature-list">
+            <div class="candidature-row candidature-header">
+                <div>#</div>
+                <div>Nom du dossier</div>
+                <div>Numéro de candidature</div>
+                <div>Statut du dossier</div>
+                <div>Centre</div>
+                <div>Date de début</div>
+                <div>Date de fin</div>
+            </div>
+            <a href="dossier.html" class="candidature-link">
+                <div class="candidature-row">
+                    <div>1</div>
+                    <div>Dossier de Philippe PEREZ</div>
+                    <div>00080932</div>
+                    <div>Candidature reçue</div>
+                    <div>CTC Centre de Formation Bioforce Europe</div>
+                    <div>24/09/2025</div>
+                    <div>15/07/2026</div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="copyright">copyright bioforce</p>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div class="chat-container" id="chatbot-widget">
+        <div class="chat-header">
+            <h3>BioforceBot</h3>
+            <button id="minimize-chat" class="toggle-btn">−</button>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="message bot">
+                <p>Bonjour ! Je suis BioforceBot, comment puis-je vous aider avec votre candidature aujourd'hui ?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tapez votre message...">
+            <button id="send-message">Envoyer</button>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="/static/css/all.min.css">
+    <script src="chatbot.js"></script>
+</body>
+</html>
