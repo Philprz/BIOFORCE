@@ -680,8 +680,8 @@ async def process_enrichment(messages, rag_response, websocket_id, user_id):
 # Routes API
 @app.get("/")
 async def root():
-    """Redirige la racine vers l'interface d'administration"""
-    return RedirectResponse(url="/admin/")
+    """Redirige vers l'interface utilisateur du chatbot"""
+    return RedirectResponse(url="/static/chat.html")
 
 @app.get("/admin/")
 async def admin_index(request: Request):
@@ -969,10 +969,7 @@ async def run_diagnosis():
         }
     
     return results
-@app.get("/")
-async def root():
-    """Redirige vers l'interface utilisateur du chatbot"""
-    return RedirectResponse(url="/static/chat.html")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("bioforce_api_chatbot:app", host="0.0.0.0", port=8000, reload=True)
