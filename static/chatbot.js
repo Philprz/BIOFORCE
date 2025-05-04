@@ -1,12 +1,20 @@
-// Configuration de l'API
+/**
+ * BioforceBot - Chatbot d'assistance aux candidats Bioforce
+ * Version unifiée combinant chatbot.js et bioforcebot.js
+ */
+
+// Configuration de l'API et de l'environnement
 const API_URL = window.location.origin;
-const ADMIN_URL = 'https://bioforce.onrender.com/admin';  // Chemin correct
-const FORCE_SIMULATION_MODE = false;
-const USE_PRODUCTION_API = false;
-const USE_SIMULATION_FALLBACK = true;
-const ADMIN_PRODUCTION = 'https://bioforce.onrender.com/static/admin/index.html';    // URL de l'admin
-const USE_CORS_PROXY = true; 
-const CORS_PROXY = 'https://corsproxy.io/?';  // Proxy CORS fiable
+const PRODUCTION_API = 'https://bioforce.onrender.com';
+const ADMIN_URL = 'https://bioforce.onrender.com/admin'; // URL d'administration en dur pour éviter les problèmes de double slash
+
+// Options de configuration
+const CONFIG = {
+    USE_SIMULATION_FALLBACK: true,  // Utiliser la simulation en cas d'échec de l'API
+    DEBUG_MODE: false,              // Activer/désactiver les logs de débogage
+    CACHE_ENABLED: true,            // Activer le cache des réponses
+    CACHE_DURATION: 24 * 60 * 60    // Durée de validité du cache (en secondes)
+};
 
 // Configuration de l'administration
 const ADMIN_PASSWORD = "bioforce2025"; // Mot de passe pour l'accès admin
@@ -22,16 +30,19 @@ const ORIENTATION_KEYWORDS = [
     "profil", "compétence", "aptitude"
 ];
 
+// Cache pour les réponses
+const responseCache = {};
+
 // Éléments DOM
 const chatWidget = document.getElementById('chatbot-widget');
-const chatHeader = chatWidget.querySelector('.chat-header');
+const chatHeader = document.querySelector('.chat-header');
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-message');
 const minimizeButton = document.getElementById('minimize-chat');
 const adminButton = document.getElementById('admin-btn');
 
-// Éléments de la boîte de dialogue admin
+// Éléments de la boîte de dialogue admin (s'ils existent)
 const adminOverlay = document.getElementById('admin-overlay');
 const adminDialog = document.getElementById('admin-dialog');
 const adminPassword = document.getElementById('admin-password');
@@ -41,15 +52,105 @@ const loginAdminBtn = document.getElementById('login-admin');
 // Variables globales
 let isDragging = false;
 let dragOffsetX, dragOffsetY;
+let chatHistory = [];
+let userId = 'user-' + Math.floor(Math.random() * 10000);
 
-// Récupérer la position du chatbot stockée dans localStorage (si elle existe)
+/**
+ * Fonctions utilitaires
+ */
+
+// Fonction pour les logs de débogage
+function debug(message, data = null) {
+    if (CONFIG.DEBUG_MODE) {
+        if (data) {
+            console.log(`[BioforceBot] ${message}`, data);
+        } else {
+            console.log(`[BioforceBot] ${message}`);
+        }
+    }
+}
+
+// Fonction pour générer une clé de cache
+function generateCacheKey(message) {
+    // Version simple: hash du message normalisé
+    return btoa(message.toLowerCase().trim()).replace(/[^a-zA-Z0-9]/g, '');
+}
+
+// Fonction pour vérifier si deux messages sont similaires
+function areMessagesSimilar(message1, message2, threshold = 0.7) {
+    const words1 = new Set(message1.toLowerCase().split(/\s+/).filter(word => word.length > 3));
+    const words2 = new Set(message2.toLowerCase().split(/\s+/).filter(word => word.length > 3));
+    
+    if (words1.size === 0 || words2.size === 0) return false;
+    
+    let commonCount = 0;
+    for (const word of words1) {
+        if (words2.has(word)) commonCount++;
+    }
+    
+    const similarity = commonCount / Math.max(words1.size, words2.size);
+    return similarity >= threshold;
+}
+
+// Trouver une réponse dans le cache
+function findCachedResponse(message) {
+    if (!CONFIG.CACHE_ENABLED) return null;
+    
+    const now = Date.now() / 1000; // Timestamp actuel en secondes
+    const exactKey = generateCacheKey(message);
+    
+    // Vérifier la correspondance exacte
+    if (responseCache[exactKey] && (now - responseCache[exactKey].timestamp < CONFIG.CACHE_DURATION)) {
+        debug("Réponse trouvée dans le cache (correspondance exacte)");
+        return responseCache[exactKey];
+    }
+    
+    // Vérifier les correspondances similaires
+    for (const key in responseCache) {
+        const entry = responseCache[key];
+        if (now - entry.timestamp < CONFIG.CACHE_DURATION) {
+            if (areMessagesSimilar(message, entry.query)) {
+                debug("Réponse trouvée dans le cache (correspondance similaire)");
+                return entry;
+            }
+        }
+    }
+    
+    return null;
+}
+
+// Ajouter une réponse au cache
+function addToCache(query, response, references = []) {
+    if (!CONFIG.CACHE_ENABLED) return;
+    
+    const key = generateCacheKey(query);
+    responseCache[key] = {
+        query: query,
+        response: response,
+        references: references,
+        timestamp: Date.now() / 1000
+    };
+    
+    debug("Réponse ajoutée au cache");
+}
+
+/**
+ * Gestion des événements de déplacement du chatbot
+ */
+
+// Récupérer la position du chatbot stockée dans localStorage
 const savedPosition = JSON.parse(localStorage.getItem('chatbotPosition'));
 if (savedPosition) {
-    // Appliquer la position sauvegardée
     chatWidget.style.right = 'auto';
     chatWidget.style.left = savedPosition.left + 'px';
     chatWidget.style.top = savedPosition.top + 'px';
     chatWidget.style.bottom = 'auto';
+}
+
+// Restaurer l'état minimisé du chatbot
+if (localStorage.getItem('chatbotMinimized') === 'true') {
+    chatWidget.classList.add('minimized');
+    minimizeButton.textContent = '+';
 }
 
 // Événements pour la manipulation du chatbot
@@ -154,9 +255,9 @@ function handleTouchEnd() {
     stopDrag();
 }
 
-// État du chat
-let chatHistory = [];
-let userId = 'demo-user-' + Math.floor(Math.random() * 1000);
+/**
+ * Fonctions de gestion des messages et de l'UI
+ */
 
 // Fonction pour ajouter un message au chat
 function addMessageToChat(message, sender) {
@@ -191,7 +292,7 @@ function addMessageToChat(message, sender) {
         }
     }
     
-    // Formatage des sauts de ligne
+    // Convertir les sauts de ligne en balises <br>
     formattedMessage = formattedMessage
         .replace(/\n\n/g, '<br><br>')
         .replace(/\n/g, '<br>');
@@ -199,72 +300,123 @@ function addMessageToChat(message, sender) {
     messageDiv.innerHTML = `<p>${formattedMessage}</p>`;
     chatMessages.appendChild(messageDiv);
     
-    // Scroll to bottom
+    // Faire défiler vers le bas pour voir le nouveau message
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
-    // Update chat history
+    // Enregistrer le message dans l'historique
     chatHistory.push({
         role: sender === 'user' ? 'user' : 'assistant',
         content: message
     });
 }
 
-// Vérification de la connectivité API au chargement
-window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        console.log('Test de connectivité API...');
-        const testResponse = await fetch(`${API_URL}/`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: { 'Accept': 'application/json' }
+// Fonction pour afficher les sources
+function displaySources(references) {
+    if (!references || references.length === 0) return;
+    
+    const sourcesDiv = document.createElement('div');
+    sourcesDiv.classList.add('message', 'bot', 'sources');
+    
+    let sourcesHTML = '<p><small>Sources pertinentes :</small></p>';
+    
+    if (references.length <= 3) {
+        // Format liste pour peu de sources
+        sourcesHTML += '<ul>';
+        references.forEach(ref => {
+            const url = ref.url || ref.source_url || "#";
+            const title = ref.question || ref.title || url.replace(/^https?:\/\/[^\/]+\//, '');
+            sourcesHTML += `<li><a href="${url}" target="_blank" class="source-link">${title}</a></li>`;
         });
-        
-        if (testResponse.ok) {
-            console.log('API connectée avec succès :', await testResponse.json());
-        } else {
-            console.warn('API accessible mais retourne une erreur :', testResponse.status);
+        sourcesHTML += '</ul>';
+    } else {
+        // Format compact pour plusieurs sources
+        sourcesHTML += '<p>';
+        references.slice(0, 3).forEach((ref, index) => {
+            const url = ref.url || ref.source_url || "#";
+            const title = ref.question || ref.title || url.replace(/^https?:\/\/[^\/]+\//, '');
+            sourcesHTML += `<a href="${url}" target="_blank" class="source-link">${title}</a>`;
+            if (index < 2) sourcesHTML += ' • ';
+        });
+        if (references.length > 3) {
+            sourcesHTML += ` et ${references.length - 3} autres sources`;
         }
-    } catch (error) {
-        console.error('API inaccessible :', error);
-        console.log('Le mode simulation sera utilisé automatiquement.');
+        sourcesHTML += '</p>';
     }
-});
-
-/**
- * Fonction pour gérer les commandes spéciales
- * @param {string} message - Le message utilisateur
- * @returns {boolean} - True si une commande a été traitée
- */
-function handleSpecialCommands(message) {
-    // Commande d'administration via message
-    if (message.trim() === '*Admin*') {
-        // Ouvrir la boîte de dialogue d'authentification
-        showAdminDialog();
-        addMessageToChat("Veuillez vous authentifier pour accéder à l'interface d'administration.", 'bot');
-        return true;
-    }
-    return false;
+    
+    sourcesDiv.innerHTML = sourcesHTML;
+    chatMessages.appendChild(sourcesDiv);
+    
+    // Faire défiler pour voir les sources
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/**
- * Fonction pour détecter si le message concerne les formations
- * @param {string} message - Le message utilisateur
- * @returns {boolean} - True si le message concerne les formations
- */
+// Fonction pour détecter si le message concerne les formations
 function isFormationRelated(message) {
     const messageLower = message.toLowerCase();
     return FORMATION_KEYWORDS.some(keyword => messageLower.includes(keyword.toLowerCase()));
 }
 
-/**
- * Fonction pour détecter si le message concerne l'orientation
- * @param {string} message - Le message utilisateur
- * @returns {boolean} - True si le message concerne l'orientation
- */
+// Fonction pour détecter si le message concerne l'orientation
 function isOrientationRelated(message) {
     const messageLower = message.toLowerCase();
     return ORIENTATION_KEYWORDS.some(keyword => messageLower.includes(keyword.toLowerCase()));
 }
+
+// Fonction pour afficher les suggestions basées sur le contenu du message
+function showContentBasedSuggestions(message) {
+    if (isFormationRelated(message)) {
+        const formationDiv = document.createElement('div');
+        formationDiv.classList.add('message', 'bot', 'suggestion');
+        formationDiv.innerHTML = `
+            <p>Pour explorer toutes nos formations, vous pouvez consulter notre page dédiée :</p>
+            <p><a href="https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/" target="_blank" class="suggestion-link">
+                Trouver ma formation humanitaire →
+            </a></p>
+        `;
+        chatMessages.appendChild(formationDiv);
+    }
+    
+    if (isOrientationRelated(message)) {
+        const orientationDiv = document.createElement('div');
+        orientationDiv.classList.add('message', 'bot', 'suggestion');
+        orientationDiv.innerHTML = `
+            <p>Vous vous interrogez sur votre orientation ? Découvrez notre test d'orientation :</p>
+            <p><a href="https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/" target="_blank" class="suggestion-link">
+                Faire le test d'orientation →
+            </a></p>
+        `;
+        chatMessages.appendChild(orientationDiv);
+    }
+}
+
+/**
+ * Fonctions pour la gestion des commandes spéciales
+ */
+
+// Fonction pour gérer les commandes spéciales
+function handleSpecialCommands(message) {
+    // Commande d'administration
+    if (message.trim().toLowerCase() === '*admin*') {
+        showAdminDialog();
+        addMessageToChat("Veuillez vous authentifier pour accéder à l'interface d'administration.", 'bot');
+        return true;
+    }
+    
+    // Commande d'aide
+    if (message.trim().toLowerCase() === '*aide*' || message.trim().toLowerCase() === '*help*') {
+        addMessageToChat("Voici comment interagir avec moi :\n\n" +
+            "- Posez-moi des questions sur les formations Bioforce, le processus de candidature, les frais, etc.\n" +
+            "- Je peux vous aider à trouver des informations sur votre dossier de candidature\n" +
+            "- Pour accéder à l'administration, utilisez la commande *admin*", 'bot');
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Fonctions pour l'interaction avec l'API
+ */
 
 // Fonction pour envoyer un message à l'API
 async function sendMessageToAPI(userMessage) {
@@ -273,158 +425,105 @@ async function sendMessageToAPI(userMessage) {
         return;
     }
     
-    // SOLUTION D'URGENCE: Si le mode simulation forcé est activé, utiliser directement la simulation
-    if (FORCE_SIMULATION_MODE) {
-        console.log('SOLUTION D\'URGENCE: Mode simulation forcé activé');
-        simulateAPIResponse(userMessage);
+    // Vérifier d'abord dans le cache
+    const cachedResponse = findCachedResponse(userMessage);
+    if (cachedResponse) {
+        addMessageToChat(cachedResponse.response, 'bot');
+        if (cachedResponse.references && cachedResponse.references.length > 0) {
+            displaySources(cachedResponse.references);
+        }
+        showContentBasedSuggestions(userMessage);
         return;
     }
     
+    // Ajouter indication de chargement
+    const loadingDiv = document.createElement('div');
+    loadingDiv.classList.add('message', 'bot', 'loading');
+    loadingDiv.innerHTML = '<p>...</p>';
+    chatMessages.appendChild(loadingDiv);
+    
     try {
-        console.log('Tentative de connexion à l\'API:', API_URL);
-        console.log('Mode API:', USE_PRODUCTION_API ? 'Production' : 'Local');
+        debug("Tentative d'envoi à l'API", API_URL);
         
-        // Ajouter indication de chargement
-        const loadingDiv = document.createElement('div');
-        loadingDiv.classList.add('message', 'bot', 'loading');
-        loadingDiv.innerHTML = '<p>...</p>';
-        chatMessages.appendChild(loadingDiv);
-        
-        // Construction du message au format attendu par l'API
-        const formattedMessages = chatHistory.map(msg => ({
-            role: msg.role,
-            content: msg.content
-        }));
-        
+        // Préparation des données pour l'API
         const requestData = {
             user_id: userId,
-            messages: formattedMessages,
+            messages: chatHistory,
             context: {
                 page: window.location.pathname,
-                candidature_id: '00080932'
+                candidature_id: '00080932' // ID exemple pour démo
             }
         };
         
-        console.log('Données envoyées à l\'API:', JSON.stringify(requestData));
+        // Appel à l'API avec timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 secondes de timeout
         
-        let apiSuccess = false;
-        let apiResponse = null;
+        const response = await fetch(`${API_URL}/chat`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData),
+            signal: controller.signal
+        });
         
-        try {
-            // Essayer de contacter l'API avec un timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 secondes de timeout
-            
-            const fetchOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData),
-                signal: controller.signal
-            };
-            
-            console.log('Envoi de la requête fetch...');
-            const response = await fetch(`${API_URL}/chat`, fetchOptions);
-            clearTimeout(timeoutId);
-            
-            console.log('Réponse reçue, statut:', response.status);
-            
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Réponse API (données JSON):', data);
-                apiResponse = data;
-                apiSuccess = true;
-            } else {
-                console.error('Erreur API:', response.status, response.statusText);
-                const errorText = await response.text();
-                console.error('Détails de l\'erreur:', errorText);
-                throw new Error(`Erreur serveur: ${response.status} ${response.statusText}`);
-            }
-        } catch (fetchError) {
-            console.error('Erreur fetch:', fetchError);
-            // On ne relance pas l'erreur, on laisse le code continuer
-        }
+        clearTimeout(timeoutId);
         
         // Supprimer l'indication de chargement
         chatMessages.removeChild(loadingDiv);
         
-        if (apiSuccess && apiResponse) {
+        if (response.ok) {
+            const data = await response.json();
+            debug("Réponse API reçue", data);
+            
             // Afficher la réponse du chatbot
-            addMessageToChat(apiResponse.message.content, 'bot');
+            addMessageToChat(data.message.content, 'bot');
             
-            // Ajouter des liens vers les sources si disponibles
-            if (apiResponse.references && apiResponse.references.length > 0) {
-                // Création d'un élément pour afficher les références/sources
-                const sourcesDiv = document.createElement('div');
-                sourcesDiv.classList.add('message', 'bot', 'sources');
-                
-                let sourcesContent = '<p><small>Sources pertinentes :</small></p><ul>';
-                apiResponse.references.forEach(ref => {
-                    if (ref.url) {
-                        sourcesContent += `<li><a href="${ref.url}" target="_blank" class="source-link">${ref.question || ref.url}</a></li>`;
-                    }
-                });
-                sourcesContent += '</ul>';
-                
-                sourcesDiv.innerHTML = sourcesContent;
-                chatMessages.appendChild(sourcesDiv);
+            // Ajouter au cache
+            addToCache(userMessage, data.message.content, data.references);
+            
+            // Afficher les sources si disponibles
+            if (data.references && data.references.length > 0) {
+                displaySources(data.references);
             }
             
-            // Vérifier si le message concerne les formations ou l'orientation
-            if (isFormationRelated(userMessage)) {
-                // Suggestion pour page des formations
-                const formationDiv = document.createElement('div');
-                formationDiv.classList.add('message', 'bot', 'suggestion');
-                formationDiv.innerHTML = `
-                    <p>Pour explorer toutes nos formations, vous pouvez consulter notre page dédiée :</p>
-                    <p><a href="https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/" target="_blank" class="suggestion-link">
-                        Trouver ma formation humanitaire →
-                    </a></p>
-                `;
-                chatMessages.appendChild(formationDiv);
-            }
-            
-            if (isOrientationRelated(userMessage)) {
-                // Suggestion pour le test d'orientation
-                const orientationDiv = document.createElement('div');
-                orientationDiv.classList.add('message', 'bot', 'suggestion');
-                orientationDiv.innerHTML = `
-                    <p>Vous vous interrogez sur votre orientation ? Découvrez notre test d'orientation :</p>
-                    <p><a href="https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/" target="_blank" class="suggestion-link">
-                        Faire le test d'orientation →
-                    </a></p>
-                `;
-                chatMessages.appendChild(orientationDiv);
-            }
-        } else if (USE_SIMULATION_FALLBACK) {
-            console.log('Utilisation du mode simulation comme fallback');
-            // Utiliser la simulation si l'API échoue
-            simulateAPIResponse(userMessage);
+            // Afficher des suggestions basées sur le contenu
+            showContentBasedSuggestions(userMessage);
         } else {
-            // Gestion des erreurs
-            const botResponse = "Désolé, je rencontre des difficultés à me connecter au serveur. Veuillez réessayer plus tard ou contacter l'équipe Bioforce directement.";
-            addMessageToChat(botResponse, 'bot');
+            debug("Erreur API", response.status);
+            
+            if (CONFIG.USE_SIMULATION_FALLBACK) {
+                // Utiliser la simulation en cas d'échec
+                simulateAPIResponse(userMessage);
+            } else {
+                // Message d'erreur
+                addMessageToChat("Désolé, je rencontre des difficultés à me connecter au serveur. Veuillez réessayer ou contacter l'équipe Bioforce directement.", 'bot');
+            }
+        }
+    } catch (error) {
+        debug("Erreur lors de l'appel API", error);
+        
+        // Supprimer l'indication de chargement si encore présente
+        if (loadingDiv.parentNode === chatMessages) {
+            chatMessages.removeChild(loadingDiv);
         }
         
-    } catch (error) {
-        console.error('Erreur générale:', error);
-        
-        if (USE_SIMULATION_FALLBACK) {
-            console.log('Utilisation du mode simulation comme fallback après une erreur');
-            // Utiliser la simulation si l'API échoue
+        if (CONFIG.USE_SIMULATION_FALLBACK) {
+            // Utiliser la simulation en cas d'échec
             simulateAPIResponse(userMessage);
         } else {
-            // Gestion des erreurs
-            const botResponse = "Désolé, je rencontre des difficultés à me connecter au serveur. Veuillez réessayer plus tard ou contacter l'équipe Bioforce directement.";
-            addMessageToChat(botResponse, 'bot');
+            // Message d'erreur
+            addMessageToChat("Désolé, je rencontre des difficultés à me connecter au serveur. Veuillez réessayer ou contacter l'équipe Bioforce directement.", 'bot');
         }
     }
 }
 
-// Fonction pour la simulation de réponse API (fallback)
+// Fonction pour simuler une réponse API (mode fallback)
 function simulateAPIResponse(userMessage) {
-    // Réponses prédéfinies pour la démo
+    debug("Mode simulation activé");
+    
+    // Réponses prédéfinies pour la simulation
     const responses = {
         "default": {
             content: "Je suis désolé, je n'ai pas trouvé d'information précise sur ce sujet. Vous pouvez consulter notre site web ou contacter directement notre équipe pour obtenir une réponse personnalisée.",
@@ -438,6 +537,10 @@ function simulateAPIResponse(userMessage) {
             content: "La formation en logistique humanitaire de Bioforce vous prépare à gérer l'approvisionnement, le transport et le stockage des biens et équipements essentiels aux opérations humanitaires.",
             source: "https://www.bioforce.org/learn/formations-humanitaires/logistique-humanitaire/"
         },
+        "candidature": {
+            content: "Pour déposer votre candidature, vous devez compléter votre dossier en ligne et régler les frais de sélection de 60€ (ou 20000 CFA pour l'Afrique). Une fois votre dossier complet, il sera examiné par notre commission d'admission.",
+            source: "https://www.bioforce.org/learn/candidater/"
+        },
         "financement": {
             content: "Plusieurs options de financement sont disponibles pour nos formations : bourses, prise en charge par Pôle Emploi, financement par des organismes de formation continue ou votre CPF.",
             source: "https://www.bioforce.org/learn/financer-ma-formation/"
@@ -445,6 +548,10 @@ function simulateAPIResponse(userMessage) {
         "inscription": {
             content: "Les inscriptions se font en ligne sur notre site. Le processus comprend le dépôt d'un dossier de candidature, suivi d'un entretien de sélection pour évaluer votre motivation et votre projet professionnel.",
             source: "https://www.bioforce.org/learn/candidater/"
+        },
+        "frais": {
+            content: "Les frais de sélection pour une candidature sont de 60€ (ou 20000 CFA pour l'Afrique). Ces frais sont à payer après avoir rempli le formulaire de candidature et avant l'évaluation de votre dossier.",
+            source: "https://www.bioforce.org/learn/frais-de-selection-et-de-formation/"
         }
     };
     
@@ -464,107 +571,62 @@ function simulateAPIResponse(userMessage) {
         // Ajouter la réponse du chatbot
         addMessageToChat(responses[bestMatch].content, 'bot');
         
+        // Ajouter au cache même en mode simulation
+        addToCache(userMessage, responses[bestMatch].content, [{
+            url: responses[bestMatch].source,
+            title: bestMatch.charAt(0).toUpperCase() + bestMatch.slice(1)
+        }]);
+        
         // Ajouter un lien vers la source
         if (responses[bestMatch].source) {
-            const sourceDiv = document.createElement('div');
-            sourceDiv.classList.add('message', 'bot', 'source');
-            sourceDiv.innerHTML = `
-                <p><small>Pour plus d'informations, consultez :</small></p>
-                <p><a href="${responses[bestMatch].source}" target="_blank" class="source-link">
-                    ${responses[bestMatch].source.replace('https://www.bioforce.org/', '')} →
-                </a></p>
-            `;
-            chatMessages.appendChild(sourceDiv);
+            displaySources([{
+                url: responses[bestMatch].source,
+                title: bestMatch.charAt(0).toUpperCase() + bestMatch.slice(1)
+            }]);
         }
         
-        // Vérifier si le message concerne les formations ou l'orientation (même pour les réponses simulées)
-        if (isFormationRelated(userMessage)) {
-            const formationDiv = document.createElement('div');
-            formationDiv.classList.add('message', 'bot', 'suggestion');
-            formationDiv.innerHTML = `
-                <p>Pour explorer toutes nos formations, vous pouvez consulter notre page dédiée :</p>
-                <p><a href="https://www.bioforce.org/learn/formations-humanitaires/trouver-ma-formation/" target="_blank" class="suggestion-link">
-                    Trouver ma formation humanitaire →
-                </a></p>
-            `;
-            chatMessages.appendChild(formationDiv);
-        }
-        
-        if (isOrientationRelated(userMessage)) {
-            const orientationDiv = document.createElement('div');
-            orientationDiv.classList.add('message', 'bot', 'suggestion');
-            orientationDiv.innerHTML = `
-                <p>Vous vous interrogez sur votre orientation ? Découvrez notre test d'orientation :</p>
-                <p><a href="https://www.bioforce.org/learn/formations-humanitaires/preparer-mon-projet/test-dorientation/" target="_blank" class="suggestion-link">
-                    Faire le test d'orientation →
-                </a></p>
-            `;
-            chatMessages.appendChild(orientationDiv);
-        }
+        // Afficher des suggestions basées sur le contenu
+        showContentBasedSuggestions(userMessage);
     }, 1000);
 }
 
-// Event Listeners
-sendButton.addEventListener('click', () => {
-    const message = userInput.value.trim();
-    
-    if (message) {
-        // Ajouter le message de l'utilisateur au chat
-        addMessageToChat(message, 'user');
-        userInput.value = '';
+/**
+ * Fonctions pour l'administration
+ */
 
-        // Vérifier s'il s'agit d'une commande spéciale
-        if (!handleSpecialCommands(message)) {
-            // Envoyer le message à l'API
-            sendMessageToAPI(message);
-        }
-    }
-});
-
-// Écouteur d'événement pour la touche Entrée
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendButton.click();
-    }
-});
-
-// Écouteur d'événement pour le bouton de minimisation
-minimizeButton.addEventListener('click', () => {
-    // Basculer la visibilité du chatbot (minimiser/agrandir)
-    const isMinimized = chatWidget.classList.toggle('minimized');
-    
-    // Mettre à jour le texte du bouton
-    minimizeButton.textContent = isMinimized ? '+' : '−';
-    
-    // Sauvegarder l'état dans localStorage
-    localStorage.setItem('chatbotMinimized', isMinimized);
-});
-
-// Fonctions pour l'administration
+// Fonction pour afficher la boîte de dialogue d'administration
 function showAdminDialog() {
-    adminOverlay.style.display = 'block';
-    adminDialog.style.display = 'block';
-    adminPassword.value = '';
-    adminPassword.focus();
+    if (adminOverlay && adminDialog) {
+        adminOverlay.style.display = 'block';
+        adminDialog.style.display = 'block';
+        if (adminPassword) {
+            adminPassword.value = '';
+            adminPassword.focus();
+        }
+    } else {
+        // Si les éléments n'existent pas, rediriger directement
+        window.open(ADMIN_URL, '_blank');
+    }
 }
 
+// Fonction pour cacher la boîte de dialogue d'administration
 function hideAdminDialog() {
-    adminOverlay.style.display = 'none';
-    adminDialog.style.display = 'none';
-    adminPassword.value = '';
+    if (adminOverlay && adminDialog) {
+        adminOverlay.style.display = 'none';
+        adminDialog.style.display = 'none';
+    }
 }
 
+// Fonction pour vérifier le mot de passe admin
 function checkAdminPassword() {
-    const password = adminPassword.value.trim();
-    
-    if (password === ADMIN_PASSWORD) {
+    if (adminPassword && adminPassword.value === ADMIN_PASSWORD) {
         hideAdminDialog();
         
-        // Rediriger vers l'interface d'administration
+        // Redirection vers l'interface d'administration (URL en dur)
         window.open(ADMIN_URL, '_blank');
         
         addMessageToChat("Authentification réussie. L'interface d'administration s'ouvre dans un nouvel onglet.", 'bot');
-    } else {
+    } else if (adminPassword) {
         adminPassword.value = '';
         adminPassword.placeholder = 'Mot de passe incorrect';
         adminPassword.classList.add('error');
@@ -576,27 +638,111 @@ function checkAdminPassword() {
     }
 }
 
-// Écouteurs d'événements pour l'administration
-adminButton.addEventListener('click', showAdminDialog);
-cancelAdminBtn.addEventListener('click', hideAdminDialog);
-loginAdminBtn.addEventListener('click', checkAdminPassword);
-adminPassword.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        checkAdminPassword();
-    }
-});
-adminOverlay.addEventListener('click', hideAdminDialog);
+/**
+ * Configuration des événements
+ */
 
-// Restaurer l'état minimisé du chatbot (si sauvegardé)
-if (localStorage.getItem('chatbotMinimized') === 'true') {
-    chatWidget.classList.add('minimized');
-    minimizeButton.textContent = '+';
+// Événement pour l'envoi de message
+function handleSendMessage() {
+    const message = userInput.value.trim();
+    
+    if (message) {
+        // Ajouter le message de l'utilisateur au chat
+        addMessageToChat(message, 'user');
+        userInput.value = '';
+        
+        // Envoyer le message à l'API
+        sendMessageToAPI(message);
+    }
 }
 
-// Initialisation
-document.addEventListener('DOMContentLoaded', () => {
-    // Message de bienvenue initial déjà dans le HTML
-    
+// Configuration des événements
+sendButton.addEventListener('click', handleSendMessage);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        handleSendMessage();
+    }
+});
+
+minimizeButton.addEventListener('click', () => {
+    const isMinimized = chatWidget.classList.toggle('minimized');
+    minimizeButton.textContent = isMinimized ? '+' : '−';
+    localStorage.setItem('chatbotMinimized', isMinimized);
+});
+
+// Configuration des événements pour l'administration
+if (adminButton) {
+    adminButton.addEventListener('click', showAdminDialog);
+}
+
+if (adminOverlay) {
+    adminOverlay.addEventListener('click', hideAdminDialog);
+}
+
+if (cancelAdminBtn) {
+    cancelAdminBtn.addEventListener('click', hideAdminDialog);
+}
+
+if (loginAdminBtn) {
+    loginAdminBtn.addEventListener('click', checkAdminPassword);
+}
+
+if (adminPassword) {
+    adminPassword.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            checkAdminPassword();
+        }
+    });
+}
+
+// Récupérer également le formulaire de contact, s'il existe
+const contactForm = document.querySelector('.contact-form');
+
+// Gestionnaire pour le formulaire de contact
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(contactForm);
+        const formDataObject = Object.fromEntries(formData.entries());
+        
+        try {
+            const response = await fetch(`${API_URL}/contact`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formDataObject)
+            });
+            
+            if (response.ok) {
+                alert('Votre message a été envoyé avec succès !');
+                contactForm.reset();
+            } else {
+                alert('Une erreur est survenue lors de l\'envoi du message.');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de l\'envoi du message.');
+        }
+    });
+}
+
+/**
+ * Initialisation
+ */
+
+// Initialisation: Message de bienvenue si le chat est vide
+window.addEventListener('DOMContentLoaded', () => {
     // Mettre le focus sur l'input
-    userInput.focus();
+    if (userInput) {
+        userInput.focus();
+    }
+    
+    // Afficher un message de bienvenue si le chat est vide
+    if (chatMessages && chatMessages.children.length === 0) {
+        addMessageToChat("Bonjour ! Je suis BioforceBot, comment puis-je vous aider avec votre candidature aujourd'hui ?", 'bot');
+    }
+    
+    debug("BioforceBot initialisé");
 });
