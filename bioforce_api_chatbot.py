@@ -681,7 +681,7 @@ async def process_enrichment(messages, rag_response, websocket_id, user_id):
 @app.get("/")
 async def root():
     """Redirige vers l'interface utilisateur du chatbot"""
-    return RedirectResponse(url="/static/chat.html")
+    return RedirectResponse(url="/static/index.html")
 
 @app.get("/admin/")
 async def admin_index(request: Request):
