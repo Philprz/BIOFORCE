@@ -1,6 +1,6 @@
 // Configuration de l'API
 const API_URL = window.location.origin;
-const ADMIN_URL = window.location.origin + '/admin';  // Chemin correct
+const ADMIN_URL = window.location.origin + 'admin';  // Chemin correct
 const FORCE_SIMULATION_MODE = false;
 const USE_PRODUCTION_API = false;
 const USE_SIMULATION_FALLBACK = true;
